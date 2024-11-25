@@ -1,7 +1,6 @@
 # Projet Tutoré - Gestion des Emplois du Temps
 
 ## Auteurs
-- **Jaks ROMP**
 - **Yogan RAGOT**
 - **Leaticia HAROUNA**
 - **Lothaire HOLCVART**

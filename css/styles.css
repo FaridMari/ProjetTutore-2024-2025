@@ -1,0 +1,135 @@
+body {
+    margin-left: 200px;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #34495e;
+    display: flex;
+    flex-direction : column;
+    align-items: center;
+    justify-content: center;
+}
+
+#menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 200px;
+    height: 100%;
+    background-color: lightsteelblue;
+    color: #fff;
+}
+
+h1 {
+    text-align: center;
+    color: white;
+}
+
+h4{
+    margin-top: -10%;
+    margin-left: 25%;
+}
+
+
+img{
+    width:80px;
+    height:80px;
+    padding: 5%;
+    margin-left: 25%;
+
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    align-items: center;
+    margin-top: 4em;
+}
+
+.element_menu {
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s;
+}
+
+.element_menu a {
+    color: white;
+    text-decoration: none;
+}
+
+ul li:hover {
+    background-color: #34495e;
+}
+
+
+
+#deconnexion {
+    position: absolute;
+    align-content: center;
+    bottom: 20px;
+    right: 20px;
+    background-color: #5dade2;
+    padding: 10px;
+    border-radius: 20px;
+}
+
+#deconnexion a {
+    text-decoration: none;
+    color: #fff;
+}
+
+#deconnexion a img {
+    margin-left: 10px;
+    width: 20px; /* Largeur de l'image */
+    height: 20px; /* Hauteur de l'image */
+}
+
+#deconnexion:hover{
+    background-color: #ff0000;
+    padding: 10px;
+    border-radius: 20px;
+}
+
+
+div.pagination a{
+    text-decoration: none;
+    color: white;
+    padding: 5px;
+}
+
+/* Display tweets */
+
+.tweet {
+    background-color: #fff;
+    margin: 10px;
+    width: 400px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tweet-details {
+    display: none;
+}
+
+img[img-touite]{
+    max-width: 20px;
+    max-height: 20px;
+}
+
+.user-link {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+}
+
+.user-link:hover {
+    text-decoration: underline;
+}
+
+.pagination{
+    margin-top: 4em;
+    font-size: 20px;
+    text-align: center;
+}

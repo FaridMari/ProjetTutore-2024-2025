@@ -1,0 +1,154 @@
+body {
+    margin-left: 200px;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f4f8; /* Fond bleu très clair */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+h2 {
+    color: #2c3e50; /* Bleu foncé */
+    text-align: center;
+    margin-top: 50px;
+}
+
+#titre-noir {
+    color: #2c3e50; /* Bleu foncé */
+}
+
+h1 {
+    margin-top: 5px;
+    color: #2c3e50; /* Bleu foncé */
+    text-align: center;
+    position: relative;
+}
+
+#monP::before,
+#monP::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 60%;
+    height: 2px;
+    background-color: #3498db; /* Bleu vif */
+}
+
+#monP::before {
+    left: 0;
+    margin-left: -25%;
+}
+
+#monP::after {
+    right: 0;
+    margin-right: -25%;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+#prof {
+    background-color: #ffffff; /* Blanc */
+    margin-bottom: 10px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ombre légère */
+}
+
+#prof strong {
+    display: block;
+    color: #2980b9; /* Bleu moyen */
+}
+
+#prof p {
+    margin: 10px 0;
+    color: #34495e; /* Bleu très foncé */
+}
+
+#prof small {
+    display: block;
+    text-align: right;
+    color: #95a5a6; /* Gris clair */
+}
+
+#write {
+    float: right;
+    max-width: 50px;
+    max-height: 50px;
+}
+
+.score {
+    background-color: #ffffff; /* Blanc */
+    margin-bottom: 10px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ombre légère */
+}
+
+.followers-button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #5dade2; /* Bleu clair */
+    color: #ffffff; /* Blanc */
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.followers-button:hover {
+    background-color: #2c3e50; /* Bleu foncé */
+}
+
+.listes {
+    background-color: #ffffff; /* Blanc */
+    margin-bottom: 10px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ombre légère */
+}
+
+/* Partie followers */
+
+.followers-container {
+    margin: 9em;
+    background-color: #ffffff; /* Blanc */
+    border-radius: 10px;
+    padding: 10px;
+    width: 400px;
+}
+
+.followers-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.followers-list li {
+    background-color: #ecf0f1; /* Gris très clair */
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombre légère */
+}
+
+/* Partie back button */
+
+.back-button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #2c3e50; /* Bleu foncé */
+    color: #ffffff; /* Blanc */
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.back-button:hover {
+    background-color: #2980b9; /* Bleu moyen */
+}

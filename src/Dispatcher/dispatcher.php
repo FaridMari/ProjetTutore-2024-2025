@@ -3,6 +3,7 @@ namespace src\Dispatcher;
 
 
 use src\Action\SigninAction;
+use src\Dispatcher\GestionCompteUtilisateurAction;
 
 
 
@@ -19,6 +20,10 @@ class Dispatcher {
             case 'signin':
                 $log = new SigninAction();
                 $this->renderPage($log->execute());
+                break;
+            case 'gestionCompteUtilisateur':
+                $action = new GestionCompteUtilisateurAction();
+                echo $action->execute();
                 break;
             default:
                 break;

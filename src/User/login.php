@@ -3,6 +3,7 @@
 function returnHTML(): string {
   return <<<END
 <head>
+    <link rel="stylesheet" href="css/styles.css">
     <style>
         body {
             margin-left: 200px;
@@ -85,7 +86,16 @@ function returnHTML(): string {
 <body>
     <div class="container">
         <h2>Connexion</h2>
+        <div id="menu">
+            <ul>
+                <li class="element_menu"><i class="bi bi-box-arrow-in-right"></i> <a href="index.php?action=signin">Log-in</a></li>
+            </ul>
+            <div id="deconnexion">
+                <li class="element_menu"><i class="bi bi-box-arrow-in-left"></i> Deconnexion</li>
+            </div>
+        </div>
         <form action="index.php?action=signin" method="POST">
+        
             <label for="email">Email :</label>
             <input type="email" id="email" name="email" placeholder="exemple@domaine.com" required><br>
 

@@ -11,9 +11,9 @@
     <ul>
         <li class="element_menu"><a href="index.php?action=accueil">Accueil</a></li>
         <li class="element_menu"><a href="index.php?action=profile">Profil</a></li>
-        <li class="element_menu"><a href="index.php?action=contrainte">Fiche contrainte</a></li>
+        <li class="element_menu"><a href="index.php?action=enseignantFicheContrainte">Fiche contrainte</a></li>
         <li class="element_menu"><a href="index.php?action=service">Fiche service</a></li>
-        <li class="element_menu"><a href="index.php?action=ressource">Fiche ressource</a></li>
+        <li class="element_menu"><a href="index.php?action=enseignantFicheRessource">Fiche ressource</a></li>
         <li class="element_menu"><a href="index.php?action=planning">Planning détaillé</a></li>
     </ul>
     <div id="deconnexion">

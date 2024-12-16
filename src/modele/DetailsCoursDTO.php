@@ -1,13 +1,13 @@
 <?php
 
-require_once 'DatabaseConnection.php';
+require_once '../src/Db/connexionFactory.php';
 require_once 'DetailsCours.php';
 
 class DetailsCoursDTO {
     private $db;
 
     public function __construct() {
-        $this->db = DatabaseConnection::getInstance()->getConnection();
+        $this->db = connexionFactory::makeConnection();
     }
 
 

@@ -2,14 +2,15 @@
 
 namespace src\Action;
 
-
-class GestionCompteUtilisateurAction extends Action
+class PlanningDetaille extends Action
 {
     public function execute() : string
     {
         ob_start();
+
         include 'src/Gestionnaire/NavBar.html';
-        include 'src/Gestionnaire/GestionCompte.php';
+        include 'src/Gestionnaire/PlanningDetaille.php';
+
         return ob_get_clean();
 
     }

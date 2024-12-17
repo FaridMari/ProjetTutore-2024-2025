@@ -8,6 +8,7 @@ class GestionnairePagePrincipalAction extends Action
     {
         ob_start();
 
+        include 'src/Gestionnaire/NavBar.html';
         include 'src/Gestionnaire/PagePrincipal.php';
 
         return ob_get_clean();

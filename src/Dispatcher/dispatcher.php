@@ -9,6 +9,7 @@ use src\Action\GestionCompteUtilisateurAction;
 use src\Action\GestionnairePagePrincipalAction;
 use src\Action\EnseignantPagePrincipalAction;
 use src\Action\GestionnaireCreerUtilisateurAction;
+use src\Action\PlanningDetaille;
 
 
 
@@ -62,6 +63,10 @@ class Dispatcher {
                 break;
             case 'enseignantFicheRessource':
                 $action = new EnseignantFicheRessourceAction();
+                echo $action->execute();
+                break;
+            case 'ficheDetaille':
+                $action = new PlanningDetaille();
                 echo $action->execute();
                 break;
             default:

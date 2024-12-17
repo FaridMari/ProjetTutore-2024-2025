@@ -17,7 +17,7 @@
         <li class="element_menu"><a href="index.php?action=planning">Planning détaillé</a></li>
     </ul>
     <div id="deconnexion">
-        <li class="element_menu"><i class="bi bi-box-arrow-in-left"></i> Deconnexion</li>
+        <li class="element_menu"><i class="bi bi-box-arrow-in-left"></i> <a href="index.php?action=signin"> Deconnexion</a> </li>
     </div>
 </div>
 </body>

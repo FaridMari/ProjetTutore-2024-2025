@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Gestionnaire des comptes utilisateurs</title>
+    <title>Planning detaillé</title>
     <link rel="stylesheet" href="styles.css">
     <style>
         body {
@@ -137,13 +137,22 @@
 
 <div class="briques-container">
     <div class="brique">
-        <a href="index.php?action=gestionnaireCreerUtilisateurAction">Créer un utilisateur</a>
+        <a href="index.php?action=">S1</a>
     </div>
     <div class="brique">
-        <a href="index.php?action=edit-user">Modifier un utilisateur</a>
+        <a href="index.php?action=">S2</a>
     </div>
     <div class="brique">
-        <a href="index.php?action=delete-user">Supprimer un utilisateur</a>
+        <a href="index.php?action=">S3</a>
+    </div>
+    <div class="brique">
+        <a href="index.php?action=">S4</a>
+    </div>
+    <div class="brique">
+        <a href="index.php?action=">S5</a>
+    </div>
+    <div class="brique">
+        <a href="index.php?action=">S6</a>
     </div>
 </div>
 

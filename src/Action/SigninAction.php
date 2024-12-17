@@ -7,8 +7,8 @@ use src\Db\connexionFactory;
 class SigninAction extends Action {
     public function execute(): string {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email = 'test@gmail.com'; // Adresse email exacte
-            $password = 'azertyuiop';  // Mot de passe exact
+            $email = $_POST['email'] ?? '';
+            $password = $_POST['password'] ?? '';
 
             try {
                 $pdo = connexionFactory::makeConnection();

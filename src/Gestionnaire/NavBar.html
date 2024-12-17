@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="menu">
+    <ul>
+        <?php if (false): ?>
+        <li class="element_menu"><i class="bi bi-box-arrow-in-right"></i> <a href="index.php?action=signin">Log-in</a></li>
+        <?php else: ?>
+        <li class="element_menu"> <a href="index.php?action=">Visualisation Gestionnaire</a></li>
+        <li class="element_menu"><a href="index.php?action=gestionCompteUtilisateur">Gestion Compte Utilisateur</a></li>
+        <li class="element_menu"><a href="index.php?action=">Gestion Ressource</a></li>
+        <li class="element_menu"><a href="index.php?action=">Gestion Fiche Utilisateurs</a></li>
+        <li class="element_menu"><a href="index.php?action=ficheDetaille">Planning detaillé</a></li>
+
+        <?php endif; ?>
+    </ul>
+    <div id="deconnexion">
+        <li class="element_menu"><i class="bi bi-box-arrow-in-left"></i> <a href="index.php?action=signin"> Deconnexion</a> </li>
+    </div>
+</div>
+</body>
+</html>

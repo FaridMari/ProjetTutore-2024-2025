@@ -171,21 +171,7 @@
     </style>
 </head>
 <body>
-<div id="menu">
-    <ul>
-        <?php if (false): ?>
-            <li class="element_menu"><i class="bi bi-box-arrow-in-right"></i> <a href="index.php?action=signin">Log-in</a></li>
-        <?php else: ?>
-            <li class="element_menu"> <a href="index.php?action=">Visualisation Gestionnaire</a></li>
-            <li class="element_menu"><a href="index.php?action=gestionCompteUtilisateur">Gestion Compte Utilisateur</a></li>
-            <li class="element_menu"><a href="index.php?action=">Gestion Ressource</a></li>
-            <li class="element_menu"><a href="index.php?action=">Gestion Fiche Utilisateurs</a></li>
-        <?php endif; ?>
-    </ul>
-    <div id="deconnexion">
-        <li class="element_menu">Deconnexion</li>
-    </div>
-</div>
+
 
 <div class="content">
     <div class="filtres">
@@ -233,7 +219,6 @@
                     <span>Type de cours</span>
                     <span>Type salle</span>
                 </div>
-                <!-- Ajouter d'autres matières si nécessaire -->
             </div>
         </div>
         <div class="enseignant">
@@ -268,7 +253,6 @@
                     <span>Type de cours</span>
                     <span>Type salle</span>
                 </div>
-                <!-- Ajouter d'autres matières si nécessaire -->
             </div>
         </div>
         <div class="enseignant" style="background-color: #ff6d68">
@@ -279,7 +263,6 @@
                 <button class="toggle-details">▼</button>
             </div>
             <div class="enseignant-details" style="display: none;">
-                <!-- Ajouter d'autres matières si nécessaire -->
             </div>
         </div>
         <div class="enseignant">
@@ -298,10 +281,8 @@
                     <span>Type de cours</span>
                     <span>Type salle</span>
                 </div>
-                <!-- Ajouter d'autres matières si nécessaire -->
             </div>
         </div>
-        <!-- Ajouter d'autres enseignants ici -->
     </div>
 
 </div>

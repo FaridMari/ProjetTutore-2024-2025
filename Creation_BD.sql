@@ -1,4 +1,4 @@
-create table if not exists cours
+create table cours
 (
     id_cours        int auto_increment
         primary key,
@@ -9,7 +9,7 @@ create table if not exists cours
     nb_heures_tp    double default 0 null
 );
 
-create table if not exists groupes
+create table groupes
 (
     id_groupe  int auto_increment
         primary key,
@@ -17,7 +17,23 @@ create table if not exists groupes
     niveau     varchar(255) not null
 );
 
-create table if not exists utilisateurs
+create table repartition_heures
+(
+    id_repartition        int auto_increment
+        primary key,
+    id_cours              int         not null,
+    semaine_debut         int         not null,
+    semaine_fin           int         not null,
+    type_heure            varchar(20) not null,
+    nb_heures_par_semaine int         not null,
+    constraint repartition_heures_ibfk_1
+        foreign key (id_cours) references cours (id_cours)
+);
+
+create index id_cours
+    on repartition_heures (id_cours);
+
+create table utilisateurs
 (
     id_utilisateur int auto_increment
         primary key,
@@ -29,7 +45,7 @@ create table if not exists utilisateurs
         unique (email)
 );
 
-create table if not exists enseignants
+create table enseignants
 (
     id_enseignant    int              not null
         primary key,
@@ -40,7 +56,7 @@ create table if not exists enseignants
         foreign key (id_enseignant) references utilisateurs (id_utilisateur)
 );
 
-create table if not exists affectations
+create table affectations
 (
     id_affectation   int auto_increment
         primary key,
@@ -57,16 +73,16 @@ create table if not exists affectations
         foreign key (id_groupe) references groupes (id_groupe)
 );
 
-create index if not exists id_cours
+create index id_cours
     on affectations (id_cours);
 
-create index if not exists id_enseignant
+create index id_enseignant
     on affectations (id_enseignant);
 
-create index if not exists id_groupe
+create index id_groupe
     on affectations (id_groupe);
 
-create table if not exists contraintes
+create table contraintes
 (
     id_contrainte int auto_increment
         primary key,
@@ -78,10 +94,10 @@ create table if not exists contraintes
         foreign key (id_enseignant) references enseignants (id_enseignant)
 );
 
-create index if not exists id_enseignant
+create index id_enseignant
     on contraintes (id_enseignant);
 
-create table if not exists detailscours
+create table detailscours
 (
     id_ressource            int auto_increment
         primary key,
@@ -96,13 +112,13 @@ create table if not exists detailscours
         foreign key (id_responsable_module) references enseignants (id_enseignant)
 );
 
-create index if not exists id_cours
+create index id_cours
     on detailscours (id_cours);
 
-create index if not exists id_responsable_module
+create index id_responsable_module
     on detailscours (id_responsable_module);
 
-create table if not exists historisation
+create table historisation
 (
     id_historique int auto_increment
         primary key,
@@ -118,16 +134,16 @@ create table if not exists historisation
         foreign key (id_groupe) references groupes (id_groupe)
 );
 
-create index if not exists id_cours
+create index id_cours
     on historisation (id_cours);
 
-create index if not exists id_enseignant
+create index id_enseignant
     on historisation (id_enseignant);
 
-create index if not exists id_groupe
+create index id_groupe
     on historisation (id_groupe);
 
-create table if not exists voeux
+create table voeux
 (
     id_voeu       int auto_increment
         primary key,
@@ -144,13 +160,12 @@ create table if not exists voeux
         foreign key (id_groupe) references groupes (id_groupe)
 );
 
-create index if not exists id_cours
+create index id_cours
     on voeux (id_cours);
 
-create index if not exists id_enseignant
+create index id_enseignant
     on voeux (id_enseignant);
 
-create index if not exists id_groupe
+create index id_groupe
     on voeux (id_groupe);
-
 

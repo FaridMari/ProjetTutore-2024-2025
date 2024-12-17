@@ -91,7 +91,7 @@ function returnHTML(): string {
                 <li class="element_menu"><i class="bi bi-box-arrow-in-right"></i> <a href="index.php?action=signin">Log-in</a></li>
             </ul>
             <div id="deconnexion">
-                <li class="element_menu"><i class="bi bi-box-arrow-in-left"></i> Deconnexion</li>
+                <li class="element_menu"><i class="bi bi-box-arrow-in-left"></i> <a href="index.php?action=signin"> Deconnexion</a> </li>
             </div>
         </div>
         <form action="index.php?action=signin" method="POST">

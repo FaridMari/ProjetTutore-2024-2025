@@ -1,13 +1,13 @@
 <?php
 
-require_once 'DatabaseConnection.php';
+require_once '../src/Db/connexionFactory.php';
 require_once 'Groupe.php';
 
 class GroupeDTO {
     private $db;
 
     public function __construct() {
-        $this->db = DatabaseConnection::getInstance()->getConnection();
+        $this->db = connexionFactory::makeConnection();
     }
 
 

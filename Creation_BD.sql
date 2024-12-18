@@ -8,6 +8,7 @@ drop table if exists cours;
 drop table if exists enseignants;
 drop table if exists utilisateurs;
 drop table if exists groupes;
+drop table if exists voeux_hors_iut;
 
 
 
@@ -181,5 +182,25 @@ create index id_cours
 
 create index id_enseignant
     on voeux (id_enseignant);
+
+create table voeux_hors_iut
+(
+    id_voeu_hi       int auto_increment
+        primary key,
+    id_enseignant int          not null,
+    composant    varchar(255)  null,
+    formation    varchar(255)  null,
+    module       varchar(255)  null,
+    nb_heures_cm double        null,
+    nb_heures_td double        null,
+    nb_heures_tp double        null,
+    nb_heures_ei double        null,
+    nb_total     double        null,
+    constraint voeux_hors_iut_ibfk_1
+        foreign key (id_enseignant) references enseignants (id_enseignant)
+);
+
+create index id_enseignant
+    on voeux_hors_iut (id_enseignant);
 
 

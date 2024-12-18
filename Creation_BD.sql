@@ -15,6 +15,7 @@ create table cours
 (
     id_cours        int auto_increment
         primary key,
+    formation       varchar(255)     not null,
     semestre        varchar(255)     not null,
     nom_cours       varchar(255)     not null,
     nb_heures_total double default 0 null,
@@ -166,15 +167,13 @@ create table voeux
         primary key,
     id_enseignant int          not null,
     id_cours      int          not null,
-    id_groupe     int          not null,
     semestre      varchar(255) not null,
     nb_heures     double       not null,
+    remarques     text         not null,
     constraint voeux_ibfk_1
         foreign key (id_enseignant) references enseignants (id_enseignant),
     constraint voeux_ibfk_2
-        foreign key (id_cours) references cours (id_cours),
-    constraint voeux_ibfk_3
-        foreign key (id_groupe) references groupes (id_groupe)
+        foreign key (id_cours) references cours (id_cours)
 );
 
 create index id_cours
@@ -183,6 +182,4 @@ create index id_cours
 create index id_enseignant
     on voeux (id_enseignant);
 
-create index id_groupe
-    on voeux (id_groupe);
 

@@ -1,12 +1,27 @@
+drop table if exists affectations;
+drop table if exists contraintes;
+drop table if exists details_cours;
+drop table if exists repartition_heures;
+drop table if exists historisation;
+drop table if exists voeux;
+drop table if exists cours;
+drop table if exists enseignants;
+drop table if exists utilisateurs;
+drop table if exists groupes;
+
+
+
 create table cours
 (
     id_cours        int auto_increment
         primary key,
+    semestre        varchar(255)     not null,
     nom_cours       varchar(255)     not null,
     nb_heures_total double default 0 null,
     nb_heures_cm    double default 0 null,
     nb_heures_td    double default 0 null,
-    nb_heures_tp    double default 0 null
+    nb_heures_tp    double default 0 null,
+    nb_heures_ei    double default 0 null
 );
 
 create table groupes
@@ -38,6 +53,7 @@ create table utilisateurs
     id_utilisateur int auto_increment
         primary key,
     nom            varchar(255) not null,
+    prenom         varchar(255) not null,
     email          varchar(255) not null,
     mot_de_passe   varchar(255) not null,
     role           varchar(255) not null,
@@ -49,11 +65,12 @@ create table enseignants
 (
     id_enseignant    int              not null
         primary key,
+    id_utilisateur   int              not null,
     heures_affectees double default 0 null,
     statut           varchar(255)     not null,
     total_hetd       double default 0 null,
     constraint enseignants_ibfk_1
-        foreign key (id_enseignant) references utilisateurs (id_utilisateur)
+        foreign key (id_utilisateur) references utilisateurs (id_utilisateur)
 );
 
 create table affectations
@@ -97,7 +114,7 @@ create table contraintes
 create index id_enseignant
     on contraintes (id_enseignant);
 
-create table detailscours
+create table details_cours
 (
     id_ressource            int auto_increment
         primary key,
@@ -105,7 +122,7 @@ create table detailscours
     id_responsable_module   int          not null,
     type_salle              varchar(255) not null,
     equipements_specifiques text         not null,
-    repartition_heures      text         not null,
+    details     text         not null,
     constraint detailscours_ibfk_1
         foreign key (id_cours) references cours (id_cours),
     constraint detailscours_ibfk_2
@@ -113,10 +130,10 @@ create table detailscours
 );
 
 create index id_cours
-    on detailscours (id_cours);
+    on details_cours (id_cours);
 
 create index id_responsable_module
-    on detailscours (id_responsable_module);
+    on details_cours (id_responsable_module);
 
 create table historisation
 (

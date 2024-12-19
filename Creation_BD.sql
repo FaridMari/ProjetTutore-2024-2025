@@ -60,6 +60,10 @@ create table utilisateurs
     email          varchar(255) not null,
     mot_de_passe   varchar(255) not null,
     role           varchar(255) not null,
+    statut         varchar(255) null,
+    nombres_heures DATETIME    null,
+    reset_token    DATETIME null,
+    reset_token_expiration DATETIME null,
     constraint email
         unique (email)
 );

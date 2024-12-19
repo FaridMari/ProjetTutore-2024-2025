@@ -19,7 +19,7 @@ class SigninAction extends Action {
 
                 $user = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-                if ($user && $password === $user['mot_de_passe']) {
+                if ($password === $user['mot_de_passe'] || password_verify($password, $user['mot_de_passe'])) {
                     // Authentification réussie
                     session_start();
                     $_SESSION['user_id'] = $user['id_utilisateur'];
@@ -34,7 +34,7 @@ class SigninAction extends Action {
                     }
                     exit();
                 } else {
-                    echo "L'authentification a échoué. Veuillez vérifier vos identifiants.";
+                    echo "L'authentification a échoué. Veuillez vérifier vos identifiants.(sign in action)";
                 }
             } catch (\PDOException $e) {
                 echo "Erreur d'authentification: " . $e->getMessage();

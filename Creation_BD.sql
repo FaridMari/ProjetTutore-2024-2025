@@ -5,10 +5,10 @@ drop table if exists repartition_heures;
 drop table if exists historisation;
 drop table if exists voeux;
 drop table if exists cours;
+drop table if exists voeux_hors_iut;
 drop table if exists enseignants;
 drop table if exists utilisateurs;
 drop table if exists groupes;
-drop table if exists voeux_hors_iut;
 
 
 
@@ -19,6 +19,7 @@ create table cours
     formation       varchar(255)     not null,
     semestre        varchar(255)     not null,
     nom_cours       varchar(255)     not null,
+    code_cours      varchar(255)     not null,
     nb_heures_total double default 0 null,
     nb_heures_cm    double default 0 null,
     nb_heures_td    double default 0 null,
@@ -59,6 +60,10 @@ create table utilisateurs
     email          varchar(255) not null,
     mot_de_passe   varchar(255) not null,
     role           varchar(255) not null,
+    statut         varchar(255) null,
+    nombres_heures DATETIME    null,
+    reset_token    DATETIME null,
+    reset_token_expiration DATETIME null,
     constraint email
         unique (email)
 );

@@ -24,11 +24,6 @@ h1 {
     color: white;
 }
 
-h4{
-    margin-top: -10%;
-    margin-left: 25%;
-}
-
 
 img{
     width:80px;
@@ -74,62 +69,8 @@ ul li:hover {
     border-radius: 20px;
 }
 
-#deconnexion a {
-    text-decoration: none;
-    color: #fff;
-}
-
-#deconnexion a img {
-    margin-left: 10px;
-    width: 20px; /* Largeur de l'image */
-    height: 20px; /* Hauteur de l'image */
-}
-
-#deconnexion:hover{
-    background-color: #ff0000;
-    padding: 10px;
-    border-radius: 20px;
-}
 
 
-div.pagination a{
-    text-decoration: none;
-    color: white;
-    padding: 5px;
-}
 
-/* Display tweets */
 
-.tweet {
-    background-color: #fff;
-    margin: 10px;
-    width: 400px;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
 
-.tweet-details {
-    display: none;
-}
-
-img[img-touite]{
-    max-width: 20px;
-    max-height: 20px;
-}
-
-.user-link {
-    text-decoration: none;
-    color: #007bff;
-    font-weight: bold;
-}
-
-.user-link:hover {
-    text-decoration: underline;
-}
-
-.pagination{
-    margin-top: 4em;
-    font-size: 20px;
-    text-align: center;
-}

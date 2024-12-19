@@ -10,7 +10,7 @@ use src\Action\GestionnairePagePrincipalAction;
 use src\Action\EnseignantPagePrincipalAction;
 use src\Action\GestionnaireCreerUtilisateurAction;
 use src\Action\PlanningDetaille;
-
+use src\Action\FichePrevisionnelleAction;
 
 
 
@@ -36,6 +36,7 @@ class Dispatcher {
     }
 
     public function navigateToAction(): void {
+        error_reporting(E_ALL);
         switch ($this->action) {
             case 'signin':
                 $log = new SigninAction();
@@ -67,6 +68,10 @@ class Dispatcher {
                 break;
             case 'ficheDetaille':
                 $action = new PlanningDetaille();
+                echo $action->execute();
+                break;
+            case 'fichePrevisionnelle':
+                $action = new FichePrevisionnelleAction();
                 echo $action->execute();
                 break;
             default:

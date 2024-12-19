@@ -2,26 +2,35 @@
 
 class Cours {
     private $idCours;
+    private $formation;
+    private $semestre;
     private $nomCours;
     private $nbHeuresTotal;
     private $nbHeuresCM;
     private $nbHeuresTD;
     private $nbHeuresTP;
+    private $nbHeuresEI;
 
     public function __construct(
         $idCours = null,
+        $formation = null,
+        $semestre = null,
         $nomCours = null,
         $nbHeuresTotal = null,
         $nbHeuresCM = null,
         $nbHeuresTD = null,
-        $nbHeuresTP = null
+        $nbHeuresTP = null,
+        $nbHeuresEI = null
     ) {
         $this->idCours = $idCours;
+        $this->formation = $formation;
+        $this->semestre = $semestre;
         $this->nomCours = $nomCours;
         $this->nbHeuresTotal = $nbHeuresTotal;
         $this->nbHeuresCM = $nbHeuresCM;
         $this->nbHeuresTD = $nbHeuresTD;
         $this->nbHeuresTP = $nbHeuresTP;
+        $this->nbHeuresEI = $nbHeuresEI;
     }
 
 
@@ -72,6 +81,30 @@ class Cours {
     public function setNbHeuresTP($nbHeuresTP) {
         $this->nbHeuresTP = $nbHeuresTP;
     }
+
+    public function getNbHeuresEI() {
+        return $this->nbHeuresEI;
+    }
+
+    public function setNbHeuresEI($nbHeuresEI) {
+        $this->nbHeuresEI = $nbHeuresEI;
+    }
+
+    public function getSemestre() {
+        return $this->semestre;
+    }
+
+    public function setSemestre($semestre) {
+        $this->semestre = $semestre;
+    }
+
+    public function getFormation() {
+        return $this->formation;
+    }
+
+    public function setFormation($formation) {
+        $this->formation = $formation;
+    }   
 
 }
 

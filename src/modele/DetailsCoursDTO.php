@@ -1,6 +1,7 @@
 <?php
 
-require_once '../src/Db/connexionFactory.php';
+
+use src\Db\connexionFactory;
 require_once 'DetailsCours.php';
 
 class DetailsCoursDTO {

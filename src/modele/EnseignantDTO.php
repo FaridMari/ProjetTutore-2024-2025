@@ -1,6 +1,6 @@
 <?php
 
-require_once '../src/Db/connexionFactory.php';
+use src\Db\connexionFactory;
 require_once 'Enseignant.php';
 require_once 'Utilisateur.php';
 require_once 'UtilisateurDTO.php';
@@ -17,7 +17,7 @@ class EnseignantDTO {
             $stmt = $this->db->prepare("
                 SELECT e.*, u.nom, u.email, u.mot_de_passe, u.role
                 FROM enseignants e
-                INNER JOIN utilisateurs u ON e.id_enseignant = u.id_utilisateur
+                INNER JOIN utilisateurs u ON e.id_utilisateur = u.id_utilisateur
                 WHERE e.id_enseignant = :idEnseignant
             ");
             $stmt->execute(['idEnseignant' => $idEnseignant]);
@@ -44,31 +44,33 @@ class EnseignantDTO {
     public function save(Enseignant $enseignant, Utilisateur $utilisateur) {
         try {
             $this->db->beginTransaction();
+            $idEnseignant = $utilisateur->getIdUtilisateur();
+            $enseignant->setIdEnseignant($idEnseignant);
 
-
-            $enseignant->setIdEnseignant($utilisateur->getIdUtilisateur());
-
-            if ($this->existsInEnseignants($enseignant->getIdEnseignant())) {
+            if ($this->existsInEnseignants($idEnseignant)) {
                 $stmt = $this->db->prepare("
                     UPDATE enseignants SET
+                        id_utilisateur = :idUtilisateur,
                         heures_affectees = :heuresAffectees,
                         statut = :statut,
                         total_hetd = :totalHetd
                     WHERE id_enseignant = :idEnseignant
                 ");
                 $stmt->execute([
-                    'idEnseignant' => $enseignant->getIdEnseignant(),
+                    'idEnseignant' => $idEnseignant,
+                    'idUtilisateur' => $utilisateur->getIdUtilisateur(),
                     'heuresAffectees' => $enseignant->getHeuresAffectees(),
                     'statut' => $enseignant->getStatut(),
                     'totalHetd' => $enseignant->getTotalHetd()
                 ]);
             } else {
                 $stmt = $this->db->prepare("
-                    INSERT INTO enseignants (id_enseignant, heures_affectees, statut, total_hetd)
-                    VALUES (:idEnseignant, :heuresAffectees, :statut, :totalHetd)
+                    INSERT INTO enseignants (id_enseignant, id_utilisateur, heures_affectees, statut, total_hetd)
+                    VALUES (:idEnseignant, :idUtilisateur, :heuresAffectees, :statut, :totalHetd)
                 ");
                 $stmt->execute([
-                    'idEnseignant' => $enseignant->getIdEnseignant(),
+                    'idEnseignant' => $idEnseignant,
+                    'idUtilisateur' => $utilisateur->getIdUtilisateur(),
                     'heuresAffectees' => $enseignant->getHeuresAffectees(),
                     'statut' => $enseignant->getStatut(),
                     'totalHetd' => $enseignant->getTotalHetd()
@@ -114,6 +116,34 @@ class EnseignantDTO {
         }
     }
 
+    public function findByUtilisateurId($idUtilisateur) {
+        try {
+            $stmt = $this->db->prepare("
+                SELECT e.*, u.nom, u.email, u.mot_de_passe, u.role
+                FROM enseignants e
+                INNER JOIN utilisateurs u ON e.id_utilisateur = u.id_utilisateur
+                WHERE e.id_utilisateur = :idUtilisateur
+            ");
+            $stmt->execute(['idUtilisateur' => $idUtilisateur]);
+            $data = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+            if ($data) {
+                $enseignant = new Enseignant(
+                    $data['id_enseignant'],
+                    $data['heures_affectees'],
+                    $data['statut'],
+                    $data['total_hetd']
+                );
+                return $enseignant;
+            }
+    
+            return null;
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return null;
+        }
+    }
+    
 }
 
 ?>

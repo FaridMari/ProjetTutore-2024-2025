@@ -4,22 +4,22 @@ class Voeu {
     private $idVoeu;
     private $idEnseignant;
     private $idCours;
-    private $idGroupe;
     private $semestre;
     private $nbHeures;
+    private $remarque;
 
     public function __construct(
         $idVoeu = null,
         $idEnseignant = null,
         $idCours = null,
-        $idGroupe = null,
+        $remarque = null,
         $semestre = null,
         $nbHeures = null
     ) {
         $this->idVoeu = $idVoeu;
         $this->idEnseignant = $idEnseignant;
         $this->idCours = $idCours;
-        $this->idGroupe = $idGroupe;
+        $this->remarque = $remarque;
         $this->semestre = $semestre;
         $this->nbHeures = $nbHeures;
     }
@@ -48,12 +48,12 @@ class Voeu {
         $this->idCours = $idCours;
     }
 
-    public function getIdGroupe() {
-        return $this->idGroupe;
+    public function getRemarque() {
+        return $this->remarque;
     }
-
-    public function setIdGroupe($idGroupe) {
-        $this->idGroupe = $idGroupe;
+    
+    public function setRemarque($remarque) {
+        $this->remarque = $remarque;
     }
 
     public function getSemestre() {

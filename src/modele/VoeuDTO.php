@@ -1,6 +1,6 @@
 <?php
 
-require_once '../src/Db/connexionFactory.php';
+use src\Db\connexionFactory;
 require_once 'Voeu.php';
 
 class VoeuDTO {
@@ -21,7 +21,7 @@ class VoeuDTO {
                     $data['id_voeu'],
                     $data['id_enseignant'],
                     $data['id_cours'],
-                    $data['id_groupe'],
+                    $data['remarques'],
                     $data['semestre'],
                     $data['nb_heures']
                 );
@@ -46,7 +46,7 @@ class VoeuDTO {
                     $data['id_voeu'],
                     $data['id_enseignant'],
                     $data['id_cours'],
-                    $data['id_groupe'],
+                    $data['remarques'],
                     $data['semestre'],
                     $data['nb_heures']
                 );
@@ -68,7 +68,7 @@ class VoeuDTO {
                     UPDATE voeux SET
                         id_enseignant = :idEnseignant,
                         id_cours = :idCours,
-                        id_groupe = :idGroupe,
+                        remarques = :remarque,
                         semestre = :semestre,
                         nb_heures = :nbHeures
                     WHERE id_voeu = :id
@@ -77,19 +77,19 @@ class VoeuDTO {
                     'id' => $voeu->getIdVoeu(),
                     'idEnseignant' => $voeu->getIdEnseignant(),
                     'idCours' => $voeu->getIdCours(),
-                    'idGroupe' => $voeu->getIdGroupe(),
+                    'remarques' => $voeu->getRemarque(),
                     'semestre' => $voeu->getSemestre(),
                     'nbHeures' => $voeu->getNbHeures(),
                 ]);
             } else {
                 $stmt = $this->db->prepare("
-                    INSERT INTO voeux (id_enseignant, id_cours, id_groupe, semestre, nb_heures)
-                    VALUES (:idEnseignant, :idCours, :idGroupe, :semestre, :nbHeures)
+                    INSERT INTO voeux (id_enseignant, id_cours, remarques, semestre, nb_heures)
+                    VALUES (:idEnseignant, :idCours, :remarque, :semestre, :nbHeures)
                 ");
                 $stmt->execute([
                     'idEnseignant' => $voeu->getIdEnseignant(),
                     'idCours' => $voeu->getIdCours(),
-                    'idGroupe' => $voeu->getIdGroupe(),
+                    'remarque' => $voeu->getRemarque(),
                     'semestre' => $voeu->getSemestre(),
                     'nbHeures' => $voeu->getNbHeures(),
                 ]);
@@ -121,7 +121,7 @@ class VoeuDTO {
                     $data['id_voeu'],
                     $data['id_enseignant'],
                     $data['id_cours'],
-                    $data['id_groupe'],
+                    $data['remarques'],
                     $data['semestre'],
                     $data['nb_heures']
                 );
@@ -133,6 +133,15 @@ class VoeuDTO {
         } catch (PDOException $e) {
             error_log($e->getMessage());
             return [];
+        }
+    }
+
+    public function deleteByEnseignant($idEnseignant) {
+        try {
+            $stmt = $this->db->prepare("DELETE FROM voeux WHERE id_enseignant = :idEnseignant");
+            $stmt->execute(['idEnseignant' => $idEnseignant]);
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
         }
     }
 }

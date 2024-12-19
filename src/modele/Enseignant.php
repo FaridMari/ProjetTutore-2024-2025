@@ -2,17 +2,20 @@
 
 class Enseignant {
     private $idEnseignant;
+    private $idUtilisateur;
     private $heuresAffectees;
     private $statut;
     private $totalHetd;
 
     public function __construct(
         $idEnseignant = null,
+        $idUtilisateur = null,
         $heuresAffectees = 0,
         $statut = null,
         $totalHetd = 0
     ) {
         $this->idEnseignant = $idEnseignant;
+        $this->idUtilisateur = $idUtilisateur;
         $this->heuresAffectees = $heuresAffectees;
         $this->statut = $statut;
         $this->totalHetd = $totalHetd;
@@ -49,6 +52,14 @@ class Enseignant {
 
     public function setTotalHetd($totalHetd) {
         $this->totalHetd = $totalHetd;
+    }
+
+    public function getIdUtilisateur() {
+        return $this->idUtilisateur;
+    }
+
+    public function setIdUtilisateur($idUtilisateur) {
+        $this->idUtilisateur = $idUtilisateur;
     }
 
 }

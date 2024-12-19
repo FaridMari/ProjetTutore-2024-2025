@@ -1,6 +1,6 @@
 <?php
 
-require_once '../src/Db/connexionFactory.php';
+use src\Db\connexionFactory;
 require_once 'Groupe.php';
 
 class GroupeDTO {

@@ -2,6 +2,8 @@
 namespace src\Dispatcher;
 
 
+use src\Action\CreerUtilisateurAction;
+use src\Action\EditUserAction;
 use src\Action\EnseignantFIcheContrainteAction;
 use src\Action\EnseignantFicheRessourceAction;
 use src\Action\SigninAction;
@@ -10,6 +12,7 @@ use src\Action\GestionnairePagePrincipalAction;
 use src\Action\EnseignantPagePrincipalAction;
 use src\Action\GestionnaireCreerUtilisateurAction;
 use src\Action\PlanningDetaille;
+use src\Action\DeleteEnseignantAction;
 
 
 
@@ -67,6 +70,18 @@ class Dispatcher {
                 break;
             case 'ficheDetaille':
                 $action = new PlanningDetaille();
+                echo $action->execute();
+                break;
+            case 'delete-user':
+                $action = new DeleteEnseignantAction();
+                echo $action->execute();
+                break;
+            case 'creer-utilisateur':
+                $action = new CreerUtilisateurAction();
+                echo $action->execute();
+                break;
+            case 'edit-user':
+                $action = new EditUserAction();
                 echo $action->execute();
                 break;
             default:

@@ -101,9 +101,6 @@
     <label for="email">Email :</label>
     <input type="email" id="email" name="email" required>
 
-    <label for="motdepasse">Mot de Passe :</label>
-    <input type="password" id="motdepasse" name="mot_de_passe" required>
-
     <div>
         <label for="statut">Statut :</label>
         <select id="statut" name="statut" required>
@@ -120,7 +117,7 @@
 
     <div>
         <label for="role_enseignant">
-            <input type="radio" id="role_enseignant" name="role" value="prof" required>
+            <input type="radio" id="role_enseignant" name="role" value="enseignant" required>
             Enseignant
         </label>
         <label for="role_gestionnaire">
@@ -131,7 +128,8 @@
 
 
     <button type="submit">Créer l'utilisateur</button>
-    <button id="retour" onclick="window.location.href='.php';">Retour au menu</button>
+    <button id="retour" onclick="window.location.href='index.php?action=gestionCompteUtilisateur'; return false;">Retour au menu</button>
+
 
 </form>
 

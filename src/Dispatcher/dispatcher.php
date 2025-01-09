@@ -14,6 +14,7 @@ use src\Action\GestionnaireCreerUtilisateurAction;
 use src\Action\PlanningDetaille;
 use src\Action\FichePrevisionnelleAction;
 use src\Action\DeleteEnseignantAction;
+use src\Action\FicheRepartitionAction;
 
 
 
@@ -76,6 +77,10 @@ class Dispatcher {
                 break;
             case 'fichePrevisionnelle':
                 $action = new FichePrevisionnelleAction();
+                echo $action->execute();
+                break;
+            case 'ficheRepartition':
+                $action = new FicheRepartitionAction();
                 echo $action->execute();
                 break;
             case 'delete-user':

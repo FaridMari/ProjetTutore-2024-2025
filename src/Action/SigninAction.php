@@ -23,6 +23,8 @@ class SigninAction extends Action {
                     // Authentification réussie
                     session_start();
                     $_SESSION['id_utilisateur'] = $user['id_utilisateur'];
+                    $_SESSION['user_nom'] = $user['nom'];
+                    $_SESSION['user_prenom'] = $user['prenom'];
 
                     // Création d'un cookie avec l'idUser
                     setcookie('user_id', $user['id_utilisateur'], time() + 3600, '/', '', false, true); // Cookie sécurisé

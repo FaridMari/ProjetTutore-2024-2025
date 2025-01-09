@@ -22,7 +22,7 @@ class SigninAction extends Action {
                 if ($password === $user['mot_de_passe'] || password_verify($password, $user['mot_de_passe'])) {
                     // Authentification réussie
                     session_start();
-                    $_SESSION['user_id'] = $user['id_utilisateur'];
+                    $_SESSION['id_utilisateur'] = $user['id_utilisateur'];
 
                     // Création d'un cookie avec l'idUser
                     setcookie('user_id', $user['id_utilisateur'], time() + 3600, '/', '', false, true); // Cookie sécurisé

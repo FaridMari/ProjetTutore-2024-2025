@@ -23,8 +23,8 @@ try {
         } else {
             throw new Exception("Aucun cours trouvé avec le code $code_cours.");
         }
-
-        $id_responsable_module = 55; // Valeur par défaut pour le responsable
+        //dernier id d'enseignant
+        $id_responsable_module = 55;
 
         // Récupération des données spécifiques
         $dsDetails = 'DS : ' . ($_POST['dsDetails'] ?? ''); // Détails DS

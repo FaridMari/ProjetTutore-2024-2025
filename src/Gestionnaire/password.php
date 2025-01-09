@@ -52,7 +52,7 @@ if ($email) {
                 $stmt->bindParam(':email', $email, PDO::PARAM_STR);
                 $stmt->execute();
 
-                echo "<script>alert('Mot de passe enregistré avec succès.'); window.location.href = '../../index.php?action=gestionCompteUtilisateur';</script>";
+                echo "<script>alert('Mot de passe enregistré avec succès.'); window.location.href = '../../index.php?action=signin';</script>";
                 exit();
             }
             ?>

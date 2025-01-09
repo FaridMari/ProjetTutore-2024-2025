@@ -37,6 +37,13 @@ class CreerUtilisateurAction {
                              VALUES (:id_utilisateur)");
                 $stmt2->bindParam(':id_utilisateur', $id_utilisateur);
 
+                //creer un enseignant avec comme id le dernier ajouté dans la base de données
+                $bdd = connexionFactory::makeConnection();
+                $stmtInsert = $bdd->prepare("INSERT INTO enseignants (id_utilisateur, statut) VALUES (:id_utilisateur, :statut)");
+                $stmtInsert->bindParam(':id_utilisateur', $id_utilisateur);
+                $stmtInsert->bindParam(':statut', $statut);
+                $stmtInsert->execute();
+
 
                 header("Location: src/Gestionnaire/LienEmail.php?email=" . urlencode($email));
                 exit();

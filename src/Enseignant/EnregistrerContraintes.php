@@ -6,7 +6,7 @@ use src\Db\connexionFactory;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         // Définir l'id_utilisateur à 32 directement
-        $id_utilisateur = 32;
+        $id_utilisateur = 16;
 
         // Connexion à la base de données
         $conn = connexionFactory::makeConnection();

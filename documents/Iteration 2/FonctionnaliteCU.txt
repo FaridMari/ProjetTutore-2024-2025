@@ -1,0 +1,61 @@
+Fonctionnalités - Itération 2
+
+1- Création des Comptes Utilisateurs
+
+	- Description : Une fonctionnalité permettant de créer des comptes utilisateurs et  de les enregistrer dans la base de données.
+	- Objectif : Fonctionnement de la création de compte en ayant un enregistrement dans la base de données.
+
+Cas d’utilisation :
+Permet aux gestionnaires de créer en enregistrant les informations dans la base de données.
+
+Sous-fonctionnalité
+
+Lien pour de Mot de Passe
+	- Description : Une page a été créée pour que les enseignants puissent avoir un lien pour renseigner leur mot de passe.
+	- Objectif : Améliorer la sécurité et l’expérience utilisateur en permettant de renseigner les mots de passe de manière autonome.
+
+Cas d’utilisation :
+	Permet aux enseignants de renseigner leur mot de passe via un lien.
+Rôle :
+	Laeticia HAROUNA a implémenté cette fonctionnalité en mettant en place la logique et le visuel.
+
+
+2- Fiche de Vœux
+
+	- Description : La fiche permet aux enseignants de renseigner leurs contraintes horaires et leurs préférences. Les données sont enregistrées dans la base de données.
+	- Objectif : Collecter les préférences et contraintes des enseignants pour permettre une planification optimisée.
+	
+Cas d’utilisation :
+	Les enseignants renseignent leurs indisponibilités et préférences de cours pour les intégrer dans la planification.
+Rôle :
+	Laeticia HAROUNA a développé la fonctionnalité en ajoutant les interactions nécessaires avec la base de données.
+
+
+3- Fiche Prévisionnelle (Visuel et Fonctionnement)
+	- Description : Une fiche pour que les enseignants renseignent les ressources qu'ils souhaitent enseigner avec les informations correspondants. Elle est fonctionnelle et s'enregistre dans la base de données.
+	- Objectif : Avoir une fiche pour les gestionnaires et enseignants qui contient les ressources que vont enseigner les enseignants et s'ils remplissent bien leur quota d'heures. 
+	
+Cas d’utilisation :
+	Permet aux enseignants de consulter et renseigner les ressources, permet aux gestionnaires de connaître les ressources des enseignants et s'ils remplissent leur quota horaires.
+
+Rôle :
+	Lothaire HOLCVART a conçu et implémenté la fonctionnalité.
+	
+	
+4- Fiche de Ressources (Fonctionnement)
+	- Description : La fiche de ressources a été finalisée pour permettre aux enseignants responsables de modules de spécifier leurs besoins (type de salle, équipements, répartition des heures).
+	- Objectif : Faciliter la gestion des ressources nécessaires à chaque cours et module.
+	
+Cas d’utilisation :
+	Les enseignants responsables de modules remplissent cette fiche pour détailler leurs besoins spécifiques, qui sont enregistrés dans la base de données.
+Rôle :
+	Farid MARI a développé et finalisé la fonctionnalité.
+	
+5 - Visuel Planning Détaillé
+	- Description : Un visuel permettant aux gestionnaires d'avoir une vue d'ensemble, incluant les cours, nombres d'heures, et groupes associés. Cette fonctionnalité est uniquement visuelle pour cette itération.
+	- Objectif : Fournir aux gestionnaires une vue claire et complète des ressources sur un calendrier scolaire
+	
+Cas d’utilisation :
+	Permet aux gestionnaires de consulter le planning détaillé de manière claire et organisée.
+Rôle :
+	Yogan RAGOT a conçu le visuel

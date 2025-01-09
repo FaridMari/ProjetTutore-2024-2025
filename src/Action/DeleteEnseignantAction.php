@@ -15,20 +15,40 @@ class DeleteEnseignantAction {
 
             try {
                 $conn = connexionFactory::makeConnection();
+                $conn->beginTransaction();
 
-                // Supprimer l'utilisateur
-                $stmt = $conn->prepare("DELETE FROM utilisateurs WHERE email = :email");
+                // Récupérer l'id_utilisateur associé à l'email
+                $stmt = $conn->prepare("SELECT id_utilisateur FROM utilisateurs WHERE email = :email");
                 $stmt->bindParam(':email', $email, PDO::PARAM_STR);
                 $stmt->execute();
 
-                if ($stmt->rowCount() > 0) {
-                    return "<script>
-                                alert('L\\'utilisateur a été supprimé avec succès.');
-                                window.location.href = 'index.php?action=gestionCompteUtilisateur';
-                            </script>";
-                } else {
+                $id_utilisateur = $stmt->fetchColumn();
+
+                if (!$id_utilisateur) {
                     return "<script>alert('Aucun utilisateur trouvé avec cet email.');</script>";
                 }
+
+                // Supprimer les contraintes associées
+                $stmt = $conn->prepare("DELETE FROM contraintes WHERE id_utilisateur = :id_utilisateur");
+                $stmt->bindParam(':id_utilisateur', $id_utilisateur, PDO::PARAM_INT);
+                $stmt->execute();
+
+                // Supprimer l'enseignant associé
+                $stmt = $conn->prepare("DELETE FROM enseignants WHERE id_utilisateur = :id_utilisateur");
+                $stmt->bindParam(':id_utilisateur', $id_utilisateur, PDO::PARAM_INT);
+                $stmt->execute();
+
+                // Supprimer l'utilisateur
+                $stmt = $conn->prepare("DELETE FROM utilisateurs WHERE id_utilisateur = :id_utilisateur");
+                $stmt->bindParam(':id_utilisateur', $id_utilisateur, PDO::PARAM_INT);
+                $stmt->execute();
+
+                $conn->commit();
+
+                return "<script>
+                            alert('L\\'utilisateur a été supprimé avec succès.');
+                            window.location.href = 'index.php?action=gestionCompteUtilisateur';
+                        </script>";
             } catch (\PDOException $e) {
                 return "<script>alert('Une erreur est survenue : " . addslashes($e->getMessage()) . "');</script>";
             }

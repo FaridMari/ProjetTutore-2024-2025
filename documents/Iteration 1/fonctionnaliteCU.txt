@@ -1,0 +1,88 @@
+Fonctionnalités - Itération 1
+
+1. Création de la Base de Données (BDD)  
+   - Description : Une base de données a été créée pour stocker les informations nécessaires au projet. Elle contient plusieurs tables comme :
+     - Utilisateurs : Cette table enregistre les informations des utilisateurs, comme leur nom, prénom, email, mot de passe, et leur rôle (enseignant ou gestionnaire).
+     - Contraintes : Cette table contient toutes les infromations pour pouvoir insérer les données de la fiche de voeux.
+     - Cours : Cette table contient tous les informations d'un cours comme le nombre d'heures en CM, TP, TD etc....
+   - Objectif : Structurer les données pour faciliter leur gestion et leur utilisation dans le projet.
+   
+Cas d’utilisation :
+   La base de données centralise les informations nécessaires au projet, comme les utilisateurs, les fiches (vœux, contraintes, prévisionnelles) et les ressources.   
+Rôle :
+	Laeticia HAROUNA a participé à la conception et à l’organisation des tables.
+	Yogan RAGOT a implémenté la base de données et assuré la connexion avec le système.
+
+
+
+2. Fiche de Ressources  
+   - Description : Une fiche remplie uniquement par le responsable de la ressource a été mise en place. Les informations comme le nom de ressource, semestre, nom du responsable, besoins(salle, équipement) sont renseignées.
+   - Objectif : Aider les gestionnaires à gérer efficacement les ressources nécessaires pour l'organisation des cours.
+   
+Cas d’utilisation :
+	Les enseignants responsables des modules remplissent une fiche pour indiquer les besoins spécifiques (type de salle, équipements).
+Rôle : 
+	Farid MARI a conçu cette fiche en tenant compte des besoins exprimés dans l’étude préalable.
+
+
+	
+	
+3. Interface Gestionnaire 
+   - Description : Une interface utilisateur a été créée spécifiquement pour le gestionnaire. Elle comprend un menu permettant d’accéder facilement aux différentes fonctionnalités du projet, comme la gestion des fiches ou des utilisateurs.
+   - Objectif : Offrir un accès rapide et intuitif aux outils dont le gestionnaire a besoin.
+
+Cas d’utilisation :
+	Permet au gestionnaire de naviguer facilement dans les différentes sections (utilisateurs, fiches, ressources).
+Rôle : 
+	Yogan RAGOT a conçu cette interface en se concentrant sur une navigation intuitive pour les gestionnaires.
+	
+	
+4. Création des Classes 
+   - Description : Plusieurs classes PHP ont été développées pour représenter les entités principales du projet (modèles):
+   - Objectif : Faciliter l’utilisation et la manipulation des données grâce à une structure orientée objet.
+
+Cas d’utilisation :
+	Les classes PHP ont été créées pour représenter les entités principales du projet, comme les utilisateurs, les fiches et les ressources. Elles facilitent la manipulation des données dans l’ensemble du projet.
+Rôle :
+	Lothaire HOLCVART a implémenté les classes liées aux fiches et utilisateurs.
+	Farid MARI a implémenté les classes pour les ressources.
+
+
+5. Page de Connexion  
+   - Description : Une page de connexion a été développée avec un formulaire simple où les utilisateurs peuvent entrer leur email et mot de passe. La page est uniquement fonctionnelle visuellement.
+   - Objectif : Permettre aux utilisateurs de se connecter pour accéder aux fonctionnalités adaptées à leur rôle.
+
+Cas d’utilisation :
+	Les utilisateurs (enseignants et gestionnaires) peuvent se connecter au système en saisissant leur adresse email et leur mot de passe. Cette étape permet d’accéder aux fonctionnalités spécifiques à leur rôle.
+Rôle : 
+	Laeticia HAROUNA a développé cette fonctionnalité, en mettant en place le formulaire de connexion et le visuel correspondant.
+	
+	
+6. Fiche de Vœux  
+   - Description : Une fiche pour permettre aux enseignants d'exprimer leurs souhaits concernant les horaires. Par exemple, ils peuvent indiquer leurs préférences pour les jours, leurs indiponibilités.
+   - Objectif : Recueillir les informations nécessaires pour établir un planning tenant compte des souhaits des enseignants.
+
+Cas d’utilisation :
+	Les enseignants peuvent remplir leurs souhaits concernant les cours, les horaires ou les groupes. Ils indiquent également leurs indisponibilités.
+Rôle : 
+	Lothaire HOLCVART a développé cette fonctionnalité, incluant le formulaire.
+
+
+7. Interface Enseignant
+   - Description : Une interface a été mise en place pour permettre au gestionnaire de voir la liste des utilisateurs et éventuellement de les gérer (ajout, modification, suppression). À ce stade, cette interface est purement visuelle et n’enregistre pas encore les données dans la base.
+   - Objectif : Préparer une fonctionnalité complète pour la gestion des utilisateurs dans les prochaines itérations.
+
+Cas d’utilisation :
+	Permet aux enseignants de consulter leurs informations et leurs fiches via une interface utilisateur. Cette interface a été conçue pour être claire et simple à utiliser.
+Rôle : 
+	Laeticia HAROUNA a développé cette interface en se concentrant sur la facilité d’accès.
+	
+	
+8. Page de Création de compte
+	- Description : Une page a été conçue avec un formulaire permettant de saisir les informations nécessaires à la création d’un compte utilisateur(nom,prenom,statut,role etc...), mais elle est uniquement visuelle pour cette itération.
+	- Objectif : Préparer le terrain pour l’ajout complet de la fonctionnalité de gestion des comptes utilisateurs dans les prochaines itérations.
+	
+Cas d’utilisation :
+	Prépare l’ajout futur de la création de comptes pour les enseignants et les gestionnaires. Cette fonctionnalité est uniquement visuelle.
+Rôle : 
+	Yogan RAGOT a conçu le visuel.

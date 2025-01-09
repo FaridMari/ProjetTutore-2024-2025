@@ -1,11 +1,10 @@
-
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Fiche Ressource</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="src/Enseignant/style_FicheRessource.css">
 </head>
 <body>
 <div class="container mt-5" style="width: 60%; margin-bottom: 2%">
@@ -50,48 +49,8 @@
 
 
         <h4>1. Répartition des heures par semaines :</h4>
-        <div id="dynamic-hours-container" class="mb-3">
-
-            <div class="text-center" style="margin-top: 3%">
-                <button type="button" class="btn btn-success mb-3" id="add-hour-btn">+ Ajouter une répartition</button>
-            </div>
-
-            <div class="dynamic-hour-row mb-2">
-                <div class="row gx-2 align-items-end">
-                    <div class="col-md-2">
-                        <label class="form-label text-center d-block">Semaine début</label>
-                        <input type="number" class="form-control" name="week_start[]" placeholder="36" min="1" max="52" required>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label text-center d-block">Semaine fin</label>
-                        <input type="number" class="form-control" name="week_end[]" placeholder="40" min="1" max="52" required>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label text-center d-block">Type d'heure</label>
-                        <select class="form-select" name="hour_type[]">
-                            <option value="CM">CM</option>
-                            <option value="CM">CM</option>
-                            <option value="TD">TD</option>
-                            <option value="TP">TP</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label text-center d-block">Heures/sem</label>
-                        <input type="number" class="form-control hour-per-week" name="hours_per_week[]" placeholder="4" min="1" required>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label text-center d-block">Total</label>
-                        <input type="text" class="form-control total-hours" name="total_hours[]" placeholder="0" readonly>
-                    </div>
-                    <div class="col-md-1 text-center">
-                        <button type="button" class="btn btn-danger remove-row-btn">
-                            <i class="bi bi-x-circle"></i> Supprimer
-                        </button>
-                    </div>
-                    
-                </div>
-                <hr>
-            </div>
+        <div id="hours-distribution" class="repartition-container mb-3">
+            <!-- insertions des répartitions -->
         </div>
 
         <script>
@@ -99,14 +58,13 @@
                 const semesterSelect = document.getElementById('semester');
                 const resourceNameSelect = document.getElementById('resourceName');
                 const resourceCodeSelect = document.getElementById('resourceCode');
-                let courseData = []; // Stocke les données récupérées
+                const courseNameCode = document.getElementById('courseNameCode');
+                const hoursDistribution = document.getElementById('hours-distribution');
+                const noDataMessage = 'Aucune donnée disponible.';
+                let courseData = [];
 
                 // Fonction pour récupérer et afficher les cours
                 function fetchAndDisplayCourses(semester) {
-                    // Ajoute 'S' devant le semestre si nécessaire (S1, S2...)
-                    const formattedSemester = `S${semester}`;
-
-                    // Réinitialise les listes
                     resourceNameSelect.innerHTML = '<option value="">-- Sélectionner un nom de ressource --</option>';
                     resourceCodeSelect.innerHTML = '<option value="">-- Sélectionner un code de ressource --</option>';
 
@@ -120,7 +78,7 @@
                                 if (data.error) {
                                     console.error('Erreur :', data.error);
                                 } else {
-                                    courseData = data; // Stocke les cours récupérés
+                                    courseData = data; // cours récupérés
                                     data.forEach(course => {
                                         const optionName = document.createElement('option');
                                         optionName.value = course.nom_cours;
@@ -128,7 +86,7 @@
                                         resourceNameSelect.appendChild(optionName);
 
                                         const optionCode = document.createElement('option');
-                                        optionCode.value = course.code_cours; // Utilise code_cours au lieu de id_cours
+                                        optionCode.value = course.code_cours;
                                         optionCode.textContent = course.code_cours;
                                         resourceCodeSelect.appendChild(optionCode);
                                     });
@@ -138,81 +96,121 @@
                     }
                 }
 
+                // Fonction pour récupérer et afficher les répartitions
+                function fetchAndDisplayRepartitions(nomCours) {
+                    if (!nomCours) {
+                        updateRepartitionFields([]);
+                        return;
+                    }
+
+                    fetch(`src/Enseignant/get_repartitions.php?nom_cours=${encodeURIComponent(nomCours)}`)
+                        .then(response => {
+                            if (!response.ok) throw new Error(`Erreur HTTP ! statut : ${response.status}`);
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.error) {
+                                console.error('Erreur :', data.error);
+                                updateRepartitionFields([]);
+                            } else {
+                                updateRepartitionFields(data);
+                                console.log(data); // donnees dans la console
+                            }
+                        })
+                        .catch(error => console.error('Erreur lors de la récupération des répartitions :', error));
+                }
+
+                // met à jour les champs de répartition
+                function updateRepartitionFields(repartitions) {
+                    // Récupère le nom et le code de la ressource depuis le DOM
+                    const resourceNameElement = document.getElementById('resourceName');
+                    const resourceCodeElement = document.getElementById('resourceCode');
+                    const resourceName = resourceNameElement.options[resourceNameElement.selectedIndex]?.text || 'N/A';
+                    const resourceCode = resourceCodeElement.options[resourceCodeElement.selectedIndex]?.text || 'N/A';
+
+                    const hoursDistribution = document.getElementById('hours-distribution');
+
+                    const parent = hoursDistribution.parentElement;
+
+                    // efface ce qu'il y a avant
+                    hoursDistribution.innerHTML = '';
+
+                    const existingCourseInfo = document.getElementById('course-overview');
+                    if (existingCourseInfo) {
+                        existingCourseInfo.remove();
+                    }
+
+                    const courseInfoDiv = document.createElement('div');
+                    courseInfoDiv.id = 'course-overview';
+                    courseInfoDiv.classList.add('mb-3');
+                    courseInfoDiv.innerHTML = `
+        <p><strong>Ressource :</strong> <span>${resourceName}</span></p>
+        <p><strong>Code ressource :</strong> <span>${resourceCode}</span></p>
+    `;
+                    parent.insertBefore(courseInfoDiv, hoursDistribution);
+
+                    if (repartitions.length === 0) {
+                        hoursDistribution.innerHTML = '<p>Aucune répartition disponible.</p>';
+                        return;
+                    }
+
+                    repartitions.forEach((repartition, index) => {
+                        const repartitionDiv = document.createElement('div');
+                        repartitionDiv.classList.add('repartition-entry', 'fade-in');
+                        repartitionDiv.innerHTML = `
+            <p><strong>Semaine de début :</strong> <span>${repartition.semaine_debut || ''}</span></p>
+            <p><strong>Semaine de fin :</strong> <span>${repartition.semaine_fin || ''}</span></p>
+            <p><strong>Type d'heure :</strong> <span>${repartition.type_heure || ''}</span></p>
+            <p><strong>Heures par semaine :</strong> <span>${repartition.nb_heures_par_semaine || ''}</span></p>
+        `;
+                        hoursDistribution.appendChild(repartitionDiv);
+                    });
+                }
+
                 // Synchronise le code ressource lorsque le nom est sélectionné
                 resourceNameSelect.addEventListener('change', function () {
                     const selectedName = this.value;
                     const matchedCourse = courseData.find(course => course.nom_cours === selectedName);
-                    if (matchedCourse) resourceCodeSelect.value = matchedCourse.code_cours; // Mise à jour avec code_cours
+                    if (matchedCourse) {
+                        resourceCodeSelect.value = matchedCourse.code_cours;
+                        if (courseNameCode) {
+                            courseNameCode.textContent = `${matchedCourse.nom_cours} (${matchedCourse.code_cours})`;
+                        }
+                        fetchAndDisplayRepartitions(matchedCourse.nom_cours);
+                    } else {
+                        if (courseNameCode) {
+                            courseNameCode.textContent = noDataMessage;
+                        }
+                        fetchAndDisplayRepartitions(null);
+                    }
                 });
 
                 // Synchronise le nom de ressource lorsque le code est sélectionné
                 resourceCodeSelect.addEventListener('change', function () {
                     const selectedCode = this.value;
                     const matchedCourse = courseData.find(course => course.code_cours === selectedCode);
-                    if (matchedCourse) resourceNameSelect.value = matchedCourse.nom_cours;
+                    if (matchedCourse) {
+                        resourceNameSelect.value = matchedCourse.nom_cours;
+                        if (courseNameCode) {
+                            courseNameCode.textContent = `${matchedCourse.nom_cours} (${matchedCourse.code_cours})`;
+                        }
+                        fetchAndDisplayRepartitions(matchedCourse.nom_cours);
+                    } else {
+                        if (courseNameCode) {
+                            courseNameCode.textContent = noDataMessage;
+                        }
+                        fetchAndDisplayRepartitions(null);
+                    }
                 });
 
-                // Appel initial lors du chargement de la page
                 fetchAndDisplayCourses(semesterSelect.value);
 
-                // Appel lors du changement de semestre
                 semesterSelect.addEventListener('change', function () {
                     fetchAndDisplayCourses(this.value);
                 });
             });
 
-
-            document.addEventListener('DOMContentLoaded', function () {
-                const addHourBtn = document.getElementById('add-hour-btn');
-                const container = document.getElementById('dynamic-hours-container');
-
-                // Fonction pour ajouter une nouvelle ligne
-                addHourBtn.addEventListener('click', () => {
-                    const template = document.querySelector('.dynamic-hour-row').cloneNode(true);
-
-                    // Réinitialiser les valeurs des inputs dans la nouvelle ligne
-                    template.querySelectorAll('input').forEach(input => input.value = '');
-                    template.querySelector('.total-hours').value = '0';
-
-                    container.appendChild(template);
-                });
-
-                // Fonction pour supprimer une ligne
-                container.addEventListener('click', (event) => {
-                    if (event.target.classList.contains('remove-row-btn')) {
-                        event.target.closest('.dynamic-hour-row').remove();
-                    }
-                });
-
-                // Calcul dynamique du total d'heures
-                container.addEventListener('input', (event) => {
-                    if (event.target.classList.contains('hour-per-week') ||
-                        event.target.name === 'week_start[]' ||
-                        event.target.name === 'week_end[]') {
-                        const row = event.target.closest('.dynamic-hour-row');
-                        const weekStart = parseInt(row.querySelector('input[name="week_start[]"]').value) || 0;
-                        const weekEnd = parseInt(row.querySelector('input[name="week_end[]"]').value) || 0;
-                        const hoursPerWeek = parseFloat(row.querySelector('.hour-per-week').value) || 0;
-
-                        const totalWeeks = Math.max(0, weekEnd - weekStart + 1);
-                        const totalHours = totalWeeks * hoursPerWeek;
-
-                        row.querySelector('.total-hours').value = totalHours.toFixed(2);
-                    }
-                });
-            });
-
         </script>
-
-
-        <!-- Répartition des heures -->
-        <!--<div style="margin-left: 2%">
-            <h5>Autres spécifications...</h5>
-            <div class="mb-3">
-                <textarea class="form-control" id="tdTpDetails" name="tdTpDetails" rows="3" placeholder="Exemple : S45 à S48 : Maximum 2 jours entre chaque séance" required></textarea>
-            </div>
-        </div>-->
-
 
         <!-- Réservations DS -->
         <h4>2. Réservations DS :</h4>

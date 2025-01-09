@@ -109,8 +109,9 @@
             <option value="vacataire">Vacataire</option>
             <option value="pro">Salarié</option>
         </select>
-        <label for="number">Nombre d'heures :</label>
-        <input type="number" id="nombre_heure" name="Nombre d'heures">
+        <label for="nombre_heures">Nombre d'heures :</label>
+        <input type="number" id="nombre_heures" name="nombre_heures">
+
     </div>
 
 

@@ -1,5 +1,4 @@
 <?php
-session_start();
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 require_once __DIR__ . '/../modele/CoursDTO.php';
@@ -19,7 +18,7 @@ $voeuHorsIUTDTO = new VoeuHorsIUTDTO();
 $enseignant = $enseignantDTO->findByUtilisateurId($userId);
 $idEnseignant = $enseignant ? $enseignant->getIdEnseignant() : null;
 
-$coursList = $coursDTO->findAll(); 
+$coursList = $coursDTO->findAll();
 
 $voeuxExistants = [];
 $voeuxHorsIUTExistants = [];
@@ -30,8 +29,8 @@ if ($idEnseignant !== null) {
 
 $voeuxSeptembre = [];
 $voeuxJanvier = [];
-$semestresSeptembre = ['S1','S3','S5'];
-$semestresJanvier = ['S2','S4','S6'];
+$semestresSeptembre = ['1','3','5'];
+$semestresJanvier = ['2','4','6'];
 
 foreach ($voeuxExistants as $v) {
     if (in_array($v->getSemestre(), $semestresSeptembre)) {
@@ -268,7 +267,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 function genererLigne($type, $coursList, $count, $postData) {
-    $allowedSemesters = ($type === 'septembre') ? ['S1','S3','S5'] : ['S2','S4','S6'];
+    $allowedSemesters = ($type === 'septembre') ? ['1','3','5'] : ['2','4','6'];
 
     $ressources = $postData[$type]['ressource'] ?? [];
     $remarques = $postData[$type]['remarques'] ?? [];
@@ -284,7 +283,6 @@ function genererLigne($type, $coursList, $count, $postData) {
     for ($i = 0; $i < $count; $i++) {
         $selectedCoursName = $ressources[$i] ?? '';
         $remarqueValue = isset($remarques[$i]) ? htmlspecialchars($remarques[$i]) : '';
-
         echo '<tr>';
         echo '<td><input type="text" name="'.$type.'[formation][]" value="'.($formations[$i] ?? '').'" readonly /></td>';
 

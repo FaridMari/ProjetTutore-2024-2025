@@ -15,6 +15,7 @@ use src\Action\PlanningDetaille;
 use src\Action\FichePrevisionnelleAction;
 use src\Action\DeleteEnseignantAction;
 use src\Action\FicheRepartitionAction;
+use src\Action\PlanningDetailleS;
 
 
 
@@ -75,6 +76,10 @@ class Dispatcher {
                 $action = new PlanningDetaille();
                 echo $action->execute();
                 break;
+            case 'ficheDetailles':
+                $action = new PlanningDetailleS();
+                echo $action->execute();
+                break;
             case 'fichePrevisionnelle':
                 $action = new FichePrevisionnelleAction();
                 echo $action->execute();
@@ -95,6 +100,13 @@ class Dispatcher {
                 $action = new EditUserAction();
                 echo $action->execute();
                 break;
+            case 'deconnexion':
+                session_destroy();
+                $log = new SigninAction();
+                $this->renderPage($log->execute());
+                break;
+
+
             default:
                 $action = new SigninAction();
                 echo $action->execute();

@@ -23,8 +23,8 @@ try {
         } else {
             throw new Exception("Aucun cours trouvé avec le code $code_cours.");
         }
-
-        $id_responsable_module = 55; // Valeur par défaut pour le responsable
+        //dernier id d'enseignant
+        $id_responsable_module = 55;
 
         // Récupération des données spécifiques
         $dsDetails = 'DS : ' . ($_POST['dsDetails'] ?? ''); // Détails DS
@@ -71,40 +71,6 @@ try {
             ':equipements_specifiques' => $equipementsSpecifiques,
             ':details' => $dsDetails
         ]);
-
-        // Insertion des répartitions d'heures
-        if (isset($_POST['week_start'], $_POST['week_end'], $_POST['hour_type'], $_POST['hours_per_week'])) {
-            $stmtRepartition = $pdo->prepare("
-                INSERT INTO repartition_heures (
-                    id_cours,
-                    semaine_debut,
-                    semaine_fin,
-                    type_heure,
-                    nb_heures_par_semaine
-                ) VALUES (
-                    :id_cours,
-                    :semaine_debut,
-                    :semaine_fin,
-                    :type_heure,
-                    :nb_heures_par_semaine
-                )
-            ");
-
-            $weekStarts = $_POST['week_start'];
-            $weekEnds = $_POST['week_end'];
-            $hourTypes = $_POST['hour_type'];
-            $hoursPerWeek = $_POST['hours_per_week'];
-
-            for ($i = 0; $i < count($weekStarts); $i++) {
-                $stmtRepartition->execute([
-                    ':id_cours' => $id_cours,
-                    ':semaine_debut' => $weekStarts[$i],
-                    ':semaine_fin' => $weekEnds[$i],
-                    ':type_heure' => $hourTypes[$i],
-                    ':nb_heures_par_semaine' => $hoursPerWeek[$i]
-                ]);
-            }
-        }
 
         echo "Données insérées avec succès.";
     }

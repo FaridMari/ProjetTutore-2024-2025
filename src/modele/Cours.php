@@ -5,6 +5,7 @@ class Cours {
     private $formation;
     private $semestre;
     private $nomCours;
+    private $codeCours;
     private $nbHeuresTotal;
     private $nbHeuresCM;
     private $nbHeuresTD;
@@ -16,6 +17,7 @@ class Cours {
         $formation = null,
         $semestre = null,
         $nomCours = null,
+        $codeCours = null,
         $nbHeuresTotal = null,
         $nbHeuresCM = null,
         $nbHeuresTD = null,
@@ -26,6 +28,7 @@ class Cours {
         $this->formation = $formation;
         $this->semestre = $semestre;
         $this->nomCours = $nomCours;
+        $this->codeCours = $codeCours;
         $this->nbHeuresTotal = $nbHeuresTotal;
         $this->nbHeuresCM = $nbHeuresCM;
         $this->nbHeuresTD = $nbHeuresTD;
@@ -104,7 +107,15 @@ class Cours {
 
     public function setFormation($formation) {
         $this->formation = $formation;
-    }   
+    }
+    
+    public function getCodeCours() {
+        return $this->codeCours;
+    }
+
+    public function setCodeCours($codeCours) {
+        $this->codeCours = $codeCours;
+    }
 
 }
 

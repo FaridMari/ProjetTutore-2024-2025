@@ -93,6 +93,32 @@ class GroupeDTO {
         }
     }
 
+    public function findByNomAndNiveau($nomGroupe, $niveau) {
+        try {
+            $stmt = $this->db->prepare("SELECT * FROM groupes WHERE nom_groupe = :nomGroupe AND niveau = :niveau");
+            $stmt->execute([
+                'nomGroupe' => $nomGroupe,
+                'niveau' => $niveau
+            ]);
+            $data = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+            if ($data) {
+                $groupe = new Groupe();
+                $groupe->setIdGroupe($data['id_groupe']);
+                $groupe->setNomGroupe($data['nom_groupe']);
+                $groupe->setNiveau($data['niveau']);
+    
+                return $groupe;
+            }
+    
+            return null;
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return null;
+        }
+    }
+    
+
 }
 
 ?>

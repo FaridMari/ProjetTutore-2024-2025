@@ -3,13 +3,15 @@
 class Utilisateur {
     private $idUtilisateur;
     private $nom;
+    private $prenom;
     private $email;
     private $motDePasse;
     private $role;
 
-    public function __construct($idUtilisateur = null, $nom = null, $email = null, $motDePasse = null, $role = null) {
+    public function __construct($idUtilisateur = null, $nom = null, $prenom = null, $email = null, $motDePasse = null, $role = null) {
         $this->idUtilisateur = $idUtilisateur;
         $this->nom = $nom;
+        $this->prenom = $prenom;
         $this->email = $email;
         $this->motDePasse = $motDePasse;
         $this->role = $role;
@@ -30,6 +32,14 @@ class Utilisateur {
 
     public function setNom($nom) {
         $this->nom = $nom;
+    }
+
+    public function getPrenom() {
+        return $this->prenom;
+    }
+
+    public function setPrenom($prenom) {
+        $this->prenom = $prenom;
     }
 
     public function getEmail() {

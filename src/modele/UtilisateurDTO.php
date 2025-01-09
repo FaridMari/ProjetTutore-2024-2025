@@ -21,6 +21,7 @@ class UtilisateurDTO {
                 $utilisateur = new Utilisateur();
                 $utilisateur->setIdUtilisateur($data['id_utilisateur']);
                 $utilisateur->setNom($data['nom']);
+                $utilisateur->setPrenom($data['prenom']);
                 $utilisateur->setEmail($data['email']);
                 $utilisateur->setMotDePasse($data['mot_de_passe']);
                 $utilisateur->setRole($data['role']);
@@ -44,6 +45,7 @@ class UtilisateurDTO {
                 $utilisateur = new Utilisateur();
                 $utilisateur->setIdUtilisateur($data['id_utilisateur']);
                 $utilisateur->setNom($data['nom']);
+                $utilisateur->setPrenom($data['prenom']);
                 $utilisateur->setEmail($data['email']);
                 $utilisateur->setMotDePasse($data['mot_de_passe']);
                 $utilisateur->setRole($data['role']);

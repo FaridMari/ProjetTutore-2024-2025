@@ -63,44 +63,60 @@ class AffectationDTO {
     }
 
     public function save(Affectation $affectation) {
-        try {
-            if ($affectation->getIdAffectation()) {
-                $stmt = $this->db->prepare("
-                    UPDATE affectations SET
-                        id_enseignant = :idEnseignant,
-                        id_cours = :idCours,
-                        id_groupe = :idGroupe,
-                        heures_affectees = :heuresAffectees,
-                        type_heure = :typeHeure
-                    WHERE id_affectation = :id
-                ");
-                $stmt->execute([
-                    'id' => $affectation->getIdAffectation(),
-                    'idEnseignant' => $affectation->getIdEnseignant(),
-                    'idCours' => $affectation->getIdCours(),
-                    'idGroupe' => $affectation->getIdGroupe(),
-                    'heuresAffectees' => $affectation->getHeuresAffectees(),
-                    'typeHeure' => $affectation->getTypeHeure(),
-                ]);
-            } else {
-                $stmt = $this->db->prepare("
-                    INSERT INTO affectations (id_enseignant, id_cours, id_groupe, heures_affectees, type_heure)
-                    VALUES (:idEnseignant, :idCours, :idGroupe, :heuresAffectees, :typeHeure)
-                ");
-                $stmt->execute([
-                    'idEnseignant' => $affectation->getIdEnseignant(),
-                    'idCours' => $affectation->getIdCours(),
-                    'idGroupe' => $affectation->getIdGroupe(),
-                    'heuresAffectees' => $affectation->getHeuresAffectees(),
-                    'typeHeure' => $affectation->getTypeHeure(),
-                ]);
-
-                $affectation->setIdAffectation($this->db->lastInsertId());
+    try {
+        if (!$affectation->getIdAffectation()) {
+            $existing = $this->findByUniqueKey(
+                $affectation->getIdEnseignant(),
+                $affectation->getIdCours(),
+                $affectation->getIdGroupe(),
+                $affectation->getTypeHeure()
+            );
+            if ($existing) {
+                return;
             }
-        } catch (PDOException $e) {
-            error_log($e->getMessage());
         }
+
+        // 3. Poursuite du code normal
+        if ($affectation->getIdAffectation()) {
+            // Update
+            $stmt = $this->db->prepare("
+                UPDATE affectations SET
+                    id_enseignant = :idEnseignant,
+                    id_cours = :idCours,
+                    id_groupe = :idGroupe,
+                    heures_affectees = :heuresAff,
+                    type_heure = :typeHeure
+                WHERE id_affectation = :id
+            ");
+            $stmt->execute([
+                'id'             => $affectation->getIdAffectation(),
+                'idEnseignant'   => $affectation->getIdEnseignant(),
+                'idCours'        => $affectation->getIdCours(),
+                'idGroupe'       => $affectation->getIdGroupe(),
+                'heuresAff'      => $affectation->getHeuresAffectees(),
+                'typeHeure'      => $affectation->getTypeHeure()
+            ]);
+        } else {
+            // Insert
+            $stmt = $this->db->prepare("
+                INSERT INTO affectations (id_enseignant, id_cours, id_groupe, heures_affectees, type_heure)
+                VALUES (:idEnseignant, :idCours, :idGroupe, :heuresAff, :typeHeure)
+            ");
+            $stmt->execute([
+                'idEnseignant' => $affectation->getIdEnseignant(),
+                'idCours'      => $affectation->getIdCours(),
+                'idGroupe'     => $affectation->getIdGroupe(),
+                'heuresAff'    => $affectation->getHeuresAffectees(),
+                'typeHeure'    => $affectation->getTypeHeure(),
+            ]);
+            $affectation->setIdAffectation($this->db->lastInsertId());
+        }
+
+    } catch (PDOException $e) {
+        error_log($e->getMessage());
+        throw $e;
     }
+}
 
     public function delete($id) {
         try {
@@ -134,6 +150,39 @@ class AffectationDTO {
         } catch (PDOException $e) {
             error_log($e->getMessage());
             return [];
+        }
+    }
+
+    public function findByUniqueKey($idEnseignant, $idCours, $idGroupe, $typeHeure) {
+        try {
+            $sql = "SELECT * FROM affectations
+                    WHERE id_enseignant = :idEnseignant
+                    AND id_cours = :idCours
+                    AND id_groupe = :idGroupe
+                    AND type_heure = :typeHeure";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([
+                'idEnseignant' => $idEnseignant,
+                'idCours'      => $idCours,
+                'idGroupe'     => $idGroupe,
+                'typeHeure'    => $typeHeure
+            ]);
+
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($row) {
+                return new Affectation(
+                    $row['id_affectation'],
+                    $row['id_enseignant'],
+                    $row['id_cours'],
+                    $row['id_groupe'],
+                    $row['heures_affectees'],
+                    $row['type_heure']
+                );
+            }
+            return null;
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return null;
         }
     }
 }

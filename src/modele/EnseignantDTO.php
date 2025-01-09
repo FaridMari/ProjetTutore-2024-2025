@@ -143,6 +143,36 @@ class EnseignantDTO {
             return null;
         }
     }
+
+    public function findAll() {
+        try {
+            $stmt = $this->db->prepare("
+                SELECT e.*, u.nom, u.email, u.mot_de_passe, u.role
+                FROM enseignants e
+                INNER JOIN utilisateurs u ON e.id_utilisateur = u.id_utilisateur
+            ");
+            $stmt->execute();
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $enseignants = [];
+            foreach ($results as $data) {
+                $enseignant = new Enseignant(
+                    $data['id_enseignant'],
+                    $data['id_utilisateur'],
+                    $data['heures_affectees'],
+                    $data['statut'],
+                    $data['total_hetd']
+                );
+                $enseignants[] = $enseignant;
+            }
+
+            return $enseignants;
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return [];
+        }
+    }
+
     
 }
 

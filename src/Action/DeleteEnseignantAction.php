@@ -33,6 +33,18 @@ class DeleteEnseignantAction {
                 $stmt->bindParam(':id_utilisateur', $id_utilisateur, PDO::PARAM_INT);
                 $stmt->execute();
 
+                // Supprimer les voeu associés select l'id d'enesiegant avec l'id_utilisateur
+                $stmt = $conn->prepare("SELECT id_enseignant FROM enseignants WHERE id_utilisateur = :id_utilisateur");
+                $stmt->bindParam(':id_utilisateur', $id_utilisateur, PDO::PARAM_INT);
+                $stmt->execute();
+                // Récupérer l'id_enseignant
+                $id_enseignant = $stmt->fetchColumn();
+
+                // Supprimer les voeux associés
+                $stmt = $conn->prepare("DELETE FROM voeux WHERE id_enseignant = :id_enseignant");
+                $stmt->bindParam(':id_enseignant', $id_enseignant, PDO::PARAM_INT);
+                $stmt->execute();
+
                 // Supprimer l'enseignant associé
                 $stmt = $conn->prepare("DELETE FROM enseignants WHERE id_utilisateur = :id_utilisateur");
                 $stmt->bindParam(':id_utilisateur', $id_utilisateur, PDO::PARAM_INT);

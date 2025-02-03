@@ -6,34 +6,67 @@
     <title>Planning</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable@12.1.0/dist/handsontable.full.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/styles/handsontable.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/styles/ht-theme-main.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/handsontable@12.1.0/dist/handsontable.full.min.js"></script>
 </head>
 <style>
+    /* General Body Styling */
     body {
-        padding-right: 150px;
+        padding: 20px;
         font-family: 'Poppins', sans-serif;
         background-color: #34495e;
+        color: #ffffff;
         display: flex;
-        flex-direction : column;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-
     }
 
-    .htCore th {
-        white-space: normal !important;
-        word-wrap: break-word !important;
+    h1 {
+        font-size: 2rem;
     }
 
-
-    #example1 {
-
-        width: 80% !important;
+    .container {
         max-width: 90vw;
     }
 
+    #semester {
+        margin-left: 50em;
+
+    }
+
+
+    .vacation {
+        background-color: #d4edda !important; /* Light green for vacations */
+    }
+    .form-label.text-white {
+        color: white;
+        margin-right: 10px;
+    }
+    .row.mb-3 {
+        margin-bottom: 1rem;
+    }
+    .form-select.w-25 {
+        width: 25%;
+    }
+    .handsontable td, .handsontable th {
+        font-size: 14px; /* Augmente un peu la taille */
+        padding: 8px;    /* Espace intérieur dans chaque cellule */
+    }
+
+    #example1 {
+        word-break: normal !important;
+        white-space: break-spaces;
+        margin-left: -70%;
+        height: 500px;
+        zoom: 70%;
+        z-index: 1;
+        width: 100%;
+        margin-top: 20px;
+        max-width: 1200px;
+        border: 1px solid #cccccc;
+    }
 
 </style>
 <body class="bg-dark text-center">
@@ -98,7 +131,7 @@
 
 
     </div>
-    <div id="example1"></div>
+    <div  id="example1" class="hot ht-theme-main disable-auto-theme"></div>
 </body>
 
 <script>
@@ -166,6 +199,7 @@
     for (let i = 0; i < responsable.length; i++) {
         deuxLigne.push(responsable[i]);
     }
+
     deuxDemiLigne = ['','','', 'Code Cours'];
 
     for (let i = 0; i < coursListSansSae.length; i++) {
@@ -215,6 +249,14 @@
         sixLigne.push({label: "", colspan: 3});
     }
 
+    // premLigne.push({label: 'Total', colspan: 3});
+    // deuxLigne.push({label: ' ', colspan: 3});
+    // deuxDemiLigne.push({label: ' ', colspan: 3});
+    // troisLigne.push({label: ' ', colspan: 3});
+    // quatreLigne.push({label: ' ', colspan: 3});
+    // cinqLigne.push({label: ' ', colspan: 3});
+    // sixLigne.push({label: ' ', colspan: 3});
+
     trueNH = [
         premLigne,
         deuxLigne,
@@ -228,10 +270,11 @@
     // Création du tableau des datas
     //Ligne = vide | semaineActuelle | semaineActuelle en date DD/MM/YYYY | texte vide | si dans repartition heures il y a des données pour ce cours pour les cm ajouté | pour les td | pour les tp | recommencer pour chaque cours
     //pour chaque semaine
+
     let dataT = [];
     let semaineActuelle = semaine;
+    let colCoursTotaux = [];
     for (let i = 0; i < nbSemaine; i++) {
-        let total = 0;
         let semaineData = [];
         let vacToussaint = 43;
         let vacNoel = 51;
@@ -299,12 +342,32 @@
             }
         }
 
+        // Ajouter une colonne pour le total de la ligne (semaine)
+        let totalFormule = `=SUM(E${i + 1}:C${3 * colCours.length + 4})`;
+        //semaineData.push(totalFormule);
+
         dataT.push(semaineData);
 
         // Passer à la semaine suivante
         semaineActuelle = (semaineActuelle >= 52) ? 1 : semaineActuelle + 1;
         dateDebutSemestre.setDate(dateDebutSemestre.getDate() + 7);
     }
+
+    // Ajouter une ligne pour le total de chaque colonne
+    let ligneTotaux = ["", "", "", "Total"];
+    for (let colIndex = 4; colIndex < 4 + colCours.length * 3; colIndex++) {
+        //gerer quand on doit avoir 2 Lettre
+        let colLettre = String.fromCharCode(65 + (colIndex % 26));
+        if (colIndex >= 26) {
+            let firstLetter = String.fromCharCode(65 + (colIndex / 26) - 1);
+            colLettre = firstLetter + colLettre;
+        }
+        let totalFormule = `=SUM(${colLettre}1:${colLettre}${nbSemaine})`;
+        ligneTotaux.push(totalFormule);
+    }
+    ligneTotaux.push(""); // Pour la cellule vide finale de la colonne des totaux
+    //dataT.push(ligneTotaux);
+
     let mergeCells = [];
     let colStart = 4+ coursListSansSae.length*3; // Colonne de départ de la fusion
     let colspan = 3;
@@ -321,10 +384,18 @@
     let debounceTimer = null; // Timer pour limiter les requêtes
 
     const container = document.querySelector('#example1');
+    const hyperformulaInstance = HyperFormula.buildEmpty({
+        // to use an external HyperFormula instance,
+        // initialize it with the `'internal-use-in-handsontable'` license key
+        licenseKey: 'internal-use-in-handsontable',
+    });
     const planning = new Handsontable(container, {
         data: dataT,
         width: 50,
         nestedHeaders: trueNH,
+        formulas: {
+            engine: hyperformulaInstance,
+        },
         wordWrap: true,
         mergeCells: mergeCells,
         licenseKey: 'non-commercial-and-evaluation',
@@ -344,33 +415,71 @@
                     saveAllData(pendingChanges); // Appeler la fonction pour enregistrer en lot
                     pendingChanges = []; // Réinitialiser les changements
                     debounceTimer = null; // Réinitialiser le timer
-                }, 7000); // 1000ms = 1 seconde
+                }, 3000); // 1000ms = 1 seconde
             }
         },
+        // Logique pour appliquer le style
+        cells: (row, col) => {
+            const cellProperties = {};
 
+            // Vérifie si la 4ème colonne contient "Vacances"
+            if (dataT[row] && dataT[row][3] === "Vacances") {
+                cellProperties.className = 'vacation'; // Applique la classe "vacation"
+            }
+
+            return cellProperties; // Retourne les propriétés de la cellule
+        },
+
+        // Logique pour modifier les cellules d'en-têtes après le rendu
+        afterGetColHeader: function () {
+            const headerRows = container.querySelectorAll('.ht_clone_top thead tr'); // Récupère les lignes d'en-têtes
+
+            headerRows.forEach((row, rowIndex) => {
+                // Applique les styles en fonction de l'index de la ligne
+                if (rowIndex === 0) {
+                    row.querySelectorAll('th').forEach((th) => {
+                        th.style.backgroundColor = '#007bff'; // Bleu pour Ressource + SAE
+                        th.style.color = '#ffffff'; // Texte blanc
+                    });
+                } else if (rowIndex === 1) {
+                    row.querySelectorAll('th').forEach((th) => {
+                        th.style.backgroundColor = '#ffc107'; // Jaune pour Responsable
+                        th.style.color = '#000000'; // Texte noir
+                    });
+                } else if (rowIndex === 2) {
+                    row.querySelectorAll('th').forEach((th) => {
+                        th.style.backgroundColor = '#28a745'; // Vert pour Code Cours
+                        th.style.color = '#ffffff'; // Texte blanc
+                    });
+                }
+            });
+        }
     });
 
     function saveAllData() {
         // Préparez toutes les données pour l'envoi
         const repartitions = [];
         let finalData = [];
-
+        // Parcourir toutes les cellules modifiées et les ajouter à la liste sans la derniere colonne de total
         dataT.forEach((row, rowIndex) => {
             colCours.forEach((coursCode, colIndex) => {
                 // Pour chaque type d'heure (CM, TD, TP)
                 ['CM', 'TD', 'TP'].forEach((typeHeure, typeIndex) => {
                     // Calcul de l'indice correct pour récupérer les données dans dataT
                     const colData = dataT[rowIndex][4 + colIndex * 3 + typeIndex]; // Colonne correspondante pour CM, TD, TP
+                    //Si on est pas dans la derniere colonne
                     if (colData) {
                         const semaineDebut = row[1]; // Semaine de début (colonne dédiée)
                         const semaineFin = semaineDebut; // Par défaut, semaineFin = semaineDebut
 
+                        console.log(trueNH[2][4 + colIndex].label);
                         // Ajout de la répartition dans le tableau
                         repartitions.push({
                             semaineDebut: semaineDebut,
                             semaineFin: semaineFin,
                             //code du cours qui se trouve dans la ligne 3 du header du tableau
                             codeCours: trueNH[2][4 + colIndex].label,
+
                             typeHeure: typeHeure, // Type d'heure (CM, TD, TP)
                             nbHeures: colData, // Nombre d'heures par semaine
                             semestre: semester // Semestre actuel
@@ -480,5 +589,7 @@
         const semester = select.value;
         window.location.href = `index.php?action=ficheDetaille&semester=${semester}`;
     });
+
+
 </script>
 </html>

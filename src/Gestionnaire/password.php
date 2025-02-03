@@ -2,15 +2,16 @@
 require_once __DIR__ . '/../Db/connexionFactory.php';
 use src\Db\connexionFactory;
 
-$email = filter_var($_GET['email'] ?? null, FILTER_SANITIZE_EMAIL);
+$email = $_GET['email'] ?? null;
 
-if ($email && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+if ($email) {
     try {
         $conn = connexionFactory::makeConnection();
 
+        // Vérifier si l'email et la validité du token existent
         $stmt = $conn->prepare("SELECT email FROM utilisateurs 
                                 WHERE email = :email 
-                                AND reset_token IS NOT NULL 
+                                AND reset_token = (SELECT MAX(reset_token) FROM utilisateurs WHERE email = :email)
                                 AND reset_token_expiration > NOW()");
         $stmt->bindParam(':email', $email, PDO::PARAM_STR);
         $stmt->execute();
@@ -43,7 +44,15 @@ if ($email && filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 // Hasher le mot de passe
                 $hashedPassword = password_hash($nouveauMdp, PASSWORD_BCRYPT);
 
-                echo "<script>alert('Mot de passe enregistré avec succès.'); window.location.href = '../../index.php?action=gestionCompteUtilisateur';</script>";
+                // Mettre à jour le mot de passe et supprimer les jetons
+                $stmt = $conn->prepare("UPDATE utilisateurs 
+                                        SET mot_de_passe = :mdp, reset_token = NULL, reset_token_expiration = NULL 
+                                        WHERE email = :email");
+                $stmt->bindParam(':mdp', $hashedPassword, PDO::PARAM_STR);
+                $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+                $stmt->execute();
+
+                echo "<script>alert('Mot de passe enregistré avec succès.'); window.location.href = '../../index.php?action=signin';</script>";
                 exit();
             }
             ?>

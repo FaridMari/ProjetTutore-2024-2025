@@ -1,0 +1,44 @@
+Fonctionnalités - Itération 3
+
+1- Correction des Bugs
+
+- Description : On a corrigé plusieurs bugs qui posaient problème notamment les fiches, certains enregistrements dans la base de données ne marchaient pas.
+- Objectif : Rendre l’application plus stable et améliorer l’expérience utilisateur. 
+Rôle : 
+	Toute l’équipe a participé aux corrections.
+	
+2- Export de la Fiche de Vœux en PDF
+
+- Description : Une fonctionnalité a été ajoutée pour que les enseignants puissent exporter leur fiche de vœux en PDF.
+- Objectif : Permettre aux enseignants et aux gestionnaires d’avoir une version imprimable de leurs préférences horaires.
+Cas d’utilisation : 
+	Un enseignant peut télécharger et garder une copie de sa fiche de vœux.
+Rôle :
+	Laeticia HAROUNA s'est occupée de cette fonctionnalité.
+	
+3- Fiche de Répartition (Visuel et Fonctionnement)
+
+- Description : Création de la fiche de répartition 
+- Objectif : Permettre aux gestionnaires d'affecter des enseignants dans un groupe.
+Cas d’utilisation : 
+	Un gestionnaire peut consulter et modifier la répartition des enseignants dans un groupe.
+Rôle : 
+	Lothaire HOLCVART a mis en place cette fonctionnalité.
+	
+4- Fiche de Ressources (Correction et Amélioration)
+
+- Description : La fiche de ressources a été revue pour corriger son problème de fonctionnement
+- Objectif : Récupérer les heures du planning détaillé pour alimenter la fiche de ressources
+Cas d’utilisation : 
+	Le responsable de module peut remplir cette fiche pour indiquer ce qu’il lui faut pour ses cours.
+Rôle : 
+	Farid MARI a travaillé sur ces améliorations.
+
+5- Planning Détaillé (Correction et Amélioration)
+
+- Description : Le visuel du planning détaillé a été modifié pour pouvoir l'utiliser comme un tableau Excel
+- Objectif : Offrir aux gestionnaires une vue plus claire et plus pratique du planning.
+Cas d’utilisation : 
+	Un gestionnaire peut scroller pour mettre les heures, sélectionner plusieurs cellules pour mettre des heures et tout s'enregistre en base de données.
+Rôle : 
+	Yogan RAGOT a retravaillé le visuel et les corrections du planning détaillé.

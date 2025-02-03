@@ -29,7 +29,8 @@ class EnseignantDTO {
                     $data['id_utilisateur'],
                     $data['heures_affectees'],
                     $data['statut'],
-                    $data['total_hetd']
+                    $data['total_hetd'],
+
                 );
 
                 return $enseignant;

@@ -25,7 +25,7 @@ class DetailsCoursDTO {
                     $data['id_responsable_module'],
                     $data['type_salle'],
                     $data['equipements_specifiques'],
-                    $data['repartition_heures']
+                    $data['details']
                 );
 
                 return $detailsCours;
@@ -51,7 +51,7 @@ class DetailsCoursDTO {
                     $data['id_responsable_module'],
                     $data['type_salle'],
                     $data['equipements_specifiques'],
-                    $data['repartition_heures']
+                    $data['details']
                 );
 
                 return $detailsCours;
@@ -73,7 +73,7 @@ class DetailsCoursDTO {
                         id_responsable_module = :idResponsableModule,
                         type_salle = :typeSalle,
                         equipements_specifiques = :equipementsSpecifiques,
-                        repartition_heures = :repartitionHeures
+                        details = :details
                     WHERE id_ressource = :id
                 ");
                 $stmt->execute([
@@ -82,20 +82,20 @@ class DetailsCoursDTO {
                     'idResponsableModule' => $detailsCours->getIdResponsableModule(),
                     'typeSalle' => $detailsCours->getTypeSalle(),
                     'equipementsSpecifiques' => $detailsCours->getEquipementsSpecifiques(),
-                    'repartitionHeures' => $detailsCours->getRepartitionHeures(),
+                    'details' => $detailsCours->getDetails(),
                 ]);
             } else {
             
                 $stmt = $this->db->prepare("
-                    INSERT INTO detailscours (id_cours, id_responsable_module, type_salle, equipements_specifiques, repartition_heures)
-                    VALUES (:idCours, :idResponsableModule, :typeSalle, :equipementsSpecifiques, :repartitionHeures)
+                    INSERT INTO detailscours (id_cours, id_responsable_module, type_salle, equipements_specifiques, details)
+                    VALUES (:idCours, :idResponsableModule, :typeSalle, :equipementsSpecifiques, :details)
                 ");
                 $stmt->execute([
                     'idCours' => $detailsCours->getIdCours(),
                     'idResponsableModule' => $detailsCours->getIdResponsableModule(),
                     'typeSalle' => $detailsCours->getTypeSalle(),
                     'equipementsSpecifiques' => $detailsCours->getEquipementsSpecifiques(),
-                    'repartitionHeures' => $detailsCours->getRepartitionHeures(),
+                    'details' => $detailsCours->getDetails(),
                 ]);
 
                 $detailsCours->setIdRessource($this->db->lastInsertId());
@@ -113,6 +113,29 @@ class DetailsCoursDTO {
             error_log($e->getMessage());
         }
     }
+
+    public function findResponsableByCours($idCours) {
+        try {
+            $stmt = $this->db->prepare("
+                SELECT id_responsable_module
+                FROM detailscours
+                WHERE id_cours = :idCours
+                LIMIT 1
+            ");
+            $stmt->execute(['idCours' => $idCours]);
+            $data = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+            if ($data) {
+                return $data['id_responsable_module'];
+            }
+            
+            return null;
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return null;
+        }
+    }
+    
 
 }
 

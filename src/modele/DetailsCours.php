@@ -6,7 +6,7 @@ class DetailsCours {
     private $idResponsableModule;
     private $typeSalle;
     private $equipementsSpecifiques;
-    private $repartitionHeures;
+    private $details;
 
     public function __construct(
         $idRessource = null,
@@ -14,17 +14,16 @@ class DetailsCours {
         $idResponsableModule = null,
         $typeSalle = null,
         $equipementsSpecifiques = null,
-        $repartitionHeures = null
+        $details = null
     ) {
         $this->idRessource = $idRessource;
         $this->idCours = $idCours;
         $this->idResponsableModule = $idResponsableModule;
         $this->typeSalle = $typeSalle;
         $this->equipementsSpecifiques = $equipementsSpecifiques;
-        $this->repartitionHeures = $repartitionHeures;
+        $this->details = $details;
     }
 
-    // Getters et Setters
 
     public function getIdRessource() {
         return $this->idRessource;
@@ -66,15 +65,13 @@ class DetailsCours {
         $this->equipementsSpecifiques = $equipementsSpecifiques;
     }
 
-    public function getRepartitionHeures() {
-        return $this->repartitionHeures;
+    public function getDetails() {
+        return $this->details;
     }
 
-    public function setRepartitionHeures($repartitionHeures) {
-        $this->repartitionHeures = $repartitionHeures;
+    public function setRepartitionHeures($details) {
+        $this->details = $details;
     }
-
-    // Méthodes supplémentaires si nécessaire
 }
 
 ?>

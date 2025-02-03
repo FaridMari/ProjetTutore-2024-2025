@@ -144,6 +144,36 @@ class VoeuDTO {
             error_log($e->getMessage());
         }
     }
+
+    public function findByFormation($semestre) {
+        try {
+            $stmt = $this->db->prepare("
+                SELECT v.*
+                FROM voeux v
+                WHERE v.semestre = :semestre
+            ");
+            $stmt->execute(['semestre' => $semestre]);
+            $voeux = [];
+
+            while ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $voeu = new Voeu(
+                    $data['id_voeu'],
+                    $data['id_enseignant'],
+                    $data['id_cours'],
+                    $data['remarques'],
+                    $data['semestre'],
+                    $data['nb_heures']
+                );
+
+                $voeux[] = $voeu;
+            }
+
+            return $voeux;
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return [];
+        }
+    }
 }
 
 ?>

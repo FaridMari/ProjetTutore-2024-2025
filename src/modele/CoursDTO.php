@@ -23,6 +23,7 @@ class CoursDTO {
                 $cours->setFormation($data['formation']);
                 $cours->setNomCours($data['nom_cours']);
                 $cours->setSemestre($data['semestre']);
+                $cours->setCodeCours($data['code_cours']);
                 $cours->setNbHeuresTotal($data['nb_heures_total']);
                 $cours->setNbHeuresCM($data['nb_heures_cm']);
                 $cours->setNbHeuresTD($data['nb_heures_td']);
@@ -50,6 +51,7 @@ class CoursDTO {
                 $cours->setFormation($data['formation']);
                 $cours->setNomCours($data['nom_cours']);
                 $cours->setSemestre($data['semestre']);
+                $cours->setCodeCours($data['code_cours']);
                 $cours->setNbHeuresTotal($data['nb_heures_total']);
                 $cours->setNbHeuresCM($data['nb_heures_cm']);
                 $cours->setNbHeuresTD($data['nb_heures_td']);
@@ -74,6 +76,7 @@ class CoursDTO {
                         nom_cours = :nomCours,
                         formation = :formation,
                         semestre = :semestre,
+                        code_cours = :codeCours,
                         nb_heures_total = :nbHeuresTotal,
                         nb_heures_cm = :nbHeuresCM,
                         nb_heures_td = :nbHeuresTD,
@@ -86,6 +89,7 @@ class CoursDTO {
                     'formation' => $cours->getFormation(),
                     'nomCours' => $cours->getNomCours(),
                     'semestre' => $cours->getSemestre(),
+                    'codeCours' => $cours->getCodeCours(),
                     'nbHeuresTotal' => $cours->getNbHeuresTotal(),
                     'nbHeuresCM' => $cours->getNbHeuresCM(),
                     'nbHeuresTD' => $cours->getNbHeuresTD(),
@@ -94,13 +98,14 @@ class CoursDTO {
                 ]);
             } else {
                 $stmt = $this->db->prepare("
-                    INSERT INTO cours (formation, semestre, nom_cours, nb_heures_total, nb_heures_cm, nb_heures_td, nb_heures_tp, nb_heures_ei)
-                    VALUES (:formation, :semestre, :nomCours, :nbHeuresTotal, :nbHeuresCM, :nbHeuresTD, :nbHeuresTP, :nbHeuresEI)
+                    INSERT INTO cours (formation, semestre, nom_cours, code_cours, nb_heures_total, nb_heures_cm, nb_heures_td, nb_heures_tp, nb_heures_ei)
+                    VALUES (:formation, :semestre, :nomCours, :codeCours, :nbHeuresTotal, :nbHeuresCM, :nbHeuresTD, :nbHeuresTP, :nbHeuresEI)
                 ");
                 $stmt->execute([
                     'nomCours' => $cours->getNomCours(),
                     'formation' => $cours->getFormation(),
                     'semestre' => $cours->getSemestre(),
+                    'codeCours' => $cours->getCodeCours(),
                     'nbHeuresTotal' => $cours->getNbHeuresTotal(),
                     'nbHeuresCM' => $cours->getNbHeuresCM(),
                     'nbHeuresTD' => $cours->getNbHeuresTD(),
@@ -137,6 +142,40 @@ class CoursDTO {
                 $cours->setFormation($data['formation']);
                 $cours->setSemestre($data['semestre']);
                 $cours->setNomCours($data['nom_cours']);
+                $cours->setCodeCours($data['code_cours']);
+                $cours->setNbHeuresTotal($data['nb_heures_total']);
+                $cours->setNbHeuresCM($data['nb_heures_cm']);
+                $cours->setNbHeuresTD($data['nb_heures_td']);
+                $cours->setNbHeuresTP($data['nb_heures_tp']);
+                $cours->setNbHeuresEI($data['nb_heures_ei']);
+
+                $coursList[] = $cours;
+            }
+
+            return $coursList;
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return [];
+        }
+    }
+
+    public function findByFormation($formationCode) {
+        try {
+            $formationFull = "BUT " . $formationCode;
+
+            $stmt = $this->db->prepare("SELECT * FROM cours WHERE formation = :formation");
+
+            $stmt->execute(['formation' => $formationFull]);
+
+            $coursList = [];
+
+            while ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $cours = new Cours();
+                $cours->setIdCours($data['id_cours']);
+                $cours->setFormation($data['formation']);
+                $cours->setNomCours($data['nom_cours']);
+                $cours->setSemestre($data['semestre']);
+                $cours->setCodeCours($data['code_cours']);
                 $cours->setNbHeuresTotal($data['nb_heures_total']);
                 $cours->setNbHeuresCM($data['nb_heures_cm']);
                 $cours->setNbHeuresTD($data['nb_heures_td']);

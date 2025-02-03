@@ -107,7 +107,7 @@
 
         // Créer une requête parallèle pour générer le PDF
         const formData = new FormData(form); // Récupérer les données du formulaire
-        fetch('../ProjetTutore-2024-2025/src/User/GenerePdf.php', {
+        fetch('src/User/GenerePdf.php', {
             method: 'POST',
             body: formData
         })

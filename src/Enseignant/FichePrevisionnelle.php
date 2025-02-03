@@ -188,7 +188,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $idCours = $cours->getIdCours();
 
                             $remarque = $sept_remarques[$i] ?? '';
-                            $semestre = $sept_semestres[$i] ?? '';
+                            $semestre = 'S'. $sept_semestres[$i] ?? '';
                             $nbHeures = isset($sept_total[$i]) ? (float)$sept_total[$i] : 0;
 
                             $voeu = new Voeu(null, $idEnseignant, $idCours, $remarque, $semestre, $nbHeures);
@@ -476,7 +476,8 @@ function genererLigne($type, $coursList, $count, $postData) {
             </div>
 
             <div class="text-center mt-4">
-                <button type="submit" name="envoyer" class="btn btn-primary">Envoyer</button>
+                <button type="submit" name="envoyer" class="btn btn-primary" >Envoyer</button>
+
             </div>
         </form>
     </div>

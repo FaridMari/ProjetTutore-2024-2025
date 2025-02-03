@@ -83,7 +83,7 @@ CREATE TABLE `cours` (
 -- Déchargement des données de la table `cours`
 --
 
-INSERT INTO `cours` (`id_cours`, `formation`, `semestre`, `nom_cours`, `code_cours`, `nb_heures_total`, `nb_heures_cm`, `nb_heures_td`, `nb_heures_tp`, `nb_heures_ei`) VALUES
+INSERT INTO `cours` ( `formation`, `semestre`, `nom_cours`, `code_cours`, `nb_heures_total`, `nb_heures_cm`, `nb_heures_td`, `nb_heures_tp`, `nb_heures_ei`) VALUES
                                                                                                                                                                             (183, 'Autre', '1', 'Autre (préciser dans les remarques)', '', 0, 0, 0, 0, 0),
                                                                                                                                                                             (184, 'Autre', '1', 'Forfait suivi de stage', '', 0, 0, 0, 0, 0),
                                                                                                                                                                             (185, 'Autre', '5', 'Portfolio', 'P5-RA-DWM-01', 0, 0, 0, 0, 0),

@@ -49,7 +49,6 @@ foreach ($listeEnseignants as $enseignant) {
     }
    
 }
-
 $voeux = [];
 foreach ($voeuxFormation as $voeu) {
     $voeux[] = [
@@ -186,6 +185,8 @@ foreach ($listeCours as $cours) {
         const listeCours = <?php echo json_encode($coursArray); ?>;
         const semester = '<?php echo htmlspecialchars($formationCode); ?>';
         const enseignantsParCours = <?php echo json_encode($enseignantsParCours); ?>;
+        const voeuFormation = <?php echo json_encode($voeuxFormation); ?>;
+        console.log(voeuFormation);
 
         const enseignantsMap = <?php echo json_encode($enseignantsMap); ?>;
         const enseignantsInverseMap = {};

@@ -40,6 +40,12 @@
     .vacation {
         background-color: #d4edda !important; /* Light green for vacations */
     }
+
+    .total-exceeded {
+        background-color: #ffcccc !important; /* Rouge clair pour les totaux dépassés */
+    }
+
+
     .form-label.text-white {
         color: white;
         margin-right: 10px;
@@ -53,18 +59,14 @@
     .handsontable td, .handsontable th {
         font-size: 14px; /* Augmente un peu la taille */
         padding: 8px;    /* Espace intérieur dans chaque cellule */
+        white-space: normal; /* Permet au texte de s'enrouler sur plusieurs lignes */
+        word-wrap: break-word; /* Permet de casser les mots longs si nécessaire */
     }
 
     #example1 {
-        word-break: normal !important;
-        white-space: break-spaces;
-        margin-left: -70%;
-        height: 500px;
-        zoom: 70%;
+        max-width: 80%;
         z-index: 1;
-        width: 100%;
         margin-top: 20px;
-        max-width: 1200px;
         border: 1px solid #cccccc;
     }
 
@@ -162,12 +164,12 @@
     for (let i = 0; i < coursListSansSae.length; i++) {
         colCours.push(coursListSansSae[i].nom_cours);
     }
-    premLigne = ['','','Semestre' + semester, 'Ressource + SAE'];
+    premLigne = ['', '', 'Semestre' + semester, 'Ressource + SAE'];
     for (let i = 0; i < colCours.length; i++) {
         premLigne.push({ label: colCours[i], colspan: 3 });
     }
-    premLigne.push({label: 'SAE', colspan: coursListSansSae.length*3});
-    const responsable = [];
+    premLigne.push({ label: 'SAE', colspan: coursListSae.length });
+    let responsable = [];
     for (let i = 0; i<coursListSansSae.length; i++){
         ajouter = false;
         for (let j = 0; j<repartitionData.length; j++){
@@ -185,13 +187,13 @@
         ajouter = false;
         for (let j = 0; j<repartitionData.length; j++){
             if (coursListSae[i].nom_cours === repartitionData[j].nom_cours){
-                responsable.push({label: repartitionData[j].responsable, colspan: 3});
+                responsable.push({label: repartitionData[j].responsable, colspan: 1});
                 ajouter = true;
                 break;
             }
         }
         if (!ajouter){
-            responsable.push({label: '', colspan: 3});
+            responsable.push({label: '', colspan: 1});
         }
     }
 
@@ -206,7 +208,7 @@
         deuxDemiLigne.push({ label: coursListSansSae[i].code_cours, colspan: 3 });
     }
     for (let i = 0; i < coursListSae.length; i++) {
-        deuxDemiLigne.push({ label: coursListSae[i].code_cours, colspan: 3 });
+        deuxDemiLigne.push({ label: coursListSae[i].code_cours, colspan: 1 });
     }
 
 
@@ -217,7 +219,7 @@
         troisLigne.push({ label: 'TP', colspan: 1 });
     }
     for (let i = 0; i < coursListSae.length; i++) {
-        troisLigne.push({ label:coursListSae[i].nom_cours, colspan: 3 });
+        troisLigne.push({ label:coursListSae[i].nom_cours, colspan: 1 });
     }
     quatreLigne = ['','','', ''];
     for (let i = 0; i < colCours.length; i++) {
@@ -230,7 +232,7 @@
         }
     }
     for (let j = 0; j < coursListSae.length; j++) {
-        quatreLigne.push({label: coursListSae[j].nb_heures_total, colspan: 3});
+        quatreLigne.push({label: coursListSae[j].nb_heures_total, colspan: 1});
     }
 
     cinqLigne = ['','','', 'Heures totales Etudiants'];
@@ -245,17 +247,21 @@
         }
     }
     for (let j = 0; j < coursListSae.length; j++) {
-        cinqLigne.push({label: "", colspan: 3});
-        sixLigne.push({label: "", colspan: 3});
+        cinqLigne.push({label: "", colspan: 1});
+        sixLigne.push({label: "", colspan: 1});
     }
 
-    // premLigne.push({label: 'Total', colspan: 3});
-    // deuxLigne.push({label: ' ', colspan: 3});
-    // deuxDemiLigne.push({label: ' ', colspan: 3});
-    // troisLigne.push({label: ' ', colspan: 3});
-    // quatreLigne.push({label: ' ', colspan: 3});
-    // cinqLigne.push({label: ' ', colspan: 3});
-    // sixLigne.push({label: ' ', colspan: 3});
+
+
+    // Ajouter un en-tête pour la colonne de totaux
+    premLigne.push({ label: 'Total', colspan: 1 });
+    deuxLigne.push({ label: '', colspan: 1 });
+    deuxDemiLigne.push({ label: '', colspan: 1 });
+    troisLigne.push({ label: '', colspan: 1 });
+    quatreLigne.push({ label: '', colspan: 1 });
+    cinqLigne.push({ label: '', colspan: 1 });
+    sixLigne.push({ label: '', colspan: 1 });
+
 
     trueNH = [
         premLigne,
@@ -274,6 +280,10 @@
     let dataT = [];
     let semaineActuelle = semaine;
     let colCoursTotaux = [];
+    for (let sae of coursListSae) {
+        colCours.push(sae.nom_cours);
+    }
+
     for (let i = 0; i < nbSemaine; i++) {
         let semaineData = [];
         let vacToussaint = 43;
@@ -292,10 +302,8 @@
             semaineData.push("", semaineActuelle, dateActuelleStr, "");
         }
 
-        // Construire la liste des colonnes pour les cours (y compris SAEs)
-        for (let sae of coursListSae) {
-            colCours.push(sae.nom_cours);
-        }
+        // Construire la liste des colonnes pour les cours
+
 
         for (let cours of colCours) {
             let valueCM = "";
@@ -333,19 +341,17 @@
             }
 
             // Ajouter les valeurs CM, TD, TP ou combiner sur 3 colonnes pour les SAEs
-            if (estSae && eiAjoute) {
+            if (estSae) {
                 semaineData.push(valueEI);
-                semaineData.push("");
-                semaineData.push("");
             } else {
-                semaineData.push(valueCM, valueTD, valueTP);
+                // Pour les autres cours, utiliser trois colonnes (CM, TD, TP)
+                if (valueCM !== 0 && valueTD !== 0 && valueTP !== 0) {
+                    semaineData.push(valueCM, valueTD, valueTP);
+                } else {
+                    semaineData.push('', '', ''); // Ajouter des cellules vides au lieu de 0
+                }
             }
         }
-
-        // Ajouter une colonne pour le total de la ligne (semaine)
-        let totalFormule = `=SUM(E${i + 1}:C${3 * colCours.length + 4})`;
-        //semaineData.push(totalFormule);
-
         dataT.push(semaineData);
 
         // Passer à la semaine suivante
@@ -353,33 +359,24 @@
         dateDebutSemestre.setDate(dateDebutSemestre.getDate() + 7);
     }
 
-    // Ajouter une ligne pour le total de chaque colonne
-    let ligneTotaux = ["", "", "", "Total"];
-    for (let colIndex = 4; colIndex < 4 + colCours.length * 3; colIndex++) {
-        //gerer quand on doit avoir 2 Lettre
-        let colLettre = String.fromCharCode(65 + (colIndex % 26));
-        if (colIndex >= 26) {
-            let firstLetter = String.fromCharCode(65 + (colIndex / 26) - 1);
-            colLettre = firstLetter + colLettre;
-        }
-        let totalFormule = `=SUM(${colLettre}1:${colLettre}${nbSemaine})`;
-        ligneTotaux.push(totalFormule);
-    }
-    ligneTotaux.push(""); // Pour la cellule vide finale de la colonne des totaux
-    //dataT.push(ligneTotaux);
+    let lettrestart = Handsontable.helper.spreadsheetColumnLabel(4);
+    let lettreend = Handsontable.helper.spreadsheetColumnLabel(4 + coursListSansSae.length * 3 + coursListSae.length - 2 );
 
-    let mergeCells = [];
-    let colStart = 4+ coursListSansSae.length*3; // Colonne de départ de la fusion
-    let colspan = 3;
 
-    let currentCol = colStart;
-    for (let i = 0; i < nbSemaine; i++) {
-        for (let j = 0; j < coursListSae.length; j++) {
-            mergeCells.push({ row: i, col: currentCol, rowspan: 1, colspan: colspan });
-            currentCol += colspan;
-        }
-        currentCol = colStart;
+    // Ajouter une colonne de totaux à chaque ligne
+    for (let i = 0; i < dataT.length; i++) {
+        let totalFormula = `=SUM(${lettrestart}${i + 1}:${lettreend}${i+1})`;
+        dataT[i].push(totalFormula);
     }
+
+    // Ajouter une ligne vide pour les totaux
+    let totalRow = Array(dataT[0].length).fill('');
+    totalRow[0] = 'Total';
+    dataT.push(totalRow);
+
+
+
+
     let pendingChanges = []; // Stocke les changements en attente
     let debounceTimer = null; // Timer pour limiter les requêtes
 
@@ -389,105 +386,147 @@
         // initialize it with the `'internal-use-in-handsontable'` license key
         licenseKey: 'internal-use-in-handsontable',
     });
+
+
+
+    // Ajouter une mise en forme conditionnelle pour mettre en rouge si > 32h (à gérer dans l'affichage)
     const planning = new Handsontable(container, {
         data: dataT,
-        width: 50,
+        width: '100vw',
         nestedHeaders: trueNH,
         formulas: {
             engine: hyperformulaInstance,
         },
         wordWrap: true,
-        mergeCells: mergeCells,
         licenseKey: 'non-commercial-and-evaluation',
         afterChange: (changes, source) => {
-            if (source === 'loadData' || !changes) return; // Ignorer les changements initiaux ou vides
+            if (source === 'loadData' || !changes) return;
 
-            // Ajouter les changements au tableau en attente
             changes.forEach(([row, col, oldValue, newValue]) => {
                 if (oldValue !== newValue) {
                     pendingChanges.push({ row, col, newValue });
                 }
             });
 
-            // Déclencher un enregistrement avec un délai (debounce)
             if (!debounceTimer) {
                 debounceTimer = setTimeout(() => {
-                    saveAllData(pendingChanges); // Appeler la fonction pour enregistrer en lot
-                    pendingChanges = []; // Réinitialiser les changements
-                    debounceTimer = null; // Réinitialiser le timer
-                }, 3000); // 1000ms = 1 seconde
+                    saveAllData(pendingChanges);
+                    pendingChanges = [];
+                    debounceTimer = null;
+                }, 3000);
             }
         },
-        // Logique pour appliquer le style
         cells: (row, col) => {
             const cellProperties = {};
 
-            // Vérifie si la 4ème colonne contient "Vacances"
+            // Mise en forme conditionnelle pour les vacances
             if (dataT[row] && dataT[row][3] === "Vacances") {
-                cellProperties.className = 'vacation'; // Applique la classe "vacation"
+                cellProperties.className = 'vacation';
+                cellProperties.readOnly = true;
             }
 
-            return cellProperties; // Retourne les propriétés de la cellule
-        },
+            // Mise en forme conditionnelle pour la colonne "Total"
+            if (col === dataT[0].length - 1) { // Dernière colonne (Total)
+                const cellAddress = { sheet: 0, row, col };
+                const totalValue = hyperformulaInstance.getCellValue(cellAddress); // Obtenir la valeur calculée
+                if (totalValue > 32) {
+                    cellProperties.className = (cellProperties.className || '') + ' total-exceeded';
+                }
+                else {
+                    cellProperties.className = ' ';
+                }
+            }
 
-        // Logique pour modifier les cellules d'en-têtes après le rendu
+            // Mise en forme conditionnelle pour la ligne "Total"
+            if (row === dataT.length - 1) { // Dernière ligne (Total)
+                const cellAddress = { sheet: 0, row, col };
+                const totalValue = hyperformulaInstance.getCellValue(cellAddress); // Obtenir la valeur calculée
+
+                // Obtenir la valeur de la ligne "Heures totales Etudiants"
+                let heuresEtudiants = trueNH[6][col]
+
+                if (typeof heuresEtudiants === 'object') {
+                    heuresEtudiants = heuresEtudiants.label;
+                }
+
+                if (totalValue > heuresEtudiants) {
+                    cellProperties.className = (cellProperties.className || '') + ' total-exceeded';
+                }
+                else {
+                    cellProperties.className = ' ';
+                }
+            }
+
+            return cellProperties;
+        },
         afterGetColHeader: function () {
-            const headerRows = container.querySelectorAll('.ht_clone_top thead tr'); // Récupère les lignes d'en-têtes
+            const headerRows = container.querySelectorAll('.ht_clone_top thead tr');
 
             headerRows.forEach((row, rowIndex) => {
-                // Applique les styles en fonction de l'index de la ligne
                 if (rowIndex === 0) {
                     row.querySelectorAll('th').forEach((th) => {
-                        th.style.backgroundColor = '#007bff'; // Bleu pour Ressource + SAE
-                        th.style.color = '#ffffff'; // Texte blanc
+                        th.style.backgroundColor = '#007bff';
+                        th.style.color = '#ffffff';
                     });
                 } else if (rowIndex === 1) {
                     row.querySelectorAll('th').forEach((th) => {
-                        th.style.backgroundColor = '#ffc107'; // Jaune pour Responsable
-                        th.style.color = '#000000'; // Texte noir
+                        th.style.backgroundColor = '#ffc107';
+                        th.style.color = '#000000';
                     });
                 } else if (rowIndex === 2) {
                     row.querySelectorAll('th').forEach((th) => {
-                        th.style.backgroundColor = '#28a745'; // Vert pour Code Cours
-                        th.style.color = '#ffffff'; // Texte blanc
+                        th.style.backgroundColor = '#28a745';
+                        th.style.color = '#ffffff';
                     });
                 }
             });
         }
     });
 
+    // Ajouter les formules des totaux en une seule opération
+    const totalRowIndex = dataT.length - 1;
+    const totalColIndex = dataT[0].length - 1;
+
+    planning.batch(() => {
+        for (let i = 4; i < totalColIndex; i++) {
+            let totalFormula = `=SUM(${Handsontable.helper.spreadsheetColumnLabel(i)}1:${Handsontable.helper.spreadsheetColumnLabel(i)}${totalRowIndex - 1})`;
+            planning.setDataAtCell(totalRowIndex, i, totalFormula);
+        }
+    });
+
+
     function saveAllData() {
         // Préparez toutes les données pour l'envoi
         const repartitions = [];
         let finalData = [];
-        // Parcourir toutes les cellules modifiées et les ajouter à la liste sans la derniere colonne de total
-        dataT.forEach((row, rowIndex) => {
-            colCours.forEach((coursCode, colIndex) => {
+
+        // Parcourir toutes les cellules modifiées et les ajouter à la liste sans la dernière colonne de total
+        for (let rowIndex = 0; rowIndex < dataT.length - 1; rowIndex++) { // Exclure la dernière ligne
+            const row = dataT[rowIndex];
+            for (let colIndex = 0; colIndex < colCours.length; colIndex++) {
                 // Pour chaque type d'heure (CM, TD, TP)
                 ['CM', 'TD', 'TP'].forEach((typeHeure, typeIndex) => {
                     // Calcul de l'indice correct pour récupérer les données dans dataT
-                    const colData = dataT[rowIndex][4 + colIndex * 3 + typeIndex]; // Colonne correspondante pour CM, TD, TP
-                    //Si on est pas dans la derniere colonne
+                    const colData = row[4 + colIndex * 3 + typeIndex]; // Colonne correspondante pour CM, TD, TP
+                    // Si on est pas dans la dernière colonne
                     if (colData) {
                         const semaineDebut = row[1]; // Semaine de début (colonne dédiée)
                         const semaineFin = semaineDebut; // Par défaut, semaineFin = semaineDebut
 
-                        console.log(trueNH[2][4 + colIndex].label);
                         // Ajout de la répartition dans le tableau
                         repartitions.push({
                             semaineDebut: semaineDebut,
                             semaineFin: semaineFin,
-                            //code du cours qui se trouve dans la ligne 3 du header du tableau
+                            // Code du cours qui se trouve dans la ligne 3 du header du tableau
                             codeCours: trueNH[2][4 + colIndex].label,
-
                             typeHeure: typeHeure, // Type d'heure (CM, TD, TP)
                             nbHeures: colData, // Nombre d'heures par semaine
                             semestre: semester // Semestre actuel
                         });
                     }
                 });
-            });
-        });
+            }
+        }
 
         const mergedRepartitions = [];
         let currentRepartition = null;
@@ -526,11 +565,11 @@
             }
         });
 
-// Ajouter la dernière répartition à la liste
+        // Ajouter la dernière répartition à la liste
         if (currentRepartition) {
             mergedRepartitions.push(currentRepartition);
         }
-        sendRepartitionData(mergedRepartitions,semester);
+        sendRepartitionData(mergedRepartitions, semester);
     }
 
     function sendRepartitionData(repartition,semester) {
@@ -563,24 +602,24 @@
     container.addEventListener('wheel', (event) => {
         event.preventDefault(); // Empêche le défilement de la page
 
-        // Obtenir les coordonnées des cellules sélectionnées
         const selectedRanges = planning.getSelected();
+        if (!selectedRanges) return;
 
-        if (selectedRanges) {
-            selectedRanges.forEach((range) => {
-                const [startRow, startCol, endRow, endCol] = range;
-
-                // Parcourir toutes les cellules sélectionnées
+        // Utiliser batch pour regrouper les modifications
+        planning.batch(() => {
+            selectedRanges.forEach(([startRow, startCol, endRow, endCol]) => {
                 for (let row = startRow; row <= endRow; row++) {
                     for (let col = startCol; col <= endCol; col++) {
-                        let currentValue = parseInt(planning.getDataAtCell(row, col) || '0', 10); // Obtenir la valeur actuelle (ou 0 si vide)
-                        const delta = event.deltaY > 0 ? -1 : 1; // -1 pour scroll bas, +1 pour scroll haut
-                        currentValue = Math.max(0, currentValue + delta); // Ajuster la valeur sans descendre en dessous de 0
-                        planning.setDataAtCell(row, col, currentValue); // Mettre à jour la cellule
+                        if (dataT[row] && dataT[row][3] !== "Vacances") {
+                            let currentValue = parseInt(planning.getDataAtCell(row, col) || '0', 10);
+                            const delta = event.deltaY > 0 ? -1 : 1; // -1 pour scroll bas, +1 pour scroll haut
+                            currentValue = Math.max(0, currentValue + delta); // Ajuster la valeur sans descendre en dessous de 0
+                            planning.setDataAtCell(row, col, currentValue); // Mettre à jour la cellule
+                        }
                     }
                 }
             });
-        }
+        });
     });
 
 

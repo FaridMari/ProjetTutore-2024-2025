@@ -196,7 +196,7 @@ foreach ($listeCours as $cours) {
 
 
     // Extraire les noms des cours pour les en-têtes
-    const colCours = listeCours.map(cours => cours.nomCours);
+    let colCours = listeCours.map(cours => cours.nomCours);
 
     premLigne = [ 'Semestre ' + semester, 'Ressource + SAE'];
     for (let i = 0; i < colCours.length; i++) {

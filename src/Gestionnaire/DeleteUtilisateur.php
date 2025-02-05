@@ -99,8 +99,17 @@
         ?>
     </select>
     <button type="submit">Supprimer l'utilisateur</button>
+
     <button id="retour" onclick="window.location.href='index.php?action=gestionCompteUtilisateur'; return false;">Retour au menu</button>
 </form>
-
 </body>
+<script>
+    // Ajouter une confirmation de suppression
+    document.querySelector('form').addEventListener('submit', function (event) {
+        if (!confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
+            event.preventDefault();
+        }
+    });
+</script>
 </html>
+

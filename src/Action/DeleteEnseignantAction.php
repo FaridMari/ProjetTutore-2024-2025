@@ -28,30 +28,10 @@ class DeleteEnseignantAction {
                     return "<script>alert('Aucun utilisateur trouvé avec cet email.');</script>";
                 }
 
-                // Supprimer les contraintes associées
-                $stmt = $conn->prepare("DELETE FROM contraintes WHERE id_utilisateur = :id_utilisateur");
-                $stmt->bindParam(':id_utilisateur', $id_utilisateur, PDO::PARAM_INT);
-                $stmt->execute();
 
-                // Supprimer les voeu associés select l'id d'enesiegant avec l'id_utilisateur
-                $stmt = $conn->prepare("SELECT id_enseignant FROM enseignants WHERE id_utilisateur = :id_utilisateur");
-                $stmt->bindParam(':id_utilisateur', $id_utilisateur, PDO::PARAM_INT);
-                $stmt->execute();
-                // Récupérer l'id_enseignant
-                $id_enseignant = $stmt->fetchColumn();
 
-                // Supprimer les voeux associés
-                $stmt = $conn->prepare("DELETE FROM voeux WHERE id_enseignant = :id_enseignant");
-                $stmt->bindParam(':id_enseignant', $id_enseignant, PDO::PARAM_INT);
-                $stmt->execute();
-
-                // Supprimer l'enseignant associé
-                $stmt = $conn->prepare("DELETE FROM enseignants WHERE id_utilisateur = :id_utilisateur");
-                $stmt->bindParam(':id_utilisateur', $id_utilisateur, PDO::PARAM_INT);
-                $stmt->execute();
-
-                // Supprimer l'utilisateur
-                $stmt = $conn->prepare("DELETE FROM utilisateurs WHERE id_utilisateur = :id_utilisateur");
+                // Modifier l'attribut supprimer d'un utilisateur
+                $stmt = $conn->prepare("UPDATE utilisateurs SET supprimer = true WHERE id_utilisateur = :id_utilisateur");
                 $stmt->bindParam(':id_utilisateur', $id_utilisateur, PDO::PARAM_INT);
                 $stmt->execute();
 

@@ -13,13 +13,13 @@ class SigninAction extends Action {
             try {
                 $pdo = connexionFactory::makeConnection();
 
-                $stmt = $pdo->prepare("SELECT id_utilisateur, email, mot_de_passe, role FROM utilisateurs WHERE email = :email");
+                $stmt = $pdo->prepare("SELECT id_utilisateur, email, mot_de_passe, role, supprimer FROM utilisateurs WHERE email = :email");
                 $stmt->bindParam(':email', $email);
                 $stmt->execute();
 
                 $user = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-                if ($password === $user['mot_de_passe'] || password_verify($password, $user['mot_de_passe'])) {
+                if ( ($password === $user['mot_de_passe'] || password_verify($password, $user['mot_de_passe'])) && !$user['supprimer']) {
                     // Authentification réussie
                     session_destroy();
                     session_start();

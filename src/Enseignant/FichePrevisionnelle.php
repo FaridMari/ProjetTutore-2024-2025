@@ -55,7 +55,6 @@ foreach ($existingVoeux as $voeu) {
         $voeuxJanvier[] = $voeu;
     }
 }
-
 // Préparer les données pour le PDF
 $_SESSION['pdf_data'] = [
   'enseignant' => 'Nom Prenom Exemple', // Vous pouvez adapter cette valeur

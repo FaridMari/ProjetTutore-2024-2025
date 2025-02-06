@@ -23,7 +23,10 @@ class VoeuDTO {
                     $data['id_cours'],
                     $data['remarques'],
                     $data['semestre'],
-                    $data['nb_heures']
+                    $data['nb_CM'],
+                    $data['nb_TD'],
+                    $data['nb_TP'],
+                    $data['nb_EI']
                 );
 
                 return $voeu;
@@ -48,7 +51,10 @@ class VoeuDTO {
                     $data['id_cours'],
                     $data['remarques'],
                     $data['semestre'],
-                    $data['nb_heures']
+                    $data['nb_CM'],
+                    $data['nb_TD'],
+                    $data['nb_TP'],
+                    $data['nb_EI']
                 );
 
                 $voeux[] = $voeu;
@@ -70,28 +76,37 @@ class VoeuDTO {
                         id_cours = :idCours,
                         remarques = :remarque,
                         semestre = :semestre,
-                        nb_heures = :nbHeures
+                        nb_CM = :nbCM,
+                        nb_TD = :nbTD,
+                        nb_TP = :nbTP,
+                        nb_EI = :nbEI
                     WHERE id_voeu = :id
                 ");
                 $stmt->execute([
                     'id' => $voeu->getIdVoeu(),
                     'idEnseignant' => $voeu->getIdEnseignant(),
                     'idCours' => $voeu->getIdCours(),
-                    'remarques' => $voeu->getRemarque(),
+                    'remarque' => $voeu->getRemarque(),
                     'semestre' => $voeu->getSemestre(),
-                    'nbHeures' => $voeu->getNbHeures(),
+                    'nbCM' => $voeu->getNbCM(),
+                    'nbTD' => $voeu->getNbTD(),
+                    'nbTP' => $voeu->getNbTP(),
+                    'nbEI' => $voeu->getNbEI(),
                 ]);
             } else {
                 $stmt = $this->db->prepare("
-                    INSERT INTO voeux (id_enseignant, id_cours, remarques, semestre, nb_heures)
-                    VALUES (:idEnseignant, :idCours, :remarque, :semestre, :nbHeures)
+                    INSERT INTO voeux (id_enseignant, id_cours, remarques, semestre, nb_CM, nb_TD, nb_TP, nb_EI)
+                    VALUES (:idEnseignant, :idCours, :remarque, :semestre, :nbCM, :nbTD, :nbTP, :nbEI)
                 ");
                 $stmt->execute([
                     'idEnseignant' => $voeu->getIdEnseignant(),
                     'idCours' => $voeu->getIdCours(),
                     'remarque' => $voeu->getRemarque(),
                     'semestre' => $voeu->getSemestre(),
-                    'nbHeures' => $voeu->getNbHeures(),
+                    'nbCM' => $voeu->getNbCM(),
+                    'nbTD' => $voeu->getNbTD(),
+                    'nbTP' => $voeu->getNbTP(),
+                    'nbEI' => $voeu->getNbEI(),
                 ]);
 
                 $voeu->setIdVoeu($this->db->lastInsertId());
@@ -123,7 +138,10 @@ class VoeuDTO {
                     $data['id_cours'],
                     $data['remarques'],
                     $data['semestre'],
-                    $data['nb_heures']
+                    $data['nb_CM'],
+                    $data['nb_TD'],
+                    $data['nb_TP'],
+                    $data['nb_EI']
                 );
 
                 $voeux[] = $voeu;
@@ -145,16 +163,18 @@ class VoeuDTO {
         }
     }
 
-    public function findByFormation($semestre) {
+    public function findByFormation($formationCode) {
         try {
+            $formationFull = "BUT " . $formationCode;
             $stmt = $this->db->prepare("
                 SELECT v.*
                 FROM voeux v
-                WHERE v.semestre = :semestre
+                INNER JOIN cours c ON v.id_cours = c.id_cours
+                WHERE c.formation = :formation
             ");
-            $stmt->execute(['semestre' => $semestre]);
+            $stmt->execute(['formation' => $formationFull]);
             $voeux = [];
-
+    
             while ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $voeu = new Voeu(
                     $data['id_voeu'],
@@ -162,18 +182,21 @@ class VoeuDTO {
                     $data['id_cours'],
                     $data['remarques'],
                     $data['semestre'],
-                    $data['nb_heures']
+                    $data['nb_CM'],
+                    $data['nb_TD'],
+                    $data['nb_TP'],
+                    $data['nb_EI']
                 );
-
+    
                 $voeux[] = $voeu;
             }
-
+    
             return $voeux;
         } catch (PDOException $e) {
             error_log($e->getMessage());
             return [];
         }
     }
+    
 }
-
 ?>

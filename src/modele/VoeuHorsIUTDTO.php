@@ -28,7 +28,7 @@ class VoeuHorsIUTDTO {
                     $data['nb_heures_td'],
                     $data['nb_heures_tp'],
                     $data['nb_heures_ei'],
-                    $data['nb_heures_total']
+                    $data['nb_total'] // Utilisation de la colonne nb_total
                 );
 
                 return $voeu;
@@ -47,7 +47,7 @@ class VoeuHorsIUTDTO {
             $voeuxHI = [];
 
             while ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $voeuHI = new VoeuHorsIUT(
+                $voeu = new VoeuHorsIUT(
                     $data['id_voeu_hi'],
                     $data['id_enseignant'],
                     $data['composant'],
@@ -57,10 +57,10 @@ class VoeuHorsIUTDTO {
                     $data['nb_heures_td'],
                     $data['nb_heures_tp'],
                     $data['nb_heures_ei'],
-                    $data['nb_heures_total']
+                    $data['nb_total'] // Utilisation de nb_total
                 );
 
-                $voeuxHI[] = $voeuHI;
+                $voeuxHI[] = $voeu;
             }
 
             return $voeuxHI;
@@ -83,38 +83,38 @@ class VoeuHorsIUTDTO {
                         nb_heures_td = :nb_heures_td,
                         nb_heures_tp = :nb_heures_tp,
                         nb_heures_ei = :nb_heures_ei,
-                        nb_heures_total = :nb_heures_total
+                        nb_total = :nb_total
                     WHERE id_voeu_hi = :id_voeu_hi
                 ");
 
                 $stmt->execute([
-                    'id_voeu_hi' => $voeuHI->getIdVoeuHI(),
+                    'id_voeu_hi'    => $voeuHI->getIdVoeuHI(),
                     'id_enseignant' => $voeuHI->getIdEnseignant(),
-                    'composant' => $voeuHI->getComposant(),
-                    'formation' => $voeuHI->getFormation(),
-                    'module' => $voeuHI->getModule(),
-                    'nb_heures_cm' => $voeuHI->getNbHeuresCM(),
-                    'nb_heures_td' => $voeuHI->getNbHeuresTD(),
-                    'nb_heures_tp' => $voeuHI->getNbHeuresTP(),
-                    'nb_heures_ei' => $voeuHI->getNbHeuresEI(),
-                    'nb_heures_total' => $voeuHI->getNbHeuresTotal()
+                    'composant'     => $voeuHI->getComposant(),
+                    'formation'     => $voeuHI->getFormation(),
+                    'module'        => $voeuHI->getModule(),
+                    'nb_heures_cm'  => $voeuHI->getNbHeuresCM(),
+                    'nb_heures_td'  => $voeuHI->getNbHeuresTD(),
+                    'nb_heures_tp'  => $voeuHI->getNbHeuresTP(),
+                    'nb_heures_ei'  => $voeuHI->getNbHeuresEI(),
+                    'nb_total'      => $voeuHI->getNbHeuresTotal()
                 ]);
             } else {
                 $stmt = $this->db->prepare("
-                    INSERT INTO voeux_hors_iut (id_enseignant, composant, formation, module, nb_heures_cm, nb_heures_td, nb_heures_tp, nb_heures_ei, nb_heures_total)
-                    VALUES (:id_enseignant, :composant, :formation, :module, :nb_heures_cm, :nb_heures_td, :nb_heures_tp, :nb_heures_ei, :nb_heures_total)
+                    INSERT INTO voeux_hors_iut (id_enseignant, composant, formation, module, nb_heures_cm, nb_heures_td, nb_heures_tp, nb_heures_ei, nb_total)
+                    VALUES (:id_enseignant, :composant, :formation, :module, :nb_heures_cm, :nb_heures_td, :nb_heures_tp, :nb_heures_ei, :nb_total)
                 ");
 
                 $stmt->execute([
                     'id_enseignant' => $voeuHI->getIdEnseignant(),
-                    'composant' => $voeuHI->getComposant(),
-                    'formation' => $voeuHI->getFormation(),
-                    'module' => $voeuHI->getModule(),
-                    'nb_heures_cm' => $voeuHI->getNbHeuresCM(),
-                    'nb_heures_td' => $voeuHI->getNbHeuresTD(),
-                    'nb_heures_tp' => $voeuHI->getNbHeuresTP(),
-                    'nb_heures_ei' => $voeuHI->getNbHeuresEI(),
-                    'nb_heures_total' => $voeuHI->getNbHeuresTotal()
+                    'composant'     => $voeuHI->getComposant(),
+                    'formation'     => $voeuHI->getFormation(),
+                    'module'        => $voeuHI->getModule(),
+                    'nb_heures_cm'  => $voeuHI->getNbHeuresCM(),
+                    'nb_heures_td'  => $voeuHI->getNbHeuresTD(),
+                    'nb_heures_tp'  => $voeuHI->getNbHeuresTP(),
+                    'nb_heures_ei'  => $voeuHI->getNbHeuresEI(),
+                    'nb_total'      => $voeuHI->getNbHeuresTotal()
                 ]);
 
                 $voeuHI->setIdVoeuHI($this->db->lastInsertId());
@@ -150,7 +150,7 @@ class VoeuHorsIUTDTO {
                     $data['nb_heures_td'],
                     $data['nb_heures_tp'],
                     $data['nb_heures_ei'],
-                    $data['nb_heures_total']
+                    $data['nb_total'] // Utilisation de nb_total
                 );
 
                 $voeuxHI[] = $voeuHI;

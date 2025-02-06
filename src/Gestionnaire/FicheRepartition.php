@@ -206,7 +206,10 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
     }
     #hot {
       margin-top: 20px;
+      margin-left: 200px;
       z-index: 1;
+      overflow: auto;
+      height: 450px;
     }
     .htNonEditable {
       background-color: #f0f0f0;
@@ -335,8 +338,11 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
     const container = document.querySelector('#hot');
     const hot = new Handsontable(container, {
       data: data,
-      width: '70%',
+      width: '80%',
+      height: 510,
       nestedHeaders: nestedHeaders,
+      colWidths: 100,        // Toutes les colonnes auront 100px de largeur
+      rowHeights: 50, 
       wordWrap: true,
       licenseKey: 'non-commercial-and-evaluation',
       columns: columnsDefs,

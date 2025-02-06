@@ -624,7 +624,7 @@
                     // Calcul de l'indice correct pour récupérer les données dans dataT
                     const colData = row[4 + colIndex * 3 + typeIndex]; // Colonne correspondante pour CM, TD, TP
                     // Si on est pas dans la dernière colonne
-                    if (colData && typeof colData === 'number') {
+                    if (colData) {
                         const semaineDebut = row[1]; // Semaine de début (colonne dédiée)
                         const semaineFin = semaineDebut; // Par défaut, semaineFin = semaineDebut
 

@@ -5,10 +5,16 @@ require_once __DIR__ . '/../modele/CoursDTO.php';
 require_once __DIR__ . '/../modele/EnseignantDTO.php';
 require_once __DIR__ . '/../modele/VoeuDTO.php';
 require_once __DIR__ . '/../modele/VoeuHorsIUTDTO.php';
-
-
+use src\Db\connexionFactory;
 $errors = [];
 $userId = $_SESSION['user_id'];
+$conn = connexionFactory::makeConnection();
+$stmt = $conn->prepare("SELECT nom, prenom FROM utilisateurs WHERE id_utilisateur = :userId");
+$stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
+$stmt->execute();
+$enseignantData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$nomPrenom = $enseignantData ? $enseignantData['nom'] . ' ' . $enseignantData['prenom'] : "Nom Inexistant";
 
 $coursDTO = new CoursDTO();
 $enseignantDTO = new EnseignantDTO();
@@ -39,6 +45,38 @@ foreach ($voeuxExistants as $v) {
         $voeuxJanvier[] = $v;
     }
 }
+// Stockage des données pour le PDF
+$_SESSION['pdf_data'] = [
+    'enseignant' => $nomPrenom,
+    'voeux_septembre' => array_map(function($v) use ($coursDTO) {
+        $cours = $coursDTO->findById($v->getIdCours());
+        return [
+            'ressource' => $cours ? $cours->getNomCours() : 'Inconnu',
+            'semestre' => $v->getSemestre(),
+            'total' => $v->getNbHeures(),
+        ];
+    }, $voeuxSeptembre),
+    'voeux_janvier' => array_map(function($v) use ($coursDTO) {
+        $cours = $coursDTO->findById($v->getIdCours());
+        return [
+            'ressource' => $cours ? $cours->getNomCours() : 'Inconnu',
+            'semestre' => $v->getSemestre(),
+            'total' => $v->getNbHeures(),
+        ];
+    }, $voeuxJanvier),
+    'voeux_hors_iut' => array_map(function($v) {
+        return [
+            'composant' => $v->getComposant(),
+            'formation' => $v->getFormation(),
+            'module' => $v->getModule(),
+            'cm' => $v->getNbHeuresCM(),
+            'td' => $v->getNbHeuresTD(),
+            'tp' => $v->getNbHeuresTP(),
+            'ei' => $v->getNbHeuresEI(),
+            'total' => $v->getNbHeuresTotal(),
+        ];
+    }, $voeuxHorsIUTExistants)
+];
 
 $septembre_count = max(1, count($voeuxSeptembre));
 $janvier_count   = max(1, count($voeuxJanvier));
@@ -261,7 +299,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 }
             }
-            echo "<div class='alert alert-success'>Les voeux ont été enregistrés avec succès.</div>";
         }
     }
 }
@@ -481,6 +518,7 @@ function genererLigne($type, $coursList, $count, $postData) {
             </div>
         </form>
     </div>
+
 
     <script>
         window.coursData = <?php
@@ -754,9 +792,24 @@ function genererLigne($type, $coursList, $count, $postData) {
                 updateTotals('table_hors_iut');
                 updateDeptInfoTotals();
             }
-
             
         });
     </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelector("button[name='envoyer']").addEventListener("click", function (event) {
+                event.preventDefault();
+                if (confirm("Les vœux ont été enregistrés avec succès.\nVoulez-vous télécharger le PDF ?")) {
+                    const form = this.closest("form");
+                    form.action = "src/User/ServicePdf.php";
+                    form.submit();
+                } else {
+                    window.location.href = "index.php?action=fichePrevisionnelle";
+                }
+            });
+        });
+    </script>
+
+
 </body>
 </html>

@@ -268,6 +268,22 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelector('form').addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            if (confirm("Les vœux ont été enregistrés avec succès.\nVoulez-vous télécharger le PDF ?")) {
+                this.action = "src/User/ressourcePdf.php";
+            } else {
+                this.action = "index.php?action=enseignantFicheRessource";
+            }
+
+            this.submit();
+        });
+    });
+</script>
+
 </body>
 </html>
 

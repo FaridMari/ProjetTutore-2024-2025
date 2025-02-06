@@ -2,6 +2,7 @@
 namespace src\Dispatcher;
 
 
+use src\Action\ConfigurationPlanningDetaille;
 use src\Action\CreerUtilisateurAction;
 use src\Action\EditUserAction;
 use src\Action\EnseignantFIcheContrainteAction;
@@ -104,6 +105,10 @@ class Dispatcher {
                 session_destroy();
                 $log = new SigninAction();
                 $this->renderPage($log->execute());
+                break;
+            case 'configurationPlanningD':
+                $action = new ConfigurationPlanningDetaille();
+                echo $action->execute();
                 break;
 
 

@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mer. 05 fév. 2025 à 09:09
--- Version du serveur : 10.4.28-MariaDB
--- Version de PHP : 8.0.28
+-- Généré le : jeu. 06 fév. 2025 à 14:24
+-- Version du serveur : 10.4.32-MariaDB
+-- Version de PHP : 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -35,6 +35,46 @@ CREATE TABLE `affectations` (
   `heures_affectees` double NOT NULL,
   `type_heure` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Déchargement des données de la table `affectations`
+--
+
+INSERT INTO `affectations` (`id_affectation`, `id_enseignant`, `id_cours`, `id_groupe`, `heures_affectees`, `type_heure`) VALUES
+(1, 64, 189, 1, 0, 'CM'),
+(3, 1, 189, 2, 24, 'TD'),
+(4, 1, 189, 2, 0, 'TP'),
+(5, 1, 189, 3, 0, 'CM'),
+(6, 1, 189, 3, 0, 'EI'),
+(7, 1, 189, 4, 0, 'CM');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `configurationplanningdetaille`
+--
+
+CREATE TABLE `configurationplanningdetaille` (
+  `id` int(11) NOT NULL,
+  `semestre` varchar(255) DEFAULT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  `dateDebut` date DEFAULT NULL,
+  `dateFin` date DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `nbSemaines` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `configurationplanningdetaille`
+--
+
+INSERT INTO `configurationplanningdetaille` (`id`, `semestre`, `type`, `dateDebut`, `dateFin`, `description`, `nbSemaines`) VALUES
+(31, NULL, 'Semestre1', '2025-02-20', '2025-06-27', '', 18),
+(32, NULL, 'Semestre2', '2024-09-02', '2025-01-20', '', 20),
+(33, NULL, 'VacancesToussaint', '2024-10-28', '2024-11-01', 'Test', 0),
+(34, NULL, 'VacancesNoel', '2025-02-24', '2025-01-03', 'Test', 0),
+(35, NULL, 'VacancesHiver', '2025-02-18', '2025-02-21', '', 0),
+(36, NULL, 'VacancesPrintemps', '2025-04-07', '2025-04-11', '', 0);
 
 -- --------------------------------------------------------
 
@@ -329,19 +369,21 @@ CREATE TABLE `groupes` (
   `niveau` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
+--
+-- Déchargement des données de la table `groupes`
+--
 
-INSERT INTO `groupes` (`nom_groupe`, `niveau`) 
-VALUES 
-('GR A', 'BUT 1'),
-('GR B', 'BUT 1'),
-('GR C', 'BUT 1'),
-('GR D', 'BUT 1'),
-('GR E', 'BUT 1'),
-('GR A', 'BUT 2'),
-('GR B', 'BUT 2'),
-('GR C', 'BUT 2'),
-('GR D', 'BUT 2'),
-('GR E', 'BUT 2');
+INSERT INTO `groupes` (`id_groupe`, `nom_groupe`, `niveau`) VALUES
+(1, 'GR A', 'BUT 1'),
+(2, 'GR B', 'BUT 1'),
+(3, 'GR C', 'BUT 1'),
+(4, 'GR D', 'BUT 1'),
+(5, 'GR E', 'BUT 1'),
+(6, 'GR A', 'BUT 2'),
+(7, 'GR B', 'BUT 2'),
+(8, 'GR C', 'BUT 2'),
+(9, 'GR D', 'BUT 2'),
+(10, 'GR E', 'BUT 2');
 
 -- --------------------------------------------------------
 
@@ -378,59 +420,65 @@ CREATE TABLE `repartition_heures` (
 --
 
 INSERT INTO `repartition_heures` (`id_repartition`, `id_cours`, `semaine_debut`, `semaine_fin`, `type_heure`, `nb_heures_par_semaine`, `semestre`) VALUES
-(20253, 186, 37, 38, 'TD', 1, 'S1'),
-(20254, 255, 1, 6, 'TP', 0, 'S1'),
-(20255, 255, 36, 42, 'TP', 0, 'S1'),
-(20256, 255, 44, 50, 'TP', 0, 'S1'),
-(20257, 257, 1, 1, 'CM', 0, 'S1'),
-(20258, 257, 2, 2, 'CM', 0, 'S1'),
-(20259, 257, 3, 3, 'CM', 0, 'S1'),
-(20260, 257, 4, 4, 'CM', 0, 'S1'),
-(20261, 257, 5, 5, 'CM', 0, 'S1'),
-(20262, 257, 6, 6, 'CM', 0, 'S1'),
-(20263, 257, 7, 7, 'CM', 0, 'S1'),
-(20264, 257, 36, 36, 'CM', 0, 'S1'),
-(20265, 257, 37, 37, 'CM', 0, 'S1'),
-(20266, 257, 38, 38, 'CM', 0, 'S1'),
-(20267, 257, 39, 39, 'CM', 0, 'S1'),
-(20268, 257, 40, 40, 'CM', 0, 'S1'),
-(20269, 257, 41, 41, 'CM', 0, 'S1'),
-(20270, 257, 42, 42, 'CM', 0, 'S1'),
-(20271, 257, 43, 43, 'CM', 0, 'S1'),
-(20272, 257, 44, 44, 'CM', 0, 'S1'),
-(20273, 257, 45, 45, 'CM', 0, 'S1'),
-(20274, 257, 46, 46, 'CM', 0, 'S1'),
-(20275, 257, 47, 47, 'CM', 0, 'S1'),
-(20276, 257, 48, 48, 'CM', 0, 'S1'),
-(20277, 257, 49, 49, 'CM', 0, 'S1'),
-(20278, 257, 50, 50, 'CM', 0, 'S1'),
-(20279, 257, 51, 51, 'CM', 0, 'S1'),
-(20280, 257, 52, 52, 'CM', 0, 'S1'),
-(20307, 277, 44, 45, 'TP', 2, 'S2'),
-(20308, 348, 1, 1, 'TD', 0, 'S2'),
-(20309, 348, 2, 2, 'TD', 0, 'S2'),
-(20310, 348, 3, 3, 'TD', 0, 'S2'),
-(20311, 348, 4, 4, 'TD', 0, 'S2'),
-(20312, 348, 5, 5, 'TD', 0, 'S2'),
-(20313, 348, 6, 6, 'TD', 0, 'S2'),
-(20314, 348, 7, 7, 'TD', 0, 'S2'),
-(20315, 348, 36, 36, 'TD', 0, 'S2'),
-(20316, 348, 37, 37, 'TD', 0, 'S2'),
-(20317, 348, 38, 38, 'TD', 0, 'S2'),
-(20318, 348, 39, 39, 'TD', 0, 'S2'),
-(20319, 348, 40, 40, 'TD', 0, 'S2'),
-(20320, 348, 41, 41, 'TD', 0, 'S2'),
-(20321, 348, 42, 42, 'TD', 0, 'S2'),
-(20322, 348, 43, 43, 'TD', 0, 'S2'),
-(20323, 348, 44, 44, 'TD', 0, 'S2'),
-(20324, 348, 45, 45, 'TD', 0, 'S2'),
-(20325, 348, 46, 46, 'TD', 0, 'S2'),
-(20326, 348, 47, 47, 'TD', 0, 'S2'),
-(20327, 348, 48, 48, 'TD', 0, 'S2'),
-(20328, 348, 49, 49, 'TD', 0, 'S2'),
-(20329, 348, 50, 50, 'TD', 0, 'S2'),
-(20330, 348, 51, 51, 'TD', 0, 'S2'),
-(20331, 348, 52, 52, 'TD', 0, 'S2');
+(20922, 262, 1, 1, 'CM', 0, 'S3'),
+(20923, 262, 2, 2, 'CM', 0, 'S3'),
+(20924, 262, 3, 3, 'CM', 0, 'S3'),
+(20925, 262, 36, 36, 'CM', 0, 'S3'),
+(20926, 262, 37, 37, 'CM', 0, 'S3'),
+(20927, 262, 38, 38, 'CM', 0, 'S3'),
+(20928, 262, 39, 39, 'CM', 0, 'S3'),
+(20929, 262, 40, 40, 'CM', 0, 'S3'),
+(20930, 262, 41, 41, 'CM', 0, 'S3'),
+(20931, 262, 42, 42, 'CM', 0, 'S3'),
+(20932, 262, 43, 43, 'CM', 0, 'S3'),
+(20933, 262, 44, 44, 'CM', 0, 'S3'),
+(20934, 262, 45, 45, 'CM', 0, 'S3'),
+(20935, 262, 46, 46, 'CM', 0, 'S3'),
+(20936, 262, 47, 47, 'CM', 0, 'S3'),
+(20937, 262, 48, 48, 'CM', 0, 'S3'),
+(20938, 262, 49, 49, 'CM', 0, 'S3'),
+(20939, 262, 50, 50, 'CM', 0, 'S3'),
+(20940, 262, 51, 51, 'CM', 0, 'S3'),
+(20941, 262, 52, 52, 'CM', 0, 'S3'),
+(21000, 348, 8, 8, 'TD', 0, 'S2'),
+(21001, 348, 9, 9, 'TD', 0, 'S2'),
+(21002, 348, 10, 10, 'TD', 0, 'S2'),
+(21003, 348, 11, 11, 'TD', 0, 'S2'),
+(21004, 348, 12, 12, 'TD', 0, 'S2'),
+(21005, 348, 13, 13, 'TD', 0, 'S2'),
+(21006, 348, 14, 14, 'TD', 0, 'S2'),
+(21007, 348, 15, 15, 'TD', 0, 'S2'),
+(21008, 348, 16, 16, 'TD', 0, 'S2'),
+(21009, 348, 17, 17, 'TD', 0, 'S2'),
+(21010, 348, 18, 18, 'TD', 0, 'S2'),
+(21011, 348, 19, 19, 'TD', 0, 'S2'),
+(21012, 348, 20, 20, 'TD', 0, 'S2'),
+(21013, 348, 21, 21, 'TD', 0, 'S2'),
+(21014, 348, 22, 22, 'TD', 0, 'S2'),
+(21015, 348, 23, 23, 'TD', 0, 'S2'),
+(21016, 348, 24, 24, 'TD', 0, 'S2'),
+(21017, 348, 25, 25, 'TD', 0, 'S2'),
+(21512, 186, 39, 40, 'TP', 4, 'S1'),
+(21513, 257, 1, 1, 'CM', 0, 'S1'),
+(21514, 257, 2, 2, 'CM', 0, 'S1'),
+(21515, 257, 3, 3, 'CM', 0, 'S1'),
+(21516, 257, 36, 36, 'CM', 0, 'S1'),
+(21517, 257, 37, 37, 'CM', 0, 'S1'),
+(21518, 257, 38, 38, 'CM', 0, 'S1'),
+(21519, 257, 39, 39, 'CM', 0, 'S1'),
+(21520, 257, 40, 40, 'CM', 0, 'S1'),
+(21521, 257, 41, 41, 'CM', 0, 'S1'),
+(21522, 257, 42, 42, 'CM', 0, 'S1'),
+(21523, 257, 43, 43, 'CM', 0, 'S1'),
+(21524, 257, 44, 44, 'CM', 0, 'S1'),
+(21525, 257, 45, 45, 'CM', 0, 'S1'),
+(21526, 257, 46, 46, 'CM', 0, 'S1'),
+(21527, 257, 47, 47, 'CM', 0, 'S1'),
+(21528, 257, 48, 48, 'CM', 0, 'S1'),
+(21529, 257, 49, 49, 'CM', 0, 'S1'),
+(21530, 257, 50, 50, 'CM', 0, 'S1'),
+(21531, 257, 51, 51, 'CM', 0, 'S1'),
+(21532, 257, 52, 52, 'CM', 0, 'S1');
 
 -- --------------------------------------------------------
 
@@ -480,7 +528,15 @@ CREATE TABLE `voeux` (
   `remarques` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
+--
+-- Déchargement des données de la table `voeux`
+--
 
+INSERT INTO `voeux` (`id_voeu`, `id_enseignant`, `id_cours`, `semestre`, `nb_CM`, `nb_TD`, `nb_TP`, `nb_EI`, `remarques`) VALUES
+(44, 64, 189, '1', 0, 24, 0, 0, '2 groupes en TD'),
+(45, 1, 189, '1', 1, 24, 1, 1, '1 groupes TD'),
+(46, 1, 192, '1', 1, 48, 1, 1, '2 groupes TP'),
+(47, 1, 283, '2', 8, 24, 1, 1, '3');
 
 -- --------------------------------------------------------
 
@@ -502,6 +558,13 @@ CREATE TABLE `voeux_hors_iut` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
+-- Déchargement des données de la table `voeux_hors_iut`
+--
+
+INSERT INTO `voeux_hors_iut` (`id_voeu_hi`, `id_enseignant`, `composant`, `formation`, `module`, `nb_heures_cm`, `nb_heures_td`, `nb_heures_tp`, `nb_heures_ei`, `nb_total`) VALUES
+(4, 1, 'INFO COM', 'BUT 2', 'TRUC', 2, 3, 4, 6, 15);
+
+--
 -- Index pour les tables déchargées
 --
 
@@ -513,6 +576,12 @@ ALTER TABLE `affectations`
   ADD KEY `id_cours` (`id_cours`),
   ADD KEY `id_enseignant` (`id_enseignant`),
   ADD KEY `id_groupe` (`id_groupe`);
+
+--
+-- Index pour la table `configurationplanningdetaille`
+--
+ALTER TABLE `configurationplanningdetaille`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Index pour la table `contraintes`
@@ -594,7 +663,13 @@ ALTER TABLE `voeux_hors_iut`
 -- AUTO_INCREMENT pour la table `affectations`
 --
 ALTER TABLE `affectations`
-  MODIFY `id_affectation` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_affectation` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT pour la table `configurationplanningdetaille`
+--
+ALTER TABLE `configurationplanningdetaille`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT pour la table `contraintes`
@@ -624,7 +699,7 @@ ALTER TABLE `enseignants`
 -- AUTO_INCREMENT pour la table `groupes`
 --
 ALTER TABLE `groupes`
-  MODIFY `id_groupe` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_groupe` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT pour la table `historisation`
@@ -636,7 +711,7 @@ ALTER TABLE `historisation`
 -- AUTO_INCREMENT pour la table `repartition_heures`
 --
 ALTER TABLE `repartition_heures`
-  MODIFY `id_repartition` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20332;
+  MODIFY `id_repartition` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21533;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateurs`
@@ -648,13 +723,13 @@ ALTER TABLE `utilisateurs`
 -- AUTO_INCREMENT pour la table `voeux`
 --
 ALTER TABLE `voeux`
-  MODIFY `id_voeu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id_voeu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT pour la table `voeux_hors_iut`
 --
 ALTER TABLE `voeux_hors_iut`
-  MODIFY `id_voeu_hi` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_voeu_hi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Contraintes pour les tables déchargées

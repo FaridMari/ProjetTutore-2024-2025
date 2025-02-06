@@ -110,6 +110,9 @@
                                 FROM cours
                                 INNER JOIN repartition_heures ON cours.id_cours = repartition_heures.id_cours')->fetchAll(PDO::FETCH_ASSOC);
 
+                $configurationPlanningDetailleData = $bdd->query(
+                    'SELECT * FROM configurationplanningdetaille')->fetchAll(PDO::FETCH_ASSOC);
+
                 $formations = [
                     ['semestre' => 'S1'],
                     ['semestre' => 'S2'],
@@ -146,8 +149,11 @@
     const semester = '<?php echo $_GET['semester']; ?>';
     const repartitionSansProf = <?php echo json_encode($repartition2); ?>;
 
+    let configData = <?php echo json_encode($configurationPlanningDetailleData); ?>;
+    console.log(configData);
+
     let semaine = 0;
-    let nbSemaine = 0;
+    let nbSemaine = 10;
     let semaineData = [];
     let vacToussaint = 0;
     let vacNoel = 0;
@@ -156,92 +162,121 @@
     let vacPrintemps = 0;
     let vacPrintempsFin = 0;
     let allVacances = [];
+    let dateDebutSemestre = new Date();
+    let dateFinSemestre = new Date();
+    let dateDebutSemestre1 = new Date();
+    let dateFinSemestre1 = new Date();
+    let dateDebutSemestre2 = new Date();
+    let dateFinSemestre2 = new Date();
+    let nbSemaine1 = 0;
+    let nbSemaine2 = 0;
+    let vacToussaintFinS = 0;
+    let vacNoelFinS = 0;
+    let vacHiverFinS = 0;
+    let vacPrintempsFinS = 0;
 
-    fetch('src/gestionnaire/get_info_semestres.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({}) // Envoyer les données nécessaires si besoin
-    })
-        .then(response => response.json())
-        .then(data => {
-            // Récupération des informations du semestre et vacances depuis la réponse
-            const semestre1 = data.find(entry => entry.type === "Semestre1");
-            const semestre2 = data.find(entry => entry.type === "Semestre2");
-            const vacancesToussaint = data.find(entry => entry.type === "VacancesToussaint");
-            const vacancesNoel = data.find(entry => entry.type === "VacancesNoel");
-            const vacancesHiver = data.find(entry => entry.type === "VacancesHiver");
-            const vacancesPrintemps = data.find(entry => entry.type === "VacancesPrintemps");
+    // Assumons que `configData` est une liste d'objets contenant des informations sur les semestres et les vacances
+    for (let item of configData) {
+        switch (item['type']) {
+            case 'Semestre1':
+                // Affectation des valeurs pour le semestre 1
+                const semestre1 = item;
+                dateDebutSemestre1 = new Date(semestre1.dateDebut);
+                dateFinSemestre1 = new Date(semestre1.dateFin);
+                nbSemaine1 = semestre1.nbSemaines;
+                break;
 
-            // Exemple d'affectation des valeurs récupérées à des variables JavaScript
-            const dateDebutSemestre1 = new Date(semestre1.dateDebut);
-            const dateFinSemestre1 = new Date(semestre1.dateFin);
-            const nbSemaine1 = semestre1.nbSemaines;
+            case 'Semestre2':
+                // Affectation des valeurs pour le semestre 2
+                const semestre2 = item;
+                dateDebutSemestre2 = new Date(semestre2.dateDebut);
+                dateFinSemestre2 = new Date(semestre2.dateFin);
+                nbSemaine2 = semestre2.nbSemaines;
+                break;
 
-            const dateDebutSemestre2 = new Date(semestre2.dateDebut);
-            const dateFinSemestre2 = new Date(semestre2.dateFin);
-            const nbSemaine2 = semestre2.nbSemaines;
+            case 'VacancesToussaint':
+                // Affectation des valeurs pour les vacances de la Toussaint
+                const vacancesToussaint = item;
+                vacToussaintDebut = new Date(vacancesToussaint.dateDebut);
+                vacToussaintFin = new Date(vacancesToussaint.dateFin);
+                vacToussaint = getWeek(vacToussaintDebut);
+                vacToussaintFinS = getWeek(vacToussaintFin);
+                allVacances.push(vacToussaint);
+                allVacances.push(vacToussaintFinS);
+                break;
 
-            // Calcul des semaines de vacances à partir des dates
-            const vacToussaintDebut = new Date(vacancesToussaint.dateDebut);
-            const vacToussaintFin = new Date(vacancesToussaint.dateFin);
-            const vacToussaint = getWeek(vacToussaintDebut);
-            const vacToussaintSF = getWeek(vacToussaintFin);
-            allVacances.push(vacToussaint);
-            allVacances.push(vacToussaintSF);
+            case 'VacancesNoel':
+                // Affectation des valeurs pour les vacances de Noël
+                const vacancesNoel = item;
+                vacNoelDebut = new Date(vacancesNoel.dateDebut);
+                vacNoelFin = new Date(vacancesNoel.dateFin);
+                vacNoel = getWeek(vacNoelDebut);
+                vacNoelFinS = getWeek(vacNoelFin);
+                allVacances.push(vacNoel);
+                allVacances.push(vacNoelFinS);
+                break;
 
-            const vacNoelDebut = new Date(vacancesNoel.dateDebut);
-            const vacNoelFin = new Date(vacancesNoel.dateFin);
-            const vacNoel = getWeek(vacNoelDebut);
-            const vacNoelSF = getWeek(vacNoelFin);
-            allVacances.push(vacNoel);
-            allVacances.push(vacNoelSF);
+            case 'VacancesHiver':
+                // Affectation des valeurs pour les vacances d'hiver
+                const vacancesHiver = item;
+                vacHiverDebut = new Date(vacancesHiver.dateDebut);
+                vacHiverFin = new Date(vacancesHiver.dateFin);
+                vacHiver = getWeek(vacHiverDebut);
+                vacHiverFinS = getWeek(vacHiverFin);
+                allVacances.push(vacHiver);
+                allVacances.push(vacHiverFinS);
+                break;
 
-            const vacHiverDebut = new Date(vacancesHiver.dateDebut);
-            const vacHiverFin = new Date(vacancesHiver.dateFin);
-            const vacHiver = getWeek(vacHiverDebut);
-            const vacHiverSF = getWeek(vacHiverFin);
-            allVacances.push(vacHiver);
-            allVacances.push(vacHiverSF);
+            case 'VacancesPrintemps':
+                // Affectation des valeurs pour les vacances de printemps
+                const vacancesPrintemps = item;
+                vacPrintempsDebut = new Date(vacancesPrintemps.dateDebut);
+                vacPrintempsFin = new Date(vacancesPrintemps.dateFin);
+                vacPrintemps = getWeek(vacPrintempsDebut);
+                vacPrintempsFinS = getWeek(vacPrintempsFin);
+                allVacances.push(vacPrintemps);
+                allVacances.push(vacPrintempsFinS);
+                break;
 
-            const vacPrintempsDebut = new Date(vacancesPrintemps.dateDebut);
-            const vacPrintempsFin = new Date(vacancesPrintemps.dateFin);
-            const vacPrintemps = getWeek(vacPrintempsDebut);
-            const vacPrintempsSF = getWeek(vacPrintempsFin);
-            allVacances.push(vacPrintemps);
-            allVacances.push(vacPrintempsSF);
+            default:
+                // Ajouter un cas par défaut pour gérer les autres types
+                console.log(`Type inconnu: ${item['type']}`);
+        }
+    }
 
-            const semaine1 = getWeek(dateDebutSemestre1);
-            const semaine2 = getWeek(dateDebutSemestre2);
+    // Déterminer quel semestre utiliser
+    if (semester === 'S1' || semester === 'S3') {
+        semaine = getWeek(dateDebutSemestre2);
+        nbSemaine = nbSemaine2;
+        console.log('test' + nbSemaine2);
+        dateDebutSemestre = dateDebutSemestre2;
+        dateFinSemestre = dateFinSemestre2;
+    } else {
+        semaine = getWeek(dateDebutSemestre1); // Semaine de début pour le semestre 1
+        nbSemaine = nbSemaine1;
+        dateDebutSemestre = dateDebutSemestre1;
+        dateFinSemestre = dateFinSemestre1;
+    }
 
-
-            if (semester === 'S1' || semester === 'S3') {
-                semaine = semaine2;
-                nbSemaine = nbSemaine2;
-            } else {
-                semaine = semaine1;
-                nbSemaine = nbSemaine1;
-            }
-
-
-        })
-        .catch(error => console.error('Erreur lors de la récupération des données:', error));
+    // Fonction pour calculer la semaine de l'année
     function getWeek(date) {
         const currentDate = new Date(date.getFullYear(), 0, 1);
         const diff = date - currentDate;
         const oneDay = 1000 * 60 * 60 * 24;
         const dayOfYear = Math.floor(diff / oneDay);
         return Math.ceil((dayOfYear + 1) / 7);
-
     }
+
+
+
+
 
 
     colCours = [];
     for (let i = 0; i < coursListSansSae.length; i++) {
         colCours.push(coursListSansSae[i].nom_cours);
     }
-    premLigne = ['', '', 'Semestre' + semester, 'Ressource + SAE'];
+    let premLigne = ['', '', 'Semestre' + semester, 'Ressource + SAE'];
     for (let i = 0; i < colCours.length; i++) {
         premLigne.push({ label: colCours[i], colspan: 3 });
     }
@@ -274,12 +309,12 @@
         }
     }
 
-    deuxLigne = ['','','2024-2025', 'Responsable'];
+    let deuxLigne = ['','','2024-2025', 'Responsable'];
     for (let i = 0; i < responsable.length; i++) {
         deuxLigne.push(responsable[i]);
     }
 
-    deuxDemiLigne = ['','','', 'Code Cours'];
+    let deuxDemiLigne = ['','','', 'Code Cours'];
 
     for (let i = 0; i < coursListSansSae.length; i++) {
         deuxDemiLigne.push({ label: coursListSansSae[i].code_cours, colspan: 3 });
@@ -289,7 +324,7 @@
     }
 
 
-    troisLigne = ['','','', 'PN'];
+    let troisLigne = ['','','', 'PN'];
     for (let i = 0; i < colCours.length; i++) {
         troisLigne.push({ label: 'CM', colspan: 1 });
         troisLigne.push({ label: 'TD', colspan: 1 });
@@ -298,7 +333,7 @@
     for (let i = 0; i < coursListSae.length; i++) {
         troisLigne.push({ label:coursListSae[i].nom_cours, colspan: 1 });
     }
-    quatreLigne = ['','','', ''];
+    let quatreLigne = ['','','', ''];
     for (let i = 0; i < colCours.length; i++) {
         for (let j = 0; j < coursListSansSae.length; j++) {
             if (colCours[i] === coursListSansSae[j].nom_cours) {
@@ -312,8 +347,8 @@
         quatreLigne.push({label: coursListSae[j].nb_heures_total, colspan: 1});
     }
 
-    cinqLigne = ['','','', 'Heures totales Etudiants'];
-    sixLigne = ['','','', 'Heures totales Enseignants'];
+    let cinqLigne = ['','','', 'Heures totales Etudiants'];
+    let sixLigne = ['','','', 'Heures totales Enseignants'];
     for (let i = 0; i < colCours.length; i++) {
         for (let j = 0; j < coursListSansSae.length; j++) {
             if (colCours[i] === coursListSansSae[j].nom_cours) {
@@ -360,17 +395,17 @@
     for (let sae of coursListSae) {
         colCours.push(sae.nom_cours);
     }
-
+    console.log(nbSemaine);
     for (let i = 0; i < nbSemaine; i++) {
-
         let estVacances = allVacances.includes(semaineActuelle);
         let dateActuelleStr = new Date(dateDebutSemestre).toLocaleDateString('fr-FR');
-
+        let semaineData = [];
         // Gestion des colonnes fixes pour chaque semaine
         if (estVacances) {
             semaineData.push("", semaineActuelle, dateActuelleStr, "Vacances");
         } else {
             semaineData.push("", semaineActuelle, dateActuelleStr, "");
+
         }
 
         // Construire la liste des colonnes pour les cours
@@ -413,7 +448,11 @@
 
             // Ajouter les valeurs CM, TD, TP ou combiner sur 3 colonnes pour les SAEs
             if (estSae) {
-                semaineData.push(valueEI);
+                if (valueEI !== 0) {
+                    semaineData.push(valueEI);
+                } else {
+                    semaineData.push('');
+                }
             } else {
                 // Pour les autres cours, utiliser trois colonnes (CM, TD, TP)
                 if (valueCM !== 0 && valueTD !== 0 && valueTP !== 0) {

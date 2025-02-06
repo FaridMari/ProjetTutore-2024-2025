@@ -1,0 +1,27 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+#menu {
+    position: fixed;
+    top: 0; left: 0;
+    width: 11%;
+    height: 100vh;
+    z-index: 9999;
+}
+
+#main-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-left: 11%;
+    min-height: 100vh;
+    padding: 2em;
+    box-sizing: border-box;
+}

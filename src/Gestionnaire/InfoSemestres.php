@@ -1,14 +1,4 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8" />
-    <title>Affichage des Semestres</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
-
-    <link rel="stylesheet" href="css/InfoSemestreStyle.css">
-</head>
-<body>
-
+<div id="main-content">
 <div class="container" id="container">
     <div id="infoContainer" class="mt-4">
         <!-- Informations générales -->
@@ -175,11 +165,13 @@
         </div>
     </div>-->
     <button type="button" class="btn btn-success" id="enregistrer">Enregistrer</button>
+    </div>
 </div>
 
 
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
@@ -264,6 +256,3 @@
     });
 
 </script>
-
-</body>
-</html>

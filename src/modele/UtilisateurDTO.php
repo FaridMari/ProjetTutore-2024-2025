@@ -63,18 +63,20 @@ class UtilisateurDTO {
     public function save(Utilisateur $utilisateur) {
         try {
             if ($utilisateur->getIdUtilisateur()) {
-                $stmt = $this->db->prepare("UPDATE utilisateurs SET nom = :nom, email = :email, mot_de_passe = :motDePasse, role = :role WHERE id_utilisateur = :id");
+                $stmt = $this->db->prepare("UPDATE utilisateurs SET nom = :nom, prenom = :prenom, email = :email, mot_de_passe = :motDePasse, role = :role WHERE id_utilisateur = :id");
                 $stmt->execute([
                     'id' => $utilisateur->getIdUtilisateur(),
+                    'prenom'=>$utilisateur->getPrenom(),
                     'nom' => $utilisateur->getNom(),
                     'email' => $utilisateur->getEmail(),
                     'motDePasse' => $utilisateur->getMotDePasse(),
                     'role' => $utilisateur->getRole(),
                 ]);
             } else {
-                $stmt = $this->db->prepare("INSERT INTO utilisateurs (nom, email, mot_de_passe, role) VALUES (:nom, :email, :motDePasse, :role)");
+                $stmt = $this->db->prepare("INSERT INTO utilisateurs (nom, prenom,email, mot_de_passe, role) VALUES (:nom, :prenom, :email, :motDePasse, :role)");
                 $stmt->execute([
                     'nom' => $utilisateur->getNom(),
+                    'prenom'=>$utilisateur->getPrenom(),
                     'email' => $utilisateur->getEmail(),
                     'motDePasse' => $utilisateur->getMotDePasse(),
                     'role' => $utilisateur->getRole(),

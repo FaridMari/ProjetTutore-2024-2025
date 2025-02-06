@@ -4,9 +4,12 @@ class Voeu {
     private $idVoeu;
     private $idEnseignant;
     private $idCours;
-    private $semestre;
-    private $nbHeures;
     private $remarque;
+    private $semestre;
+    private $nbCM;
+    private $nbTD;
+    private $nbTP;
+    private $nbEI;
 
     public function __construct(
         $idVoeu = null,
@@ -14,14 +17,20 @@ class Voeu {
         $idCours = null,
         $remarque = null,
         $semestre = null,
-        $nbHeures = null
+        $nbCM = null,
+        $nbTD = null,
+        $nbTP = null,
+        $nbEI = null
     ) {
         $this->idVoeu = $idVoeu;
         $this->idEnseignant = $idEnseignant;
         $this->idCours = $idCours;
         $this->remarque = $remarque;
         $this->semestre = $semestre;
-        $this->nbHeures = $nbHeures;
+        $this->nbCM = $nbCM;
+        $this->nbTD = $nbTD;
+        $this->nbTP = $nbTP;
+        $this->nbEI = $nbEI;
     }
 
     public function getIdVoeu() {
@@ -64,13 +73,36 @@ class Voeu {
         $this->semestre = $semestre;
     }
 
-    public function getNbHeures() {
-        return $this->nbHeures;
+    public function getNbCM() {
+        return $this->nbCM;
     }
 
-    public function setNbHeures($nbHeures) {
-        $this->nbHeures = $nbHeures;
+    public function setNbCM($nbCM) {
+        $this->nbCM = $nbCM;
+    }
+
+    public function getNbTD() {
+        return $this->nbTD;
+    }
+
+    public function setNbTD($nbTD) {
+        $this->nbTD = $nbTD;
+    }
+
+    public function getNbTP() {
+        return $this->nbTP;
+    }
+
+    public function setNbTP($nbTP) {
+        $this->nbTP = $nbTP;
+    }
+
+    public function getNbEI() {
+        return $this->nbEI;
+    }
+
+    public function setNbEI($nbEI) {
+        $this->nbEI = $nbEI;
     }
 }
-
 ?>

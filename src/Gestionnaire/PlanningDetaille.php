@@ -136,21 +136,8 @@
     <div  id="example1" class="hot ht-theme-main disable-auto-theme"></div>
 </body>
 
+
 <script>
-    const dateDebutSemestre = new Date('2024-09-02');
-    const dateFinSemestre = new Date('2025-01-24');
-    const semaine = 36;
-    const nbSemaine = 24;
-
-
-
-    const data = [
-        ['Semestre', 'Nom Cours', 'Heures CM', 'Heures TD', 'Heures TP'],
-        ['S1', 'Cours 1', 30, 20, 15],
-        ['S1', 'Cours 2', 25, 25, 10],
-        ['S2', 'Cours 3', 20, 30, 20]
-    ];
-
     const repartitionData = <?php echo json_encode($repartition); ?>;
     const coursList = <?php echo json_encode($coursList); ?>;
     const coursListSansSae = <?php echo json_encode($coursListSansSae); ?>;
@@ -158,6 +145,96 @@
     const formations = <?php echo json_encode($formations); ?>;
     const semester = '<?php echo $_GET['semester']; ?>';
     const repartitionSansProf = <?php echo json_encode($repartition2); ?>;
+
+    let semaine = 0;
+    let nbSemaine = 0;
+    let semaineData = [];
+    let vacToussaint = 0;
+    let vacNoel = 0;
+    let vacNoelFin = 0;
+    let vacHiver = 0;
+    let vacPrintemps = 0;
+    let vacPrintempsFin = 0;
+    let allVacances = [];
+
+    fetch('src/gestionnaire/get_info_semestres.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({}) // Envoyer les données nécessaires si besoin
+    })
+        .then(response => response.json())
+        .then(data => {
+            // Récupération des informations du semestre et vacances depuis la réponse
+            const semestre1 = data.find(entry => entry.type === "Semestre1");
+            const semestre2 = data.find(entry => entry.type === "Semestre2");
+            const vacancesToussaint = data.find(entry => entry.type === "VacancesToussaint");
+            const vacancesNoel = data.find(entry => entry.type === "VacancesNoel");
+            const vacancesHiver = data.find(entry => entry.type === "VacancesHiver");
+            const vacancesPrintemps = data.find(entry => entry.type === "VacancesPrintemps");
+
+            // Exemple d'affectation des valeurs récupérées à des variables JavaScript
+            const dateDebutSemestre1 = new Date(semestre1.dateDebut);
+            const dateFinSemestre1 = new Date(semestre1.dateFin);
+            const nbSemaine1 = semestre1.nbSemaines;
+
+            const dateDebutSemestre2 = new Date(semestre2.dateDebut);
+            const dateFinSemestre2 = new Date(semestre2.dateFin);
+            const nbSemaine2 = semestre2.nbSemaines;
+
+            // Calcul des semaines de vacances à partir des dates
+            const vacToussaintDebut = new Date(vacancesToussaint.dateDebut);
+            const vacToussaintFin = new Date(vacancesToussaint.dateFin);
+            const vacToussaint = getWeek(vacToussaintDebut);
+            const vacToussaintSF = getWeek(vacToussaintFin);
+            allVacances.push(vacToussaint);
+            allVacances.push(vacToussaintSF);
+
+            const vacNoelDebut = new Date(vacancesNoel.dateDebut);
+            const vacNoelFin = new Date(vacancesNoel.dateFin);
+            const vacNoel = getWeek(vacNoelDebut);
+            const vacNoelSF = getWeek(vacNoelFin);
+            allVacances.push(vacNoel);
+            allVacances.push(vacNoelSF);
+
+            const vacHiverDebut = new Date(vacancesHiver.dateDebut);
+            const vacHiverFin = new Date(vacancesHiver.dateFin);
+            const vacHiver = getWeek(vacHiverDebut);
+            const vacHiverSF = getWeek(vacHiverFin);
+            allVacances.push(vacHiver);
+            allVacances.push(vacHiverSF);
+
+            const vacPrintempsDebut = new Date(vacancesPrintemps.dateDebut);
+            const vacPrintempsFin = new Date(vacancesPrintemps.dateFin);
+            const vacPrintemps = getWeek(vacPrintempsDebut);
+            const vacPrintempsSF = getWeek(vacPrintempsFin);
+            allVacances.push(vacPrintemps);
+            allVacances.push(vacPrintempsSF);
+
+            const semaine1 = getWeek(dateDebutSemestre1);
+            const semaine2 = getWeek(dateDebutSemestre2);
+
+
+            if (semester === 'S1' || semester === 'S3') {
+                semaine = semaine2;
+                nbSemaine = nbSemaine2;
+            } else {
+                semaine = semaine1;
+                nbSemaine = nbSemaine1;
+            }
+
+
+        })
+        .catch(error => console.error('Erreur lors de la récupération des données:', error));
+    function getWeek(date) {
+        const currentDate = new Date(date.getFullYear(), 0, 1);
+        const diff = date - currentDate;
+        const oneDay = 1000 * 60 * 60 * 24;
+        const dayOfYear = Math.floor(diff / oneDay);
+        return Math.ceil((dayOfYear + 1) / 7);
+
+    }
 
 
     colCours = [];
@@ -285,14 +362,8 @@
     }
 
     for (let i = 0; i < nbSemaine; i++) {
-        let semaineData = [];
-        let vacToussaint = 43;
-        let vacNoel = 51;
-        let vacNoelFin = 52;
-        let vacHiver = 7;
-        let vacPrintemps = 15;
-        let vacPrintempsFin = 16;
-        let estVacances = [vacToussaint, vacNoel, vacNoelFin, vacHiver, vacPrintemps, vacPrintempsFin].includes(semaineActuelle);
+
+        let estVacances = allVacances.includes(semaineActuelle);
         let dateActuelleStr = new Date(dateDebutSemestre).toLocaleDateString('fr-FR');
 
         // Gestion des colonnes fixes pour chaque semaine

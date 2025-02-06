@@ -150,7 +150,6 @@
     const repartitionSansProf = <?php echo json_encode($repartition2); ?>;
 
     let configData = <?php echo json_encode($configurationPlanningDetailleData); ?>;
-    console.log(configData);
 
     let semaine = 0;
     let nbSemaine = 10;
@@ -175,6 +174,7 @@
     let vacHiverFinS = 0;
     let vacPrintempsFinS = 0;
 
+    console.log(configData)
     // Assumons que `configData` est une liste d'objets contenant des informations sur les semestres et les vacances
     for (let item of configData) {
         switch (item['type']) {
@@ -248,7 +248,6 @@
     if (semester === 'S1' || semester === 'S3') {
         semaine = getWeek(dateDebutSemestre2);
         nbSemaine = nbSemaine2;
-        console.log('test' + nbSemaine2);
         dateDebutSemestre = dateDebutSemestre2;
         dateFinSemestre = dateFinSemestre2;
     } else {
@@ -260,12 +259,19 @@
 
     // Fonction pour calculer la semaine de l'année
     function getWeek(date) {
-        const currentDate = new Date(date.getFullYear(), 0, 1);
-        const diff = date - currentDate;
-        const oneDay = 1000 * 60 * 60 * 24;
-        const dayOfYear = Math.floor(diff / oneDay);
-        return Math.ceil((dayOfYear + 1) / 7);
+        //Calcul de la semaine avec la norme iso
+        const tempDate = new Date(date);
+        tempDate.setHours(0, 0, 0, 0);
+
+        tempDate.setDate(tempDate.getDate() + 3 - (tempDate.getDay() + 6) % 7);
+        const firstThursday = new Date(tempDate.getFullYear(), 0, 4);
+        firstThursday.setDate(firstThursday.getDate() + 3 - (firstThursday.getDay() + 6) % 7);
+
+        const weekNumber = Math.round((tempDate - firstThursday) / (7 * 24 * 60 * 60 * 1000)) + 1;
+
+        return weekNumber;
     }
+
 
 
 
@@ -395,7 +401,7 @@
     for (let sae of coursListSae) {
         colCours.push(sae.nom_cours);
     }
-    console.log(nbSemaine);
+
     for (let i = 0; i < nbSemaine; i++) {
         let estVacances = allVacances.includes(semaineActuelle);
         let dateActuelleStr = new Date(dateDebutSemestre).toLocaleDateString('fr-FR');

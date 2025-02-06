@@ -14,13 +14,13 @@
                     <div class="col-md-3"><strong>Remarque</strong></div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-md-3"><strong>Semestre Pair:</strong></div>
+                    <div class="col-md-3"><strong>Semestre Impair:</strong></div>
                     <div class="col-md-3"><input type="date" class="form-control" id="debutSemestrePair"></div>
                     <div class="col-md-3"><input type="date" class="form-control" id="finSemestrePair"></div>
 
                 </div>
                 <div class="row mb-3">
-                    <div class="col-md-3"><strong>Semestre Impair:</strong></div>
+                    <div class="col-md-3"><strong>Semestre Pair:</strong></div>
                     <div class="col-md-3"><input type="date" class="form-control" id="debutSemestreImpair"></div>
                     <div class="col-md-3"><input type="date" class="form-control" id="finSemestreImpair"></div>
                 </div>

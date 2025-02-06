@@ -614,18 +614,17 @@
     function saveAllData() {
         // Préparez toutes les données pour l'envoi
         const repartitions = [];
-        let finalData = [];
 
         // Parcourir toutes les cellules modifiées et les ajouter à la liste sans la dernière colonne de total
         for (let rowIndex = 0; rowIndex < dataT.length - 1; rowIndex++) { // Exclure la dernière ligne
             const row = dataT[rowIndex];
-            for (let colIndex = 0; colIndex < colCours.length; colIndex++) {
+            for (let colIndex = 0; colIndex < colCours.length ; colIndex++) {
                 // Pour chaque type d'heure (CM, TD, TP)
                 ['CM', 'TD', 'TP'].forEach((typeHeure, typeIndex) => {
                     // Calcul de l'indice correct pour récupérer les données dans dataT
                     const colData = row[4 + colIndex * 3 + typeIndex]; // Colonne correspondante pour CM, TD, TP
                     // Si on est pas dans la dernière colonne
-                    if (colData) {
+                    if (colData && typeof colData === 'number') {
                         const semaineDebut = row[1]; // Semaine de début (colonne dédiée)
                         const semaineFin = semaineDebut; // Par défaut, semaineFin = semaineDebut
 
@@ -643,49 +642,8 @@
                 });
             }
         }
-
-        const mergedRepartitions = [];
-        let currentRepartition = null;
-        repartitions.sort((a, b) => {
-            if (a.codeCours !== b.codeCours) {
-                return a.codeCours.localeCompare(b.codeCours); // Tri par cours
-            }
-            if (a.typeHeure !== b.typeHeure) {
-                return a.typeHeure.localeCompare(b.typeHeure); // Tri par type d'heure (CM, TD, TP)
-            }
-            return a.semaineDebut - b.semaineDebut; // Tri par semaine de début
-        });
-
-        repartitions.forEach((repartition, index) => {
-            // Si une répartition est identique à la précédente
-            if (currentRepartition &&
-                currentRepartition.codeCours === repartition.codeCours &&
-                currentRepartition.typeHeure === repartition.typeHeure &&
-                currentRepartition.nbHeures === repartition.nbHeures) {
-
-                // Si elles sont consécutives (semaineFin de la précédente égale à semaineDebut de la nouvelle)
-                if (currentRepartition.semaineFin + 1 === repartition.semaineDebut) {
-                    // On fusionne en mettant à jour la semaine de fin
-                    currentRepartition.semaineFin = repartition.semaineFin;
-                } else {
-                    // Si elles ne sont pas consécutives, on les ajoute séparément
-                    mergedRepartitions.push(currentRepartition);
-                    currentRepartition = { ...repartition }; // Nouvelle répartition
-                }
-            } else {
-                // Si la répartition est différente, on ajoute la précédente (si elle existe) et on commence une nouvelle
-                if (currentRepartition) {
-                    mergedRepartitions.push(currentRepartition);
-                }
-                currentRepartition = { ...repartition }; // Créer une copie de la répartition actuelle
-            }
-        });
-
-        // Ajouter la dernière répartition à la liste
-        if (currentRepartition) {
-            mergedRepartitions.push(currentRepartition);
-        }
-        sendRepartitionData(mergedRepartitions, semester);
+        console.log(repartitions);
+        sendRepartitionData(repartitions, semester);
     }
 
     function sendRepartitionData(repartition,semester) {

@@ -132,6 +132,7 @@ class EnseignantDTO {
             if ($data) {
                 $enseignant = new Enseignant(
                     $data['id_enseignant'],
+                    $data['id_utilisateur'],
                     $data['heures_affectees'],
                     $data['statut'],
                     $data['total_hetd']

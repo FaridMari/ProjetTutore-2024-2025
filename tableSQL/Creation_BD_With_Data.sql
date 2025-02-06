@@ -329,6 +329,20 @@ CREATE TABLE `groupes` (
   `niveau` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
+
+INSERT INTO `groupes` (`nom_groupe`, `niveau`) 
+VALUES 
+('GR A', 'BUT 1'),
+('GR B', 'BUT 1'),
+('GR C', 'BUT 1'),
+('GR D', 'BUT 1'),
+('GR E', 'BUT 1'),
+('GR A', 'BUT 2'),
+('GR B', 'BUT 2'),
+('GR C', 'BUT 2'),
+('GR D', 'BUT 2'),
+('GR E', 'BUT 2');
+
 -- --------------------------------------------------------
 
 --
@@ -459,19 +473,14 @@ CREATE TABLE `voeux` (
   `id_enseignant` int(11) NOT NULL,
   `id_cours` int(11) NOT NULL,
   `semestre` varchar(255) NOT NULL,
-  `nb_heures` double NOT NULL,
+  `nb_CM` double NOT NULL,
+  `nb_TD` double NOT NULL,
+  `nb_TP` double NOT NULL,
+  `nb_EI` double NOT NULL,
   `remarques` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
---
--- Déchargement des données de la table `voeux`
---
 
-INSERT INTO `voeux` (`id_voeu`, `id_enseignant`, `id_cours`, `semestre`, `nb_heures`, `remarques`) VALUES
-(28, 64, 186, 'S1', 32, ''),
-(29, 64, 187, 'S1', 40, ''),
-(30, 65, 186, 'S1', 32, ''),
-(31, 65, 187, 'S1', 40, '');
 
 -- --------------------------------------------------------
 

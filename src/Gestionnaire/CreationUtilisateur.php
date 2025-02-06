@@ -9,32 +9,35 @@
             font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
+            justify-content: center;
+            align-items: center;
             background-color: #f9f9f9;
             margin: 2em;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             height: 100vh;
         }
 
         h1 {
             text-align: center;
-            color: #333;
+            color: #000;
+            margin-bottom: 1em;
         }
 
         form {
             background: #fff;
             border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             padding: 2em;
             max-width: 30%;
-            width: 100%;;
+            width: 100%;
+            color: #000;
         }
 
         label {
             display: block;
-            color: #555;
+            color: #444;
+            font-weight: 500;
+            margin-bottom: 0.4em;
         }
 
         input[type="text"],
@@ -58,33 +61,45 @@
             font-size: 14px;
         }
 
-
         div {
             margin-bottom: 1em;
         }
 
-        button {
+        button[type="submit"] {
             display: block;
             width: 100%;
-            background-color: #007BFF;
-            color: white;
             border: none;
             padding: 10px 15px;
             border-radius: 5px;
             font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            font-weight: 600;
+
+            background-color: #fff495;
+            color: #000;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        button[type="submit"]:hover {
+            background-color: #FFEF65;
+            color: #222;
         }
 
         #retour {
             margin-top: 1em;
-            background-color: #FFF;
-            color: #007BFF;
-            border: 1px solid #007BFF;
-        }
+            display: block;
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
 
-        button:hover {
-            background-color: #0056b3;
+            background-color: #000;
+            color: #fff;
+            border: none;
+            transition: background-color 0.3s;
+        }
+        #retour:hover {
+            background-color: #303030;
         }
 
     </style>
@@ -133,10 +148,5 @@
 
 
 </form>
-
 </body>
 </html>
-
-<style>
-
-</style>

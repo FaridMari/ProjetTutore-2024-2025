@@ -1,77 +1,68 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Planning</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/styles/handsontable.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/styles/ht-theme-main.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/handsontable@12.1.0/dist/handsontable.full.min.js"></script>
-</head>
 <style>
-    /* General Body Styling */
-    body {
-        padding: 20px;
-        font-family: 'Poppins', sans-serif;
-        background-color: #34495e;
-        color: #ffffff;
+    #main-content {
+        min-height: 100vh;
         display: flex;
         flex-direction: column;
-        align-items: center;
-        justify-content: center;
+        margin: 0;
+        padding: 30px;
+        box-sizing: border-box;
+    }
+
+    .container.my-4 {
+        max-width: 90%;
+        margin: 0 auto;
     }
 
     h1 {
         font-size: 2rem;
+        margin-bottom: 1em;
+        color: #fff;
     }
 
-    .container {
-        max-width: 90vw;
+    .row.mb-3 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .form-label.text-white {
+        color: #fff;
+        margin-right: 1em;
+        font-size: large;
     }
 
     #semester {
-        margin-left: 50em;
-
-    }
-
-
-    .vacation {
-        background-color: #d4edda !important; /* Light green for vacations */
-    }
-
-    .total-exceeded {
-        background-color: #ffcccc !important; /* Rouge clair pour les totaux dépassés */
-    }
-
-
-    .form-label.text-white {
-        color: white;
-        margin-right: 10px;
-    }
-    .row.mb-3 {
-        margin-bottom: 1rem;
+        font-size: x-large;
     }
     .form-select.w-25 {
         width: 25%;
     }
-    .handsontable td, .handsontable th {
-        font-size: 14px; /* Augmente un peu la taille */
-        padding: 8px;    /* Espace intérieur dans chaque cellule */
-        white-space: normal; /* Permet au texte de s'enrouler sur plusieurs lignes */
-        word-wrap: break-word; /* Permet de casser les mots longs si nécessaire */
-    }
 
     #example1 {
-        max-width: 80%;
-        z-index: 1;
-        margin-top: 20px;
+        flex: 1;
+        max-width: 100%;
+        margin: 1em auto 0 auto;
+        overflow: auto;
         border: 1px solid #cccccc;
     }
 
+    .handsontable td, .handsontable th {
+        font-size: 14px;
+        padding: 8px;
+        white-space: normal;
+        word-wrap: break-word;
+    }
+
+    .vacation {
+        background-color: #d4edda !important;
+    }
+    .total-exceeded {
+        background-color: #ffcccc !important;
+    }
 </style>
-<body class="bg-dark text-center">
+
+<div id="main-content">
     <div class="container my-4">
         <h1 class="text-white mb-4">Gestion du Planning</h1>
 
@@ -137,7 +128,7 @@
 
     </div>
     <div  id="example1" class="hot ht-theme-main disable-auto-theme"></div>
-</body>
+</div>
 
 
 <script>

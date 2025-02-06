@@ -6,30 +6,40 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+
             display: flex;
             flex-direction: column;
-            background-color: #eef2ff; /* Fond bleu clair */
-            margin: 2em;
-            padding: 0;
             justify-content: center;
             align-items: center;
+
+            margin: 0;
             height: 100vh;
+            padding: 2em;
         }
 
         h1 {
             text-align: center;
-            color: #003366; /* Titre en bleu foncé */
+            color: #000;
+            margin-bottom: 1em;
         }
 
-        form, select {
-            width: 100%;
+        form {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            padding: 2em;
             max-width: 400px;
+            width: 100%;
+            color: #000;
+            margin-bottom: 1%;
         }
 
         label {
             display: block;
-            color: #003366; /* Label en bleu foncé */
+            color: #444;
             margin-top: 1em;
+            font-weight: 500;
         }
 
         input[type="text"],
@@ -38,35 +48,49 @@
             width: 100%;
             padding: 10px;
             margin-bottom: 15px;
-            border: 1px solid #003366; /* Bordure bleue */
+            border: 1px solid #ddd;
             border-radius: 5px;
             font-size: 14px;
+            color: #000;
         }
 
         button {
             display: block;
             width: 100%;
-            background-color: #007bff; /* Boutons en bleu */
-            color: white;
             border: none;
             padding: 10px 15px;
             border-radius: 5px;
             font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.3s;
+
+            transition: background-color 0.3s, color 0.3s;
         }
 
-        button:hover {
-            background-color: #0056b3; /* Couleur au survol */
+        button[type="submit"] {
+            background-color: #FFEF65;
+            color: #000;
+            font-weight: 600;
+            margin-top: 1em;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #FFE74A;
+            color: #000;
         }
 
         #retour {
             margin-top: 1em;
-            background-color: #ffffff;
-            color: #007bff;
-            border: 1px solid #007bff;
+            background-color: #000;
+            color: #fff;
+            border: none;
+        }
+
+        #retour:hover {
+            background-color: #222;
+            color: #fff;
         }
     </style>
+
 </head>
 <body>
 <h1>Modifier un utilisateur</h1>

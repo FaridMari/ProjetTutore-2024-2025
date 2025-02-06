@@ -17,6 +17,7 @@ use src\Action\FichePrevisionnelleAction;
 use src\Action\DeleteEnseignantAction;
 use src\Action\FicheRepartitionAction;
 use src\Action\PlanningDetailleS;
+use src\Action\EnseignantAccueilAction;
 
 
 
@@ -99,6 +100,10 @@ class Dispatcher {
                 break;
             case 'edit-user':
                 $action = new EditUserAction();
+                echo $action->execute();
+                break;
+            case 'accueilEnseignant':
+                $action = new EnseignantAccueilAction();
                 echo $action->execute();
                 break;
             case 'deconnexion':

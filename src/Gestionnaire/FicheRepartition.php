@@ -188,60 +188,80 @@ foreach ($voeuxFormation as $voeu) {
 $voeuMappingJson = json_encode($voeuMapping);
 $enseignantsParCoursJson = json_encode($enseignantsParCours);
 ?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fiche Répartition</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable@12.1.0/dist/handsontable.full.min.css" />
-  <script src="https://cdn.jsdelivr.net/npm/handsontable@12.1.0/dist/handsontable.full.min.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <style>
-    body {
-      margin: 20px;
-      font-family: Arial, sans-serif;
-      background-color: #2c3e50;
-      color: white;
-    }
+<!--  <style>-->
+<!--    #hot {-->
+<!--      margin-top: 20px;-->
+<!--      margin-left: 200px;-->
+<!--      z-index: 1;-->
+<!--      overflow: auto;-->
+<!--      height: 450px;-->
+<!--    }-->
+<!--    .htNonEditable {-->
+<!--      background-color: #f0f0f0;-->
+<!--      font-weight: bold;-->
+<!--      text-align: center;-->
+<!--    }-->
+<!--    .htMiddle {-->
+<!--      vertical-align: middle;-->
+<!--    }-->
+<!--    .form-label.text-white {-->
+<!--      color: white;-->
+<!--      margin-right: 10px;-->
+<!--    }-->
+<!--    .row.mb-3 {-->
+<!--      margin-bottom: 1rem;-->
+<!--    }-->
+<!--    .form-select.w-25 {-->
+<!--      width: 25%;-->
+<!--    }-->
+<!--    .handsontable td, .handsontable th {-->
+<!--      font-size: 14px;-->
+<!--      padding: 8px;-->
+<!--    }-->
+<!--    #voeuRemark {-->
+<!--      margin-top: 20px;-->
+<!--      padding: 10px;-->
+<!--      background-color: #34495e;-->
+<!--      border-radius: 4px;-->
+<!--    }-->
+<!--  </style>-->
+
+<style>
+
     #hot {
-      margin-top: 20px;
-      margin-left: 200px;
-      z-index: 1;
-      overflow: auto;
-      height: 450px;
+        margin-top: 20px;
     }
     .htNonEditable {
-      background-color: #f0f0f0;
-      font-weight: bold;
-      text-align: center;
+        background-color: #f0f0f0;
+        font-weight: bold;
+        text-align: center;
     }
     .htMiddle {
-      vertical-align: middle;
+        vertical-align: middle;
     }
     .form-label.text-white {
-      color: white;
-      margin-right: 10px;
+        color: white;
+        margin-right: 10px;
     }
     .row.mb-3 {
-      margin-bottom: 1rem;
+        margin-bottom: 1rem;
     }
     .form-select.w-25 {
-      width: 25%;
+        width: 25%;
+    }
+    .table-container {
+        overflow-x: auto;
+        box-sizing: border-box;
     }
     .handsontable td, .handsontable th {
-      font-size: 14px;
-      padding: 8px;
+        font-size: 14px;
+        padding: 8px;
     }
-    #voeuRemark {
-      margin-top: 20px;
-      padding: 10px;
-      background-color: #34495e;
-      border-radius: 4px;
-    }
-  </style>
-</head>
-<body>
+</style>
+
+
+
+<div id="main-content">
   <h1>Fiche Répartition</h1>
   <form method="GET" action="">
     <div class="row mb-3">
@@ -262,7 +282,9 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
   <div id="hot"></div>
   <div id="voeuRemark"></div>
   <button id="saveButton" class="btn btn-primary mt-3">Enregistrer les Affectations</button>
-  <script>
+</div>
+
+<script>
     // Les données pré-remplies issues de PHP
     const data = <?php echo $prepopulatedData; ?>;
     const listeCours = <?php echo json_encode($coursArray); ?>;

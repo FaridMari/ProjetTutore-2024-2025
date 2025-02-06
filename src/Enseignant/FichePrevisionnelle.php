@@ -373,29 +373,137 @@ function generateHorsIUTRows(array $horsIUTData): void {
     }
 }
 ?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fiche Prévisionnelle</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <style>
-    .table input, .table select {
-      border: none !important;
-      box-shadow: none !important;
-      background-color: transparent;
-      width: 100%;
+
+<style>
+    /**********************************************************/
+    /*           FICHE PREVISIONNELLE DE SERVICE             */
+    /**********************************************************/
+
+    /* ================== TITRE ET CONTENEUR ================== */
+    .container {
+        /* Le conteneur a déjà Bootstrap .mt-5 -> marge top */
+        /* On peut ajouter un background si on veut,
+           mais souvent on laisse body ou main-content s'en charger */
     }
-    .table input:focus, .table select:focus {
-      outline: none;
+
+    .container h2 {
+        text-transform: uppercase;
+        font-weight: 600;
+        color: #000;              /* noir */
+        margin-bottom: 1em;
     }
+
+    /* ================== ALERTES (jaune, style UL) ================== */
+    /* Overwrite la classe bootstrap alert-warning */
+    .alert.alert-warning {
+        background-color: #FFEF65; /* Jaune clair */
+        color: #000;               /* texte noir */
+        font-weight: 600;
+        border: none;              /* pas de bordure grise */
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    /**********************************************************/
+    /*                TABLES & TABLE HEADERS                 */
+    /**********************************************************/
+    .table {
+        border-color: #ddd;       /* Couleur de la bordure */
+        margin-bottom: 2em;
+    }
+
+    /* En-têtes en fond noir, texte blanc */
+    .table thead,
+    .table thead tr.thead-light {
+        background-color: #000 !important; /* Noir */
+        color: #fff !important;           /* texte blanc */
+    }
+
+    .table thead th {
+        border-color: #000;       /* séparer proprement */
+    }
+
+    /* Lignes totales .total-row => fond gris clair */
+    .total-row {
+        background-color: #f9f9f9;
+        font-weight: 600;
+    }
+
+    /* Overwrite la couleur si on survole */
+    .table tbody tr:hover {
+        background-color: #FFE74A; /* Survol en jaune plus soutenu */
+        cursor: pointer; /* juste pour le style, si tu veux */
+    }
+
+    /**********************************************************/
+    /*        INPUTS ET SELECT DANS LE TABLEAU               */
+    /**********************************************************/
+    /* Code que tu donnais déjà, pour un style épuré */
+    .table input,
+    .table select {
+        border: none !important;
+        box-shadow: none !important;
+        background-color: transparent;
+        width: 100%;
+    }
+
+    /* Au focus: pas de contour, ou un soulignement ? */
+    .table input:focus,
+    .table select:focus {
+        outline: none;
+    }
+
+    /* Inputs en readonly => texte grisé */
     .table input[readonly] {
-      color: #6c757d;
+        color: #6c757d;
     }
-  </style>
-</head>
-<body>
+
+    /**********************************************************/
+    /*             BOUTONS (AJOUTER, ENVOYER ...)            */
+    /**********************************************************/
+    /* .btn-success => on la recolore en Jaune UL */
+    .btn.btn-success {
+        background-color: #FFEF65; /* Jaune clair */
+        color: #000;              /* texte noir */
+        border: none;
+        font-weight: 600;
+        transition: 0.3s ease;
+    }
+
+    .btn.btn-success:hover {
+        background-color: #FFE74A; /* plus soutenu */
+        transform: scale(1.02);
+    }
+    .btn.btn-success:active,
+    .btn.btn-success:focus {
+        background-color: #FFD400;
+        outline: none;
+        transform: scale(0.98);
+    }
+
+    /* .btn.btn-primary => idem, si "Envoyer" est en "btn-primary" */
+    .btn.btn-primary {
+        background-color: #FFEF65;
+        color: #000;
+        border: none;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+    .btn.btn-primary:hover {
+        background-color: #FFE74A;
+        transform: scale(1.02);
+    }
+    .btn.btn-primary:focus,
+    .btn.btn-primary:active {
+        background-color: #FFD400;
+        transform: scale(0.98);
+        outline: none;
+        border: none;
+    }
+
+</style>
+
+<div id="main-content">
   <div class="container mt-5">
     <h2 class="text-center mb-4">Fiche Prévisionnelle de Service</h2>
     <p><strong>IUT Nancy-Charlemagne - Département Informatique</strong></p>
@@ -582,8 +690,10 @@ function generateHorsIUTRows(array $horsIUTData): void {
       <td><button type="button" class="btn btn-danger btn-sm remove-line">&times;</button></td>
     </tr>
   </template>
+</div>
 
-  <script>
+
+<script>
     // Injection des données des cours depuis PHP.
     // La valeur du select sera le nom du cours et l'affichage sera "CODE - NOM"
     window.coursData = <?= json_encode(array_map(function($c) {
@@ -826,18 +936,16 @@ function generateHorsIUTRows(array $horsIUTData): void {
     });
   </script>
   <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            document.querySelector("button[name='envoyer']").addEventListener("click", function (event) {
-                event.preventDefault();
-                if (confirm("Les vœux ont été enregistrés avec succès.\nVoulez-vous télécharger le PDF ?")) {
-                    const form = this.closest("form");
-                    form.action = "src/User/ServicePdf.php";
-                    form.submit();
-                } else {
-                    window.location.href = "index.php?action=fichePrevisionnelle";
-                }
-            });
-        });
+        // document.addEventListener("DOMContentLoaded", function () {
+        //     document.querySelector("button[name='envoyer']").addEventListener("click", function (event) {
+        //         event.preventDefault();
+        //         if (confirm("Les vœux ont été enregistrés avec succès.\nVoulez-vous télécharger le PDF ?")) {
+        //             const form = this.closest("form");
+        //             form.action = "src/User/ServicePdf.php";
+        //             form.submit();
+        //         } else {
+        //             window.location.href = "index.php?action=fichePrevisionnelle";
+        //         }
+        //     });
+        // });
     </script>
-</body>
-</html>

@@ -34,7 +34,7 @@ class SigninAction extends Action {
                     if ($user['role'] === 'gestionnaire') {
                         header('Location: index.php?action=gestionnairePagePrincipal');
                     } else {
-                        header('Location: index.php?action=enseignantPagePrincipal');
+                        header('Location: index.php?action=accueilEnseignant');
                     }
                     exit();
                 } else {

@@ -2,83 +2,92 @@
 
 function returnHTML(): string {
   return <<<END
+<!DOCTYPE html>
+<html lang="fr">
 <head>
-    <link rel="stylesheet" href="css/styles.css">
+    <meta charset="UTF-8">
+    <title>Accueil - Connexion</title>
     <style>
         body {
-            margin-left: 200px;
+            margin: 0;
             padding: 0;
             font-family: 'Poppins', sans-serif;
-            background-color: #f4f4f9;
+
+            background-color: #f9f9f9; 
+            
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
-            color: #333;
+            align-items: center;
+            
+            height: 100vh;
+            color: #000;
         }
 
         .container {
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 20px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             width: 350px;
+            max-width: 90%;
+            padding: 2rem;
             text-align: center;
-            margin-top: 8em;
-            border: 1px solid #e0e0e0;
         }
 
         h2 {
-            margin-bottom: 20px;
-            color: #2c3e50;
-            font-size: 24px;
-            font-weight: bold;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #000;
         }
 
         form {
             display: flex;
             flex-direction: column;
+            align-items: stretch;
         }
 
         label {
-            margin-bottom: 8px;
-            font-weight: 500;
             text-align: left;
-            color: #2c3e50;
+            font-weight: 500;
+            margin-bottom: 0.4em;
+            color: #444;
         }
 
         input[type="email"],
         input[type="password"] {
             padding: 12px;
-            margin-bottom: 15px;
-            border: 1px solid #dcdcdc;
+            margin-bottom: 1em;
+            border: 1px solid #ddd;
             border-radius: 5px;
             font-size: 16px;
-            background-color: #fafafa;
-            transition: border-color 0.3s;
+            background-color: #fff;
+            color: #000;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
 
         input[type="email"]:focus,
         input[type="password"]:focus {
-            border-color: #5dade2;
+            border-color: #FFD400;
             outline: none;
-            box-shadow: 0 0 5px rgba(93, 173, 226, 0.4);
+            box-shadow: 0 0 5px rgba(255,212,0,0.4);
         }
 
         input[type="submit"] {
-            background-color: #5dade2;
-            color: #ffffff;
+            background-color: #FFEF65;
+            color: #000;
             border: none;
             border-radius: 5px;
-            padding: 15px;
+            padding: 14px;
             font-size: 16px;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         input[type="submit"]:hover {
-            background-color: #2e86c1;
+            background-color: #FFE74A;
+            color: #000;
         }
     </style>
 </head>
@@ -86,27 +95,29 @@ function returnHTML(): string {
 <body>
     <div class="container">
         <h2>Connexion</h2>
-        <div id="menu">
-            <ul>
-                <li class="element_menu"><i class="bi bi-box-arrow-in-right"></i> <a href="index.php?action=signin">Log-in</a></li>
-            </ul>
-            <div id="deconnexion">
-                <li class="element_menu"><i class="bi bi-box-arrow-in-left"></i> <a href="index.php?action=signin"> Deconnexion</a> </li>
-            </div>
-        </div>
         <form action="index.php?action=signin" method="POST">
-        
             <label for="email">Email :</label>
-            <input type="email" id="email" name="email" placeholder="exemple@domaine.com" required><br>
+            <input 
+                type="email" 
+                id="email" 
+                name="email" 
+                placeholder="exemple@domaine.com" 
+                required
+            />
 
             <label for="password">Mot de passe :</label>
-            <input type="password" id="password" name="password" placeholder="Votre mot de passe" required><br>
+            <input 
+                type="password" 
+                id="password" 
+                name="password" 
+                placeholder="Votre mot de passe" 
+                required
+            />
 
             <input type="submit" value="Se connecter">
         </form>
     </div>
 </body>
-
 </html>
 END;
 }

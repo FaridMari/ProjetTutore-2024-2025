@@ -40,12 +40,15 @@
     }
 
     #example1 {
-        flex: 1;
-        max-width: 100%;
-        margin: 1em auto 0 auto;
-        overflow: auto;
-        border: 1px solid #cccccc;
+        height: 100%;
+        width: 100%;
     }
+
+    .handsontable {
+        height: 100%;
+        position: relative;
+    }
+
 
     .handsontable td, .handsontable th {
         font-size: 14px;
@@ -139,6 +142,7 @@
     const formations = <?php echo json_encode($formations); ?>;
     const semester = '<?php echo $_GET['semester']; ?>';
     const repartitionSansProf = <?php echo json_encode($repartition2); ?>;
+    console.log(repartitionData);
 
     let configData = <?php echo json_encode($configurationPlanningDetailleData); ?>;
 
@@ -165,7 +169,6 @@
     let vacHiverFinS = 0;
     let vacPrintempsFinS = 0;
 
-    console.log(configData)
     // Assumons que `configData` est une liste d'objets contenant des informations sur les semestres et les vacances
     for (let item of configData) {
         switch (item['type']) {
@@ -472,7 +475,7 @@
 
     // Ajouter une colonne de totaux à chaque ligne
     for (let i = 0; i < dataT.length; i++) {
-        let totalFormula = `=SUM(${lettrestart}${i + 1}:${lettreend}${i+1})`;
+        let totalFormula = `=SUM(${lettrestart}${i + 1}:${lettreend}${i + 1})`;
         dataT[i].push(totalFormula);
     }
 
@@ -494,16 +497,27 @@
         licenseKey: 'internal-use-in-handsontable',
     });
 
+    let columnsDefs = [];
+    for (let i = 0; i < 4 ; i++) {
+        columnsDefs.push({readOnly: true});
+    }
+    for (let i = 4; i < colCours.length; i++) {
+        columnsDefs.push({readOnly: false});
+        columnsDefs.push({readOnly: false});
+        columnsDefs.push({readOnly: false});
+    }
+    columnsDefs.push({readOnly: true});
 
 
     // Ajouter une mise en forme conditionnelle pour mettre en rouge si > 32h (à gérer dans l'affichage)
     const planning = new Handsontable(container, {
         data: dataT,
-        width: '100vw',
         nestedHeaders: trueNH,
+        stretchH: 'column',
         formulas: {
             engine: hyperformulaInstance,
         },
+        columns: columnsDefs,
         wordWrap: true,
         licenseKey: 'non-commercial-and-evaluation',
         afterChange: (changes, source) => {
@@ -525,6 +539,9 @@
         },
         cells: (row, col) => {
             const cellProperties = {};
+            if (row == dataT.length - 1) {
+                cellProperties.readOnly = true;
+            }
 
             // Mise en forme conditionnelle pour les vacances
             if (dataT[row] && dataT[row][3] === "Vacances") {
@@ -594,12 +611,15 @@
     const totalRowIndex = dataT.length - 1;
     const totalColIndex = dataT[0].length - 1;
 
+
+
     planning.batch(() => {
         for (let i = 4; i < totalColIndex; i++) {
-            let totalFormula = `=SUM(${Handsontable.helper.spreadsheetColumnLabel(i)}1:${Handsontable.helper.spreadsheetColumnLabel(i)}${totalRowIndex - 1})`;
+            let totalFormula = `=SUM(${Handsontable.helper.spreadsheetColumnLabel(i)}1:${Handsontable.helper.spreadsheetColumnLabel(i)}${totalRowIndex})`;
             planning.setDataAtCell(totalRowIndex, i, totalFormula);
         }
     });
+
 
 
     function saveAllData() {
@@ -613,8 +633,11 @@
                 // Pour chaque type d'heure (CM, TD, TP)
                 ['CM', 'TD', 'TP'].forEach((typeHeure, typeIndex) => {
                     // Calcul de l'indice correct pour récupérer les données dans dataT
-                    const colData = row[4 + colIndex * 3 + typeIndex]; // Colonne correspondante pour CM, TD, TP
+                    let colData = row[4 + colIndex * 3 + typeIndex]; // Colonne correspondante pour CM, TD, TP
                     // Si on est pas dans la dernière colonne
+                    if (typeof colData === 'string' && colData.includes('=')) {
+                        colData = null;
+                    }
                     if (colData) {
                         const semaineDebut = row[1]; // Semaine de début (colonne dédiée)
                         const semaineFin = semaineDebut; // Par défaut, semaineFin = semaineDebut
@@ -633,7 +656,7 @@
                 });
             }
         }
-        console.log(repartitions);
+
         sendRepartitionData(repartitions, semester);
     }
 
@@ -675,7 +698,7 @@
             selectedRanges.forEach(([startRow, startCol, endRow, endCol]) => {
                 for (let row = startRow; row <= endRow; row++) {
                     for (let col = startCol; col <= endCol; col++) {
-                        if (dataT[row] && dataT[row][3] !== "Vacances") {
+                        if (dataT[row] && dataT[row][3] !== "Vacances" && col >= 4 && col < totalColIndex) {
                             let currentValue = parseInt(planning.getDataAtCell(row, col) || '0', 10);
                             const delta = event.deltaY > 0 ? -1 : 1; // -1 pour scroll bas, +1 pour scroll haut
                             currentValue = Math.max(0, currentValue + delta); // Ajuster la valeur sans descendre en dessous de 0
@@ -693,7 +716,6 @@
         const semester = select.value;
         window.location.href = `index.php?action=ficheDetaille&semester=${semester}`;
     });
-
 
 </script>
 </html>

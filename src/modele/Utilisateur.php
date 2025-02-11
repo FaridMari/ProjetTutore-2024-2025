@@ -8,13 +8,16 @@ class Utilisateur {
     private $motDePasse;
     private $role;
 
-    public function __construct($idUtilisateur = null, $nom = null, $prenom = null, $email = null, $motDePasse = null, $role = null) {
+    private $supprimer;
+
+    public function __construct($idUtilisateur = null, $nom = null, $prenom = null, $email = null, $motDePasse = null, $role = null, $supprimer = null) {
         $this->idUtilisateur = $idUtilisateur;
         $this->nom = $nom;
         $this->prenom = $prenom;
         $this->email = $email;
         $this->motDePasse = $motDePasse;
         $this->role = $role;
+        $this->supprimer = $supprimer;
     }
 
   
@@ -64,6 +67,14 @@ class Utilisateur {
 
     public function setRole($role) {
         $this->role = $role;
+    }
+
+    public function getSupprimer() {
+        return $this->supprimer;
+    }
+
+    public function setSupprimer($supprimer) {
+        $this->supprimer = $supprimer;
     }
 
     public function seConnecter() {

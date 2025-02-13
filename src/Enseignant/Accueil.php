@@ -25,7 +25,7 @@
 
     /* Bulles */
     .bulle {
-        width: 220px;
+        width: 20%;
         height: 220px;
         background-color: #FFEF65;
         color: #000;
@@ -59,23 +59,36 @@
         <!-- Formulaire avec action sur index.php?action=accueilEnseignant -->
         <form method="post" action="index.php?action=accueilEnseignant">
 
-            <!-- Titre -->
-            <h1>Bonjour <span class="nom">Dupont</span> <span class="prenom">Alice</span></h1>
-            <h3>Statut : <span class="statut">Vacataire</span></h3>
+            <!-- Titre ajouter le nom et le prenom de l'enseignant selon la session-->
+            <?php
+            $nom = "";
+            $prenom = "";
+            $role = "";
+            use src\Db\connexionFactory;
+            $pdo = connexionFactory::makeConnection();
+            $stmt = $pdo->prepare("SELECT * FROM utilisateurs WHERE id_utilisateur = :id_utilisateur");
+            $stmt->bindParam(':id_utilisateur', $_SESSION['user_id']);
+            $stmt->execute();
+            $user = $stmt->fetch(\PDO::FETCH_ASSOC);
+            $nom = $user['nom'];
+            $prenom = $user['prenom'];
+            $role = $user['statut'];
+            ?>
+            <h1>Bienvenue <?php echo $nom . " " . $prenom; ?></h1>
 
             <!-- Conteneur des bulles -->
             <div class="bulle-container">
-                <div class="bulle">
+<!--                <div class="bulle">
                     <h2>Heures Affectées</h2>
                     <p class="valeur">42 h</p>
                 </div>
                 <div class="bulle">
                     <h2>Total HETD</h2>
-                    <p class="valeur">28</p>
-                </div>
+                    <p class="valeur">0</p>
+                </div>-->
                 <div class="bulle">
                     <h2>Votre Rôle</h2>
-                    <p class="valeur">Enseignant</p>
+                    <p class="valeur"><?php echo $role?></p>
                 </div>
             </div>
         </form>

@@ -102,12 +102,15 @@
             $conn = connexionFactory::makeConnection();
 
             // Récupérer les emails
-            $stmt = $conn->prepare("SELECT email FROM utilisateurs");
+            $stmt = $conn->prepare("SELECT email, supprimer FROM utilisateurs");
             $stmt->execute();
             $emails = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             foreach ($emails as $row) {
-                echo '<option value="' . htmlspecialchars($row['email']) . '">' . htmlspecialchars($row['email']) . '</option>';
+                if ($row['supprimer'] == 0) {
+                    echo '<option value="' . htmlspecialchars($row['email']) . '">' . htmlspecialchars($row['email']) . '</option>';
+                }
+
             }
         } catch (Exception $e) {
             echo '<option disabled>Erreur lors du chargement des emails</option>';

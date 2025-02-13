@@ -46,7 +46,7 @@ class EditUserAction {
         try {
             // Charger la liste des utilisateurs
             $conn = connexionFactory::makeConnection();
-            $stmt = $conn->prepare("SELECT id_utilisateur, nom, prenom FROM utilisateurs");
+            $stmt = $conn->prepare("SELECT id_utilisateur, nom, prenom, supprimer FROM utilisateurs");
             $stmt->execute();
             $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

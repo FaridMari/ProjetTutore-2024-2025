@@ -102,10 +102,12 @@
     <select id="user-select" name="id" onchange="this.form.submit()">
         <option value="">-- Choisissez un utilisateur --</option>
         <?php foreach ($users as $user): ?>
-            <option value="<?php echo $user['id_utilisateur']; ?>"
-                <?php echo (isset($selectedUser) && $selectedUser['id_utilisateur'] === $user['id_utilisateur']) ? 'selected' : ''; ?>>
-                <?php echo htmlspecialchars($user['nom'] . ' ' . $user['prenom']); ?>
-            </option>
+            <?php if ($user['supprimer'] == 0): ?>
+                <option value="<?php echo $user['id_utilisateur']; ?>"
+                    <?php echo (isset($selectedUser) && $selectedUser['id_utilisateur'] === $user['id_utilisateur']) ? 'selected' : ''; ?>>
+                    <?php echo htmlspecialchars($user['nom'] . ' ' . $user['prenom']); ?>
+                </option>
+            <?php endif; ?>
         <?php endforeach; ?>
     </select>
 </form>

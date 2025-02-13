@@ -13,6 +13,14 @@
   <component name="PhpIncludePathManager">
     <include_path>
       <path value="$PROJECT_DIR$/vendor/composer" />
+      <path value="$PROJECT_DIR$/vendor/TCPDF/config" />
+      <path value="$PROJECT_DIR$/vendor/TCPDF/tools" />
+      <path value="$PROJECT_DIR$/vendor/TCPDF/.github" />
+      <path value="$PROJECT_DIR$/vendor/TCPDF/tests" />
+      <path value="$PROJECT_DIR$/vendor/TCPDF/examples" />
+      <path value="$PROJECT_DIR$/vendor/TCPDF/fonts" />
+      <path value="$PROJECT_DIR$/vendor/TCPDF/include" />
+      <path value="$PROJECT_DIR$/vendor/TCPDF/scripts" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.4">

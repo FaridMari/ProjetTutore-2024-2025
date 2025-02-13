@@ -25,6 +25,7 @@ class UtilisateurDTO {
                 $utilisateur->setEmail($data['email']);
                 $utilisateur->setMotDePasse($data['mot_de_passe']);
                 $utilisateur->setRole($data['role']);
+                $utilisateur->setSupprimer($data['supprimer']);
 
                 return $utilisateur;
             }
@@ -38,7 +39,7 @@ class UtilisateurDTO {
 
     public function findAll() {
         try {
-            $stmt = $this->db->query("SELECT * FROM utilisateurs");
+            $stmt = $this->db->query("SELECT * FROM utilisateurs where supprimer = 0");
             $utilisateurs = [];
 
             while ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {

@@ -60,6 +60,19 @@
     .vacation {
         background-color: #d4edda !important;
     }
+
+    .stage {
+        background-color: #cce5ff !important;
+
+    }
+
+    .atelier {
+        background-color: #fff3cd !important;
+    }
+
+    .projet {
+        background-color: #f8d7da !important;
+    }
     .total-exceeded {
         background-color: #ffcccc !important;
     }
@@ -170,8 +183,12 @@
     let vacPrintempsFinS = 0;
 
     // Assumons que `configData` est une liste d'objets contenant des informations sur les semestres et les vacances
+    let stages = [];
+    let ateliers = [];
+    let projets = [];
+
     for (let item of configData) {
-        switch (item['type']) {
+        switch (item.type) {
             case 'Semestre1':
                 // Affectation des valeurs pour le semestre 1
                 const semestre1 = item;
@@ -232,11 +249,57 @@
                 allVacances.push(vacPrintempsFinS);
                 break;
 
+            case 'Atelier':
+                // Ajouter l'atelier à la liste des ateliers et calculer les semaines
+                const atelierDebut = new Date(item.dateDebut);
+                const atelierFin = new Date(item.dateFin);
+                const atelierWeekStart = getWeek(atelierDebut);
+                const atelierWeekEnd = getWeek(atelierFin);
+                ateliers.push({
+                    dateDebut: atelierDebut,
+                    dateFin: atelierFin,
+                    description: item.description,
+                    weeks: [atelierWeekStart, atelierWeekEnd]
+                });
+                break;
+
+            case 'Stage':
+                // Ajouter le stage à la liste des stages et calculer les semaines
+                const stageDebut = new Date(item.dateDebut);
+                const stageFin = new Date(item.dateFin);
+                const stageWeekStart = getWeek(stageDebut);
+                const stageWeekEnd = getWeek(stageFin);
+                stages.push({
+                    dateDebut: stageDebut,
+                    dateFin: stageFin,
+                    description: item.description,
+                    weeks: [stageWeekStart, stageWeekEnd]
+                });
+                break;
+
+            case 'Projet':
+                // Ajouter le projet à la liste des projets et calculer les semaines
+                const projetDebut = new Date(item.dateDebut);
+                const projetFin = new Date(item.dateFin);
+                const projetWeekStart = getWeek(projetDebut);
+                const projetWeekEnd = getWeek(projetFin);
+                projets.push({
+                    dateDebut: projetDebut,
+                    dateFin: projetFin,
+                    description: item.description,
+                    weeks: [projetWeekStart, projetWeekEnd]
+                });
+                break;
+
             default:
                 // Ajouter un cas par défaut pour gérer les autres types
-                console.log(`Type inconnu: ${item['type']}`);
+                console.log(`Type inconnu: ${item.type}`);
         }
     }
+
+    console.log(stages);
+    console.log(ateliers);
+    console.log(projets);
 
     // Déterminer quel semestre utiliser
     if (semester === 'S1' || semester === 'S3') {
@@ -400,13 +463,23 @@
         let estVacances = allVacances.includes(semaineActuelle);
         let dateActuelleStr = new Date(dateDebutSemestre).toLocaleDateString('fr-FR');
         let semaineData = [];
-        // Gestion des colonnes fixes pour chaque semaine
+        let estStage = stages.some(stage => stage.weeks.includes(semaineActuelle));
+        let estAtelier = ateliers.some(atelier => atelier.weeks.includes(semaineActuelle));
+        let estProjet = projets.some(projet => projet.weeks.includes(semaineActuelle));
+
+// Gestion des colonnes fixes pour chaque semaine
         if (estVacances) {
             semaineData.push("", semaineActuelle, dateActuelleStr, "Vacances");
+        } else if (estStage) {
+            semaineData.push("", semaineActuelle, dateActuelleStr, "Stage");
+        } else if (estAtelier) {
+            semaineData.push("", semaineActuelle, dateActuelleStr, "Atelier");
+        } else if (estProjet) {
+            semaineData.push("", semaineActuelle, dateActuelleStr, "Projet");
         } else {
             semaineData.push("", semaineActuelle, dateActuelleStr, "");
-
         }
+
 
         // Construire la liste des colonnes pour les cours
 
@@ -544,9 +617,22 @@
             }
 
             // Mise en forme conditionnelle pour les vacances
-            if (dataT[row] && dataT[row][3] === "Vacances") {
-                cellProperties.className = 'vacation';
-                cellProperties.readOnly = true;
+            if (dataT[row]) {
+                const cellValue = dataT[row][3];
+
+                if (cellValue === "Vacances") {
+                    cellProperties.className = 'vacation';
+                    cellProperties.readOnly = true;
+                } else if (cellValue === "Stage") {
+                    cellProperties.className = 'stage';
+                    cellProperties.readOnly = true;
+                } else if (cellValue === "Atelier") {
+                    cellProperties.className = 'atelier';
+                    cellProperties.readOnly = true;
+                } else if (cellValue === "Projet") {
+                    cellProperties.className = 'projet';
+                    cellProperties.readOnly = true;
+                }
             }
 
             // Mise en forme conditionnelle pour la colonne "Total"
@@ -698,7 +784,7 @@
             selectedRanges.forEach(([startRow, startCol, endRow, endCol]) => {
                 for (let row = startRow; row <= endRow; row++) {
                     for (let col = startCol; col <= endCol; col++) {
-                        if (dataT[row] && dataT[row][3] !== "Vacances" && col >= 4 && col < totalColIndex) {
+                        if (dataT[row] && (dataT[row][3] !== "Vacances" && dataT[row][3] !== "Stage" && dataT[row][3] !== "Projet" && dataT[row][3] !== "Atelier") && col >= 4 && col < totalColIndex && row < totalRowIndex) {
                             let currentValue = parseInt(planning.getDataAtCell(row, col) || '0', 10);
                             const delta = event.deltaY > 0 ? -1 : 1; // -1 pour scroll bas, +1 pour scroll haut
                             currentValue = Math.max(0, currentValue + delta); // Ajuster la valeur sans descendre en dessous de 0

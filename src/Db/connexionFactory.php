@@ -1,7 +1,6 @@
 <?php
 
 namespace src\Db;
-
 class connexionFactory {
     private static $config;
 
@@ -24,6 +23,6 @@ class connexionFactory {
     }
 }
 
-\src\Db\connexionFactory::setConfig('db.config.ini');
+connexionFactory::setConfig('db.config.ini');
 
-$db = \src\Db\connexionFactory::makeConnection();
+$db = connexionFactory::makeConnection();

@@ -54,7 +54,6 @@ if ($data && is_array($data)) {
             exit;
         }
     }
-
     // Si tout a réussi, renvoyer une réponse de succès
     echo json_encode(['success' => true]);
 

@@ -65,75 +65,21 @@
         <div class="card mb-3" id="stageSection">
             <div class="card-header">
                 <h5 class="card-title">Dates des stages</h5>
+                <button type="button" class="btn btn-primary" id="ajouterStage">Ajouter un stage</button>
             </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-3">
-                        <label>Stage S4 - Début</label>
-                        <input type="date" class="form-control">
-                    </div>
-                    <div class="col-md-3">
-                        <label>Stage S4 - Fin</label>
-                        <input type="date" class="form-control">
-                    </div>
-                    <div class="col-md-6">
-                        <label>Remarque</label>
-                        <input type="text" class="form-control">
-                    </div>
-                </div>
-                <div class="row mt-2">
-                    <div class="col-md-3">
-                        <label>Stage S6 - Début</label>
-                        <input type="date" class="form-control">
-                    </div>
-                    <div class="col-md-3">
-                        <label>Stage S6 - Fin</label>
-                        <input type="date" class="form-control">
-                    </div>
-                    <div class="col-md-6">
-                        <label>Remarque</label>
-                        <input type="text" class="form-control">
-                    </div>
-                </div>
+            <div class="card-body" id="stageContainer">
+                <!-- Les lignes de stages seront ajoutées ici -->
             </div>
         </div>
 
         <!-- Ateliers -->
-<!--
         <div class="card mb-3" id="atelierSection">
             <div class="card-header">
                 <h5 class="card-title">Dates des ateliers</h5>
                 <button type="button" class="btn btn-primary" id="ajouterAtelier">Ajouter un atelier</button>
             </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-3">
-                        <label>Semestre</label>
-                        <select class="form-control">
-                            <option value="S1">S1</option>
-                            <option value="S2">S2</option>
-                            <option value="S3">S3</option>
-                            <option value="S4 DACS">S4 DACS</option>
-                            <option value="S4 RA-DWM">S4 RA-DWM</option>
-                            <option value="S4 RA-IL">S4 RA-IL</option>
-                            <option value="S5-S6 DACS">S5-S6 DACS</option>
-                            <option value="S5-S6 RA-DWM">S5-S6 RA-DWM</option>
-                            <option value="S5-S6 RA-IL">S5-S6 RA-IL</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label>Atelier - Début</label>
-                        <input type="date" class="form-control">
-                    </div>
-                    <div class="col-md-3">
-                        <label>Atelier - Fin</label>
-                        <input type="date" class="form-control">
-                    </div>
-                    <div class="col-md-3">
-                        <label>Remarque</label>
-                        <input type="text" class="form-control">
-                    </div>
-                </div>
+            <div class="card-body" id="atelierContainer">
+                <!-- Les lignes d'ateliers seront ajoutées ici -->
             </div>
         </div>
 
@@ -142,41 +88,14 @@
                 <h5 class="card-title">Dates des projets</h5>
                 <button type="button" class="btn btn-primary" id="ajouterProjet">Ajouter un projet</button>
             </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-3">
-                        <label>Semestre</label>
-                        <select class="form-control">
-                            <option value="S1">S1</option>
-                            <option value="S2">S2</option>
-                            <option value="S3">S3</option>
-                            <option value="S4 DACS">S4 DACS</option>
-                            <option value="S4 RA-DWM">S4 RA-DWM</option>
-                            <option value="S4 RA-IL">S4 RA-IL</option>
-                            <option value="S5-S6 DACS">S5-S6 DACS</option>
-                            <option value="S5-S6 RA-DWM">S5-S6 RA-DWM</option>
-                            <option value="S5-S6 RA-IL">S5-S6 RA-IL</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label>Projet - Début</label>
-                        <input type="date" class="form-control">
-                    </div>
-                    <div class="col-md-3">
-                        <label>Projet - Fin</label>
-                        <input type="date" class="form-control">
-                    </div>
-                    <div class="col-md-3">
-                        <label>Remarque</label>
-                        <input type="text" class="form-control">
-                    </div>
-                </div>
+            <div class="card-body" id="projetContainer">
+                <!-- Les lignes de projets seront ajoutées ici -->
             </div>
         </div>
-    </div>-->
-    <button type="button" class="btn btn-success" id="enregistrer">Enregistrer</button>
-</div>
 
+        <button type="button" class="btn btn-success" id="enregistrer">Enregistrer</button>
+    </div>
+</div>
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -218,31 +137,45 @@
                             document.getElementById("finPrintemps").value = item.dateFin;
                             document.getElementById("remarquePrintemps").value = item.description;
                             break;
+                        case "Atelier":
+                            addRow("atelierContainer", "Atelier", item);
+                            break;
+                        case "Stage":
+                            addRow("stageContainer", "Stage", item);
+                            break;
+                        case "Projet":
+                            addRow("projetContainer", "Projet", item);
+                            break;
                     }
                 });
             })
             .catch(error => console.error("Erreur lors de la récupération des données:", error));
     });
 
+    let data = [];
+    function addEntry(semestre , type, dateDebut, dateFin, description) {
+        data.push({
+            semestre:semestre,
+            type: type,
+            dateDebut: dateDebut || null,
+            dateFin: dateFin || null,
+            description: description || ""
+        });
+    }
+
     document.getElementById("enregistrer").addEventListener("click", function () {
-        let data = [];
+        // Récupération des valeurs fixes
+        addEntry(null,"Semestre1", document.getElementById("debutSemestreImpair").value, document.getElementById("finSemestreImpair").value, "");
+        addEntry(null,"Semestre2", document.getElementById("debutSemestrePair").value, document.getElementById("finSemestrePair").value, "");
+        addEntry(null,"VacancesToussaint", document.getElementById("debutToussaint").value, document.getElementById("finToussaint").value, document.getElementById("remarqueToussaint").value);
+        addEntry(null,"VacancesNoel", document.getElementById("debutNoel").value, document.getElementById("finNoel").value, document.getElementById("remarqueNoel").value);
+        addEntry(null,"VacancesHiver", document.getElementById("debutHiver").value, document.getElementById("finHiver").value, document.getElementById("remarqueHiver").value);
+        addEntry(null,"VacancesPrintemps", document.getElementById("debutPrintemps").value, document.getElementById("finPrintemps").value, document.getElementById("remarquePrintemps").value);
 
-        function addEntry(type, dateDebut, dateFin, description) {
-            data.push({
-                type: type,
-                dateDebut: dateDebut || null,
-                dateFin: dateFin || null,
-                description: description || ""
-            });
-        }
-
-        // Récupération des valeurs
-        addEntry("Semestre1", document.getElementById("debutSemestreImpair").value, document.getElementById("finSemestreImpair").value, "");
-        addEntry("Semestre2", document.getElementById("debutSemestrePair").value, document.getElementById("finSemestrePair").value, "");
-        addEntry("VacancesToussaint", document.getElementById("debutToussaint").value, document.getElementById("finToussaint").value, document.getElementById("remarqueToussaint").value);
-        addEntry("VacancesNoel", document.getElementById("debutNoel").value, document.getElementById("finNoel").value, document.getElementById("remarqueNoel").value);
-        addEntry("VacancesHiver", document.getElementById("debutHiver").value, document.getElementById("finHiver").value, document.getElementById("remarqueHiver").value);
-        addEntry("VacancesPrintemps", document.getElementById("debutPrintemps").value, document.getElementById("finPrintemps").value, document.getElementById("remarquePrintemps").value);
+        // Récupération des valeurs dynamiques
+        collectDynamicData("atelierContainer", "Atelier");
+        collectDynamicData("stageContainer", "Stage");
+        collectDynamicData("projetContainer", "Projet");
 
         console.log(data);
         fetch("src/gestionnaire/update_info_semestres.php", {
@@ -263,7 +196,79 @@
             });
     });
 
+    function collectDynamicData(containerId, type) {
+        const container = document.getElementById(containerId);
+        const rows = container.querySelectorAll(".row");
+
+        rows.forEach(row => {
+            const semestre = row.querySelector("select.form-control").value;
+            const dateDebut = row.querySelector("input[type='date']").value;
+            const dateFin = row.querySelectorAll("input[type='date']")[1].value;
+            const description = row.querySelector("input[type='text']").value;
+
+            addEntry(semestre,type, dateDebut, dateFin, description);
+        });
+    }
+
+
+    document.getElementById("ajouterAtelier").addEventListener("click", function () {
+        addRow("atelierContainer", "Atelier", {});
+    });
+
+    document.getElementById("ajouterProjet").addEventListener("click", function () {
+        addRow("projetContainer", "Projet", {});
+    });
+
+    document.getElementById("ajouterStage").addEventListener("click", function () {
+        addRow("stageContainer", "Stage", {});
+    });
+
+    function addRow(containerId, type, item) {
+        const container = document.getElementById(containerId);
+        //Ajouter remarque vide si elle n'existe pas
+        if (!item.description) {
+            item.description = "";
+        }
+
+        // Créer une nouvelle ligne
+        const row = document.createElement("div");
+        row.classList.add("row", "mb-3");
+
+        // Ajouter les colonnes pour le semestre, les dates et la remarque
+        row.innerHTML = `
+            <div class="col-md-3">
+                <label>Semestre</label>
+                <select class="form-control">
+                    <option value="S1" ${item.semestre === "S1" ? "selected" : ""}>S1</option>
+                    <option value="S2" ${item.semestre === "S2" ? "selected" : ""}>S2</option>
+                    <option value="S3" ${item.semestre === "S3" ? "selected" : ""}>S3</option>
+                    <option value="S4 DACS" ${item.semestre === "S4 DACS" ? "selected" : ""}>S4 DACS</option>
+                    <option value="S4 RA-DWM" ${item.semestre === "S4 RA-DWM" ? "selected" : ""}>S4 RA-DWM</option>
+                    <option value="S4 RA-IL" ${item.semestre === "S4 RA-IL" ? "selected" : ""}>S4 RA-IL</option>
+                    <option value="S5-S6 DACS" ${item.semestre === "S5-S6 DACS" ? "selected" : ""}>S5-S6 DACS</option>
+                    <option value="S5-S6 RA-DWM" ${item.semestre === "S5-S6 RA-DWM" ? "selected" : ""}>S5-S6 RA-DWM</option>
+                    <option value="S5-S6 RA-IL" ${item.semestre === "S5-S6 RA-IL" ? "selected" : ""}>S5-S6 RA-IL</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label>${type} - Début</label>
+                <input type="date" class="form-control" value="${item.dateDebut}">
+            </div>
+            <div class="col-md-3">
+                <label>${type} - Fin</label>
+                <input type="date" class="form-control" value="${item.dateFin}">
+            </div>
+            <div class="col-md-3">
+                <label>Remarque</label>
+                <input type="text" class="form-control" value="${item.description}">
+            </div>
+        `;
+
+        // Ajouter la ligne au conteneur
+        container.appendChild(row);
+    }
 </script>
+
 
 </body>
 </html>

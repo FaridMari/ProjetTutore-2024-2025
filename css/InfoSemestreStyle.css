@@ -42,3 +42,30 @@ hr {
 .vacances-info div {
     margin-bottom: 0.3rem;
 }
+.toast {
+    visibility: hidden;
+    max-width: 300px;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 16px;
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    opacity: 0;
+    transition: opacity 0.5s, visibility 0.5s;
+}
+
+.toast.show {
+    visibility: visible;
+    opacity: 0.7;
+}
+
+.toast.success {
+    background-color: rgba(0, 128, 0, 0.7); /* Vert transparent */
+}
+
+.toast.error {
+    background-color: rgba(255, 0, 0, 0.7); /* Rouge transparent */
+}
+

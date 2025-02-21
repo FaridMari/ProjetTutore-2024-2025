@@ -1,26 +1,4 @@
 <style>
-    /* Style pour le toast */
-    .toast {
-        visibility: hidden;
-        max-width: 300px;
-        background-color: rgba(0, 128, 0, 0.7); /* Vert transparent */
-        color: #fff;
-        text-align: center;
-        border-radius: 5px;
-        padding: 16px;
-        position: fixed;
-        z-index: 1;
-        right: 20px; /* Position en bas à droite */
-        bottom: 20px;
-        opacity: 0;
-        transition: opacity 0.5s, visibility 0.5s;
-    }
-
-    .toast.show {
-        visibility: visible;
-        opacity: 0.5;
-    }
-
     #main-content {
         min-height: 100vh;
         display: flex;
@@ -99,7 +77,7 @@
         background-color: #ffcccc !important;
     }
 </style>
-<div id="toast" class="toast">Données enregistrées avec succès!</div>
+
 <div id="main-content">
     <div class="container my-4">
         <h1 class="text-white mb-4">Gestion du Planning</h1>
@@ -766,8 +744,7 @@
         }
 
         sendRepartitionData(mergeRepartitions(repartitions), semester);
-
-        showToast();
+        toast.show('Données enregistrées avec succès', 'success');
     }
     function mergeRepartitions(repartitions) {
         // Trier les répartitions par codeCours, typeHeure, nbHeures, puis semaineDebut
@@ -877,13 +854,24 @@
         window.location.href = `index.php?action=ficheDetaille&semester=${semester}`;
     });
 
-    function showToast() {
-        const toast = document.getElementById('toast');
-        toast.className = 'toast show';
-        setTimeout(function() {
-            toast.className = toast.className.replace('show', '');
-        }, 3000); // Le toast disparaît après 3 secondes
+    class Toast {
+        constructor() {
+            this.toastElement = document.createElement('div');
+            this.toastElement.className = 'toast';
+            document.body.appendChild(this.toastElement);
+        }
+
+        show(message, type = 'success') {
+            this.toastElement.textContent = message;
+            this.toastElement.className = `toast show ${type}`;
+            setTimeout(() => {
+                this.toastElement.className = this.toastElement.className.replace('show', '');
+            }, 5000); // Le toast disparaît après 3 secondes
+        }
     }
+
+    const toast = new Toast();
+
 
 </script>
 </html>

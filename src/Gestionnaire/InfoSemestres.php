@@ -7,31 +7,11 @@
 
     <link rel="stylesheet" href="css/InfoSemestreStyle.css">
 </head>
-<div id="toast" class="toast">Données enregistrées avec succès!</div>
 
 <body>
 
 <style>
-    .toast {
-        visibility: hidden;
-        max-width: 300px;
-        background-color: rgba(0, 128, 0, 0.7); /* Vert transparent */
-        color: #fff;
-        text-align: center;
-        border-radius: 5px;
-        padding: 16px;
-        position: fixed;
-        z-index: 1;
-        right: 20px; /* Position en bas à droite */
-        bottom: 20px;
-        opacity: 0;
-        transition: opacity 0.5s, visibility 0.5s;
-    }
 
-    .toast.show {
-        visibility: visible;
-        opacity: 1;
-    }
 </style>
 
 <div class="container" id="container">
@@ -128,6 +108,24 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
 <script>
+
+    class Toast {
+        constructor() {
+            this.toastElement = document.createElement('div');
+            this.toastElement.className = 'toast';
+            document.body.appendChild(this.toastElement);
+        }
+
+        show(message, type = 'success') {
+            this.toastElement.textContent = message;
+            this.toastElement.className = `toast show ${type}`;
+            setTimeout(() => {
+                this.toastElement.className = this.toastElement.className.replace('show', '');
+            }, 3000); // Le toast disparaît après 3 secondes
+        }
+    }
+
+    const toast = new Toast();
     document.addEventListener("DOMContentLoaded", function () {
         fetch("src/Gestionnaire/get_info_semestres.php")
             .then(response => response.json())
@@ -212,11 +210,12 @@
         })
             .then(response => response.json())
             .then(result => {
-                showToast();
                 console.log(result);
+                toast.show("Les données ont été enregistrées avec succès", "success");
             })
             .catch(error => {
                 console.error("Erreur lors de l'enregistrement:", error);
+                toast.show("Une erreur s'est produite lors de l'enregistrement", "error");
             });
     });
 
@@ -292,13 +291,7 @@
         container.appendChild(row);
     }
 
-    function showToast() {
-        const toast = document.getElementById('toast');
-        toast.className = 'toast show';
-        setTimeout(function() {
-            toast.className = toast.className.replace('show', '');
-        }, 3000); // Le toast disparaît après 3 secondes
-    }
+
 </script>
 
 

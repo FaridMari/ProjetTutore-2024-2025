@@ -227,7 +227,26 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
 <!--  </style>-->
 
 <style>
+    .toast {
+        visibility: hidden;
+        max-width: 300px;
+        background-color: rgba(0, 128, 0, 0.7); /* Vert transparent */
+        color: #fff;
+        text-align: center;
+        border-radius: 5px;
+        padding: 16px;
+        position: fixed;
+        z-index: 1;
+        right: 20px; /* Position en bas à droite */
+        bottom: 20px;
+        opacity: 0;
+        transition: opacity 0.5s, visibility 0.5s;
+    }
 
+    .toast.show {
+        visibility: visible;
+        opacity: 1;
+    }
     #hot {
         margin-top: 20px;
     }
@@ -282,9 +301,12 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
   <div id="hot"></div>
   <div id="voeuRemark"></div>
   <button id="saveButton" class="btn btn-primary mt-3">Enregistrer les Affectations</button>
+    <div id="toast" class="toast">Données enregistrées avec succès!</div>
+
 </div>
 
 <script>
+
     // Les données pré-remplies issues de PHP
     const data = <?php echo $prepopulatedData; ?>;
     const listeCours = <?php echo json_encode($coursArray); ?>;
@@ -388,6 +410,7 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
         data: hot.getData(),
         formation: semester
       };
+
       console.log(payload);
       fetch('src/Gestionnaire/UpdateAffectations.php', {
         method: 'POST',
@@ -403,6 +426,7 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
           const jsonData = JSON.parse(responseText);
           if (jsonData.success) {
             console.log("Affectations enregistrées avec succès.");
+            showToast();
           } else {
             console.error("Erreur lors de l'enregistrement.");
           }
@@ -420,6 +444,14 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
       const semester = select.value;
       window.location.href = `index.php?action=ficheRepartition&semester=${semester}`;
     });
+
+    function showToast() {
+        const toast = document.getElementById('toast');
+        toast.className = 'toast show';
+        setTimeout(function() {
+            toast.className = toast.className.replace('show', '');
+        }, 3000); // Le toast disparaît après 3 secondes
+    }
   </script>
 </body>
 </html>

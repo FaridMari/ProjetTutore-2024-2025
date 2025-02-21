@@ -1,4 +1,26 @@
 <style>
+    /* Style pour le toast */
+    .toast {
+        visibility: hidden;
+        max-width: 300px;
+        background-color: rgba(0, 128, 0, 0.7); /* Vert transparent */
+        color: #fff;
+        text-align: center;
+        border-radius: 5px;
+        padding: 16px;
+        position: fixed;
+        z-index: 1;
+        right: 20px; /* Position en bas à droite */
+        bottom: 20px;
+        opacity: 0;
+        transition: opacity 0.5s, visibility 0.5s;
+    }
+
+    .toast.show {
+        visibility: visible;
+        opacity: 0.5;
+    }
+
     #main-content {
         min-height: 100vh;
         display: flex;
@@ -77,7 +99,7 @@
         background-color: #ffcccc !important;
     }
 </style>
-
+<div id="toast" class="toast">Données enregistrées avec succès!</div>
 <div id="main-content">
     <div class="container my-4">
         <h1 class="text-white mb-4">Gestion du Planning</h1>
@@ -743,7 +765,59 @@
             }
         }
 
-        sendRepartitionData(repartitions, semester);
+        sendRepartitionData(mergeRepartitions(repartitions), semester);
+
+        showToast();
+    }
+    function mergeRepartitions(repartitions) {
+        // Trier les répartitions par codeCours, typeHeure, nbHeures, puis semaineDebut
+        repartitions.sort((a, b) => {
+            if (a.codeCours !== b.codeCours) {
+                return a.codeCours.localeCompare(b.codeCours);
+            }
+            if (a.typeHeure !== b.typeHeure) {
+                return a.typeHeure.localeCompare(b.typeHeure);
+            }
+            if (a.nbHeures !== b.nbHeures) {
+                return a.nbHeures - b.nbHeures;
+            }
+            return a.semaineDebut - b.semaineDebut;
+        });
+
+        const mergedRepartitions = [];
+        let currentRepartition = null;
+
+        repartitions.forEach((repartition, index) => {
+            // Si une répartition est identique à la précédente
+            if (currentRepartition &&
+                currentRepartition.codeCours === repartition.codeCours &&
+                currentRepartition.typeHeure === repartition.typeHeure &&
+                currentRepartition.nbHeures === repartition.nbHeures) {
+
+                // Si elles sont consécutives (semaineFin de la précédente égale à semaineDebut de la nouvelle)
+                if (currentRepartition.semaineFin + 1 === repartition.semaineDebut) {
+                    // On fusionne en mettant à jour la semaine de fin
+                    currentRepartition.semaineFin = repartition.semaineFin;
+                } else {
+                    // Si elles ne sont pas consécutives, on les ajoute séparément
+                    mergedRepartitions.push(currentRepartition);
+                    currentRepartition = { ...repartition }; // Nouvelle répartition
+                }
+            } else {
+                // Si la répartition est différente, on ajoute la précédente (si elle existe) et on commence une nouvelle
+                if (currentRepartition) {
+                    mergedRepartitions.push(currentRepartition);
+                }
+                currentRepartition = { ...repartition }; // Créer une copie de la répartition actuelle
+            }
+        });
+
+        // Ajouter la dernière répartition si elle existe
+        if (currentRepartition) {
+            mergedRepartitions.push(currentRepartition);
+        }
+
+        return mergedRepartitions;
     }
 
     function sendRepartitionData(repartition,semester) {
@@ -802,6 +876,14 @@
         const semester = select.value;
         window.location.href = `index.php?action=ficheDetaille&semester=${semester}`;
     });
+
+    function showToast() {
+        const toast = document.getElementById('toast');
+        toast.className = 'toast show';
+        setTimeout(function() {
+            toast.className = toast.className.replace('show', '');
+        }, 3000); // Le toast disparaît après 3 secondes
+    }
 
 </script>
 </html>

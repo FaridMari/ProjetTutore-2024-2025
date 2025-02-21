@@ -1,0 +1,24 @@
+# 🚀 Ignorer les fichiers et dossiers d'IDE (PhpStorm, VS Code, etc.)
+.idea/
+.vscode/
+
+# 🚀 Ignorer les fichiers temporaires, logs et caches
+temp/
+*.log
+*.tmp
+*.cache
+.DS_Store
+Thumbs.db
+
+# 🚀 Ignorer les dépendances de Composer
+vendor/
+
+# 🚀 Ignorer les fichiers sensibles ou spécifiques à l’environnement
+.env
+.env.local
+.env.*.local
+
+# 🚀 Ignorer les sauvegardes et fichiers générés automatiquement
+*.bak
+*.swp
+*.swo

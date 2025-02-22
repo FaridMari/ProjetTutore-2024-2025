@@ -18,6 +18,7 @@ use src\Action\DeleteEnseignantAction;
 use src\Action\FicheRepartitionAction;
 use src\Action\PlanningDetailleS;
 use src\Action\EnseignantAccueilAction;
+use src\Action\GestionRessourceAction;
 
 
 
@@ -115,8 +116,10 @@ class Dispatcher {
                 $action = new ConfigurationPlanningDetaille();
                 echo $action->execute();
                 break;
-
-
+            case 'gestionRessource':
+                $action = new GestionRessourceAction();
+                echo $action->execute();
+                break;
             default:
                 $action = new SigninAction();
                 echo $action->execute();

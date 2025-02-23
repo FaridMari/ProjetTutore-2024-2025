@@ -2,7 +2,7 @@
 
 namespace src\Action;
 
-class GestionRessourceAction
+class GestionnaireCoursAction
 {
     public function execute(): string
     {

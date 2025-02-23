@@ -3,7 +3,7 @@
 namespace src\Action;
 
 
-class GestionCompteUtilisateurAction extends Action
+class GestionnaireGestionCompteUtilisateurAction extends Action
 {
     public function execute(): string
     {

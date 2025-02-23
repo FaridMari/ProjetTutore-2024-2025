@@ -4,7 +4,7 @@ namespace src\Action;
 use src\Db\connexionFactory;
 use PDO;
 
-class EditUserAction {
+class GestionnaireModifierUtilisateurAction {
     public function execute(): string {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
             // Modifier les informations de l'utilisateur

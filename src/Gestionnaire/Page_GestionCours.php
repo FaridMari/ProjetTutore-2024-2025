@@ -57,7 +57,7 @@
 
         async function loadCours() {
             try {
-                const response = await fetch('src/Gestionnaire/RequeteBD_GetCours.php.php');
+                const response = await fetch('src/Gestionnaire/RequeteBD_GetCours.php');
                 const cours = await response.json();
                 allCours = cours;
                 displayCours(cours);

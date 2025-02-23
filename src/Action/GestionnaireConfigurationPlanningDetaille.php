@@ -2,7 +2,7 @@
 
 namespace src\Action;
 
-class ConfigurationPlanningDetaille extends Action
+class GestionnaireConfigurationPlanningDetaille extends Action
 {
     public function execute() : string
     {

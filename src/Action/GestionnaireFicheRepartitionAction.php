@@ -1,7 +1,7 @@
 <?php
 namespace src\Action;
 
-class FicheRepartitionAction extends Action {
+class GestionnaireFicheRepartitionAction extends Action {
 
     public function execute(): string
     {

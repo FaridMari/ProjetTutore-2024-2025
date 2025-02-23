@@ -2,23 +2,24 @@
 namespace src\Dispatcher;
 
 
-use src\Action\ConfigurationPlanningDetaille;
-use src\Action\CreerUtilisateurAction;
-use src\Action\EditUserAction;
-use src\Action\EnseignantFIcheContrainteAction;
+use src\Action\GestionnaireConfigurationPlanningDetaille;
+use src\Action\GestionnaireAfficherPageCreerUtilisateurAction;
+use src\Action\GestionnaireModifierUtilisateurAction;
+use src\Action\EnseignantFicheContrainteAction;
 use src\Action\EnseignantFicheRessourceAction;
 use src\Action\SigninAction;
-use src\Action\GestionCompteUtilisateurAction;
-use src\Action\GestionnairePagePrincipalAction;
+use src\Action\GestionnaireGestionCompteUtilisateurAction;
+use src\Action\GestionnaireAcceuilAction;
 use src\Action\EnseignantPagePrincipalAction;
 use src\Action\GestionnaireCreerUtilisateurAction;
-use src\Action\PlanningDetaille;
-use src\Action\FichePrevisionnelleAction;
-use src\Action\DeleteEnseignantAction;
-use src\Action\FicheRepartitionAction;
-use src\Action\PlanningDetailleS;
+use src\Action\GestionnairePlanningDetaille;
+use src\Action\EnseignantFicheServiceAction;
+use src\Action\GestionnaireSupprimerUtilisateurAction;
+use src\Action\GestionnaireFicheRepartitionAction;
 use src\Action\EnseignantAccueilAction;
-use src\Action\GestionRessourceAction;
+use src\Action\GestionnaireCoursAction;
+
+
 
 
 
@@ -52,11 +53,11 @@ class Dispatcher {
                 $this->renderPage($log->execute());
                 break;
             case 'gestionCompteUtilisateur':
-                $action = new GestionCompteUtilisateurAction();
+                $action = new GestionnaireGestionCompteUtilisateurAction();
                 echo $action->execute();
                 break;
             case 'gestionnairePagePrincipal':
-                $action = new GestionnairePagePrincipalAction();
+                $action = new GestionnaireAcceuilAction();
                 echo $action->execute();
                 break;
             case 'enseignantPagePrincipal':
@@ -64,7 +65,7 @@ class Dispatcher {
                 echo $action->execute();
                 break;
             case 'gestionnaireCreerUtilisateurAction':
-                $action = new GestionnaireCreerUtilisateurAction();
+                $action = new GestionnaireAfficherPageCreerUtilisateurAction();
                 echo $action->execute();
                 break;
             case 'enseignantFicheContrainte':
@@ -76,7 +77,7 @@ class Dispatcher {
                 echo $action->execute();
                 break;
             case 'ficheDetaille':
-                $action = new PlanningDetaille();
+                $action = new GestionnairePlanningDetaille();
                 echo $action->execute();
                 break;
             case 'ficheDetailles':
@@ -84,23 +85,23 @@ class Dispatcher {
                 echo $action->execute();
                 break;
             case 'fichePrevisionnelle':
-                $action = new FichePrevisionnelleAction();
+                $action = new EnseignantFicheServiceAction();
                 echo $action->execute();
                 break;
             case 'ficheRepartition':
-                $action = new FicheRepartitionAction();
+                $action = new GestionnaireFicheRepartitionAction();
                 echo $action->execute();
                 break;
             case 'delete-user':
-                $action = new DeleteEnseignantAction();
+                $action = new GestionnaireSupprimerUtilisateurAction();
                 echo $action->execute();
                 break;
             case 'creer-utilisateur':
-                $action = new CreerUtilisateurAction();
+                $action = new GestionnaireAfficherPageCreerUtilisateurAction();
                 echo $action->execute();
                 break;
             case 'edit-user':
-                $action = new EditUserAction();
+                $action = new GestionnaireModifierUtilisateurAction();
                 echo $action->execute();
                 break;
             case 'accueilEnseignant':
@@ -113,11 +114,11 @@ class Dispatcher {
                 $this->renderPage($log->execute());
                 break;
             case 'configurationPlanningD':
-                $action = new ConfigurationPlanningDetaille();
+                $action = new GestionnaireConfigurationPlanningDetaille();
                 echo $action->execute();
                 break;
             case 'gestionRessource':
-                $action = new GestionRessourceAction();
+                $action = new GestionnaireCoursAction();
                 echo $action->execute();
                 break;
             default:

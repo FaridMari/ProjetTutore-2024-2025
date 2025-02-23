@@ -4,7 +4,7 @@ namespace src\Action;
 use src\Db\connexionFactory;
 use PDO;
 
-class DeleteEnseignantAction {
+class GestionnaireSupprimerUtilisateurAction {
     public function execute(): string {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
             $email = trim($_POST['email']);

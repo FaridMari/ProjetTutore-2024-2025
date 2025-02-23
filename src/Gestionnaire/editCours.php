@@ -10,6 +10,7 @@ $data = json_decode(file_get_contents('php://input'), true);
 if ($data && isset($data['id_cours'])) {
     $idCours = $data['id_cours'];
     $formation = $data['formation'];
+    $semestre = $data['semestre'];
     $nomCours = $data['nom_cours'];
     $codeCours = $data['code_cours'];
     $nbHeuresTotal = $data['nb_heures_total'];
@@ -27,6 +28,7 @@ if ($data && isset($data['id_cours'])) {
 
     $sql = "UPDATE cours SET
                 formation = :formation,
+                semestre = :semestre,
                 nom_cours = :nom_cours,
                 code_cours = :code_cours,
                 nb_heures_total = :nb_heures_total,
@@ -38,6 +40,7 @@ if ($data && isset($data['id_cours'])) {
 
     $stmt = $bdd->prepare($sql);
     $stmt->bindParam(':formation', $formation);
+    $stmt->bindParam(':semestre', $semestre);
     $stmt->bindParam(':nom_cours', $nomCours);
     $stmt->bindParam(':code_cours', $codeCours);
     $stmt->bindParam(':nb_heures_total', $nbHeuresTotal);

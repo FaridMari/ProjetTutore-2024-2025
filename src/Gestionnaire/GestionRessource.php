@@ -16,6 +16,7 @@
         <tr>
             <th>ID</th>
             <th>Formation</th>
+            <th>Semestre</th>
             <th>Nom du Cours</th>
             <th>Code du Cours</th>
             <th>Heures Totales</th>
@@ -74,6 +75,7 @@
                 row.innerHTML = `
                 <td>${cours.id_cours}</td>
                 <td contenteditable="true" class="editable">${cours.formation}</td>
+                <td contenteditable="true" class="editable">${cours.semestre}</td>
                 <td contenteditable="true" class="editable">${cours.nom_cours}</td>
                 <td contenteditable="true" class="editable">${cours.code_cours}</td>
                 <td contenteditable="true" class="editable">${cours.nb_heures_total}</td>
@@ -105,13 +107,14 @@
                 const coursData = {
                     id_cours: idCours,
                     formation: row.children[1].textContent,
-                    nom_cours: row.children[2].textContent,
-                    code_cours: row.children[3].textContent,
-                    nb_heures_total: row.children[4].textContent,
-                    nb_heures_cm: row.children[5].textContent,
-                    nb_heures_td: row.children[6].textContent,
-                    nb_heures_tp: row.children[7].textContent,
-                    nb_heures_ei: row.children[8].textContent
+                    semestre: row.children[2].textContent,
+                    nom_cours: row.children[3].textContent,
+                    code_cours: row.children[4].textContent,
+                    nb_heures_total: row.children[5].textContent,
+                    nb_heures_cm: row.children[6].textContent,
+                    nb_heures_td: row.children[7].textContent,
+                    nb_heures_tp: row.children[8].textContent,
+                    nb_heures_ei: row.children[9].textContent
                 };
 
                 saveChanges(coursData);

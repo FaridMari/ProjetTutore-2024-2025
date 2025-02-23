@@ -155,7 +155,6 @@
     const formations = <?php echo json_encode($formations); ?>;
     const semester = '<?php echo $_GET['semester']; ?>';
     const repartitionSansProf = <?php echo json_encode($repartition2); ?>;
-    console.log(repartitionData);
 
     let configData = <?php echo json_encode($configurationPlanningDetailleData); ?>;
 
@@ -296,10 +295,6 @@
                 console.log(`Type inconnu: ${item.type}`);
         }
     }
-
-    console.log(stages);
-    console.log(ateliers);
-    console.log(projets);
 
     // Déterminer quel semestre utiliser
     if (semester === 'S1' || semester === 'S3') {
@@ -451,6 +446,21 @@
     // Création du tableau des datas
     //Ligne = vide | semaineActuelle | semaineActuelle en date DD/MM/YYYY | texte vide | si dans repartition heures il y a des données pour ce cours pour les cm ajouté | pour les td | pour les tp | recommencer pour chaque cours
     //pour chaque semaine
+    let descriptions = [];
+    for (let item of configData) {
+        if (item.type === 'Description') {
+            const descriptionDebut = new Date(item.dateDebut);
+            const descriptionFin = new Date(item.dateFin);
+            const descriptionWeekStart = getWeek(descriptionDebut);
+            const descriptionWeekEnd = getWeek(descriptionFin);
+            descriptions.push({
+                dateDebut: descriptionDebut,
+                dateFin: descriptionFin,
+                description: item.description,
+                weeks: [descriptionWeekStart, descriptionWeekEnd]
+            });
+        }
+    }
 
     let dataT = [];
     let semaineActuelle = semaine;
@@ -466,6 +476,7 @@
         let estStage = stages.some(stage => stage.weeks.includes(semaineActuelle));
         let estAtelier = ateliers.some(atelier => atelier.weeks.includes(semaineActuelle));
         let estProjet = projets.some(projet => projet.weeks.includes(semaineActuelle));
+        let estDescription = descriptions.some(desc => desc.weeks.includes(semaineActuelle));
 
 // Gestion des colonnes fixes pour chaque semaine
         if (estVacances) {
@@ -475,7 +486,9 @@
         } else if (estAtelier) {
             semaineData.push("", semaineActuelle, dateActuelleStr, "Atelier");
         } else if (estProjet) {
-            semaineData.push("", semaineActuelle, dateActuelleStr, "Projet");
+            semaineData.push("", semaineActuelle, dateActuelleStr, "Projet");}
+        else if (estDescription) {
+            semaineData.push("", semaineActuelle, dateActuelleStr, descriptions.find(desc => desc.weeks.includes(semaineActuelle)).description);
         } else {
             semaineData.push("", semaineActuelle, dateActuelleStr, "");
         }
@@ -571,10 +584,10 @@
     });
 
     let columnsDefs = [];
-    for (let i = 0; i < 4 ; i++) {
+    for (let i = 0; i < 3; i++) {
         columnsDefs.push({readOnly: true});
     }
-    for (let i = 4; i < colCours.length; i++) {
+    for (let i = 3; i < colCours.length; i++) {
         columnsDefs.push({readOnly: false});
         columnsDefs.push({readOnly: false});
         columnsDefs.push({readOnly: false});
@@ -711,6 +724,7 @@
     function saveAllData() {
         // Préparez toutes les données pour l'envoi
         const repartitions = [];
+        const descriptions = [];
 
         // Parcourir toutes les cellules modifiées et les ajouter à la liste sans la dernière colonne de total
         for (let rowIndex = 0; rowIndex < dataT.length - 1; rowIndex++) { // Exclure la dernière ligne
@@ -741,9 +755,21 @@
                     }
                 });
             }
+            if (row[3]) {
+                const dateDebut = row[2].split('/').reverse().join('-'); // Convertir dd/mm/yyyy en yyyy-mm-dd
+                const dateFin = new Date(dateDebut);
+                dateFin.setDate(dateFin.getDate() + 6);
+                descriptions.push({
+                    dateDebut: dateDebut,
+                    dateFin: dateFin.toISOString().split('T')[0],
+                    description: row[3]
+                });
+            }
         }
+        // Ajouter les descriptions
 
         sendRepartitionData(mergeRepartitions(repartitions), semester);
+        sendDescriptionsData(descriptions, semester);
         toast.show('Données enregistrées avec succès', 'success');
     }
     function mergeRepartitions(repartitions) {
@@ -814,6 +840,32 @@
                         console.log("Répartition insérée avec succès.");
                     } else {
                         console.error("Erreur lors de l'insertion de la répartition.");
+                    }
+                } catch (error) {
+                    console.error("Erreur de parsing JSON :", error);
+                }
+            })
+            .catch(error => {
+                console.error("Erreur:", error);
+            });
+    }
+
+    function sendDescriptionsData(descriptions, semester) {
+        fetch('src/Gestionnaire/saveDescriptions.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json', // Assurez-vous que le serveur peut accepter des données JSON
+            },
+            body: JSON.stringify({ descriptions, semester })
+        })
+            .then(response => response.text())
+            .then(data => {
+                try {
+                    const jsonData = JSON.parse(data); // Essayer de parser en JSON
+                    if (jsonData.success) {
+                        console.log("Descriptions insérées avec succès.");
+                    } else {
+                        console.error("Erreur lors de l'insertion des descriptions.");
                     }
                 } catch (error) {
                     console.error("Erreur de parsing JSON :", error);

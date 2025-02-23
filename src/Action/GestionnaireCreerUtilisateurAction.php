@@ -7,7 +7,7 @@ class GestionnaireCreerUtilisateurAction extends Action
     public function execute() : string
     {
         ob_start();
-        include 'src/Gestionnaire/CreationUtilisateur.php';
+        include 'src/Gestionnaire/Page_CreationUtilisateur.php';
         return ob_get_clean();
 
     }

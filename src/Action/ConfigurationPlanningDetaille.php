@@ -8,8 +8,8 @@ class ConfigurationPlanningDetaille extends Action
     {
         ob_start();
 
-        include 'src/Gestionnaire/NavBarTop.html';
-        include 'src/Gestionnaire/InfoSemestres.php';
+        include 'src/Gestionnaire/Navbar_Top.html';
+        include 'src/Gestionnaire/Page_ConfigurationPlanningDetaille.php';
 
         return ob_get_clean();
 

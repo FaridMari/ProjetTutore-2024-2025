@@ -19,9 +19,9 @@ class GestionCompteUtilisateurAction extends Action
         </head>
         <body>
         <?php
-        include 'src/Gestionnaire/NavBar.html';
+        include 'src/Gestionnaire/Navbar_Generique.html';
 
-        include 'src/Gestionnaire/GestionCompte.php';
+        include 'src/Gestionnaire/Page_GestionUtilisateur.php';
         ?>
         </body>
         </html>

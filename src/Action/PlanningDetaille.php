@@ -23,10 +23,10 @@ class PlanningDetaille extends Action
 
         <?php
         // Inclure la nav bar top
-        include 'src/Gestionnaire/NavBarTop.html';
+        include 'src/Gestionnaire/Navbar_Top.html';
 
         // Inclure le contenu de la page
-        include 'src/Gestionnaire/PlanningDetaille.php';
+        include 'src/Gestionnaire/Page_PlanningDetaille.php';
 
         ?>
         </body>

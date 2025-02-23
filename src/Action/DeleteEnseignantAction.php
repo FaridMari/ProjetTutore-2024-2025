@@ -48,7 +48,7 @@ class DeleteEnseignantAction {
 
         // Inclure le fichier HTML
         ob_start();
-        include __DIR__ . '/../Gestionnaire/DeleteUtilisateur.php';
+        include __DIR__ . '/../Gestionnaire/Page_DeleteUtilisateur.php';
         return ob_get_clean();
     }
 }

@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
             // Construire dynamiquement le lien avec le token et l'email
             $host = $_SERVER['HTTP_HOST'];
             $path = dirname($_SERVER['PHP_SELF']);
-            $passwordLink = "http://$host$path/password.php?token=" . urlencode($token) . "&email=" . urlencode($email);
+            $passwordLink = "http://$host$path/Page_Password.php?token=" . urlencode($token) . "&email=" . urlencode($email);
 
             // Ajouter le lien au message
             $message = "Bonjour,\n\nCliquez sur le lien suivant pour choisir votre mot de passe. Ce lien est valable 24 heures :\n$passwordLink";

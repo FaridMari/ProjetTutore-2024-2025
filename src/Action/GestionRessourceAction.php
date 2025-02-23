@@ -18,9 +18,9 @@ class GestionRessourceAction
         </head>
         <body>
         <?php
-        include 'src/Gestionnaire/NavBar.html';
+        include 'src/Gestionnaire/Navbar_Generique.html';
 
-        include 'src/Gestionnaire/GestionRessource.php';
+        include 'src/Gestionnaire/Page_GestionCours.php';
         ?>
         </body>
         </html>

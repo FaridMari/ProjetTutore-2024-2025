@@ -824,7 +824,7 @@
     }
 
     function sendRepartitionData(repartition,semester) {
-        fetch('src/Gestionnaire/UpdateRepartition.php', {
+        fetch('src/Gestionnaire/RequeteBD_UpdateRepartionsHeures.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json', // Assurez-vous que le serveur peut accepter des données JSON
@@ -851,7 +851,7 @@
     }
 
     function sendDescriptionsData(descriptions, semester) {
-        fetch('src/Gestionnaire/saveDescriptions.php', {
+        fetch('src/Gestionnaire/RequeteBD_UpdateDescriptions.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json', // Assurez-vous que le serveur peut accepter des données JSON

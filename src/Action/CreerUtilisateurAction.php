@@ -61,7 +61,7 @@ class CreerUtilisateurAction {
                 $conn->commit();
 
                 // Redirection après création
-                header("Location: src/Gestionnaire/LienEmail.php?email=" . urlencode($email));
+                header("Location: src/Gestionnaire/Page_EnvoyerEmail.php?email=" . urlencode($email));
                 return "Utilisateur créé avec succès.";
             } catch (PDOException $e) {
                 //$conn->rollBack();

@@ -127,7 +127,7 @@
 
     const toast = new Toast();
     document.addEventListener("DOMContentLoaded", function () {
-        fetch("src/Gestionnaire/get_info_semestres.php")
+        fetch("src/Gestionnaire/RequeteBD_GetConfigurationPlanningDetaille.php")
             .then(response => response.json())
             .then(data => {
                 data.forEach(item => {
@@ -201,7 +201,7 @@
         collectDynamicData("projetContainer", "Projet");
 
         console.log(data);
-        fetch("src/gestionnaire/update_info_semestres.php", {
+        fetch("src/gestionnaire/RequeteBD_UpdateConfigurationPlanningDetaille.php", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

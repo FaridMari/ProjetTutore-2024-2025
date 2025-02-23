@@ -409,7 +409,7 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
       };
 
       console.log(payload);
-      fetch('src/Gestionnaire/UpdateAffectations.php', {
+      fetch('src/Gestionnaire/RequeteBD_UpdateFicheRepartition.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

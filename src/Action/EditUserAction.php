@@ -62,7 +62,7 @@ class EditUserAction {
 
             // Inclure le fichier HTML
             ob_start();
-            include __DIR__ . '/../Gestionnaire/EditUtilisateur.php';
+            include __DIR__ . '/../Gestionnaire/Page_EditUtilisateur.php';
             return ob_get_clean();
         } catch (\PDOException $e) {
             return "<script>alert('Une erreur est survenue : " . addslashes($e->getMessage()) . "');</script>";

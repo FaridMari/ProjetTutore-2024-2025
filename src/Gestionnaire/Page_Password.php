@@ -27,7 +27,7 @@ if ($email) {
                 if ($nouveauMdp !== $confirmerMdp) {
                     echo "<script>
                             alert('Les mots de passe ne correspondent pas.');
-                            window.location.href = 'password.php?email=" . urlencode($email) . "';
+                            window.location.href = 'Page_Password.php?email=" . urlencode($email) . "';
                           </script>";
                     exit();
                 }
@@ -36,7 +36,7 @@ if ($email) {
                 if (strlen($nouveauMdp) < 8) {
                     echo "<script>
                             alert('Le mot de passe doit contenir au moins 8 caractères.');
-                            window.location.href = 'password.php?email=" . urlencode($email) . "';
+                            window.location.href = 'Page_Password.php?email=" . urlencode($email) . "';
                           </script>";
                     exit();
                 }

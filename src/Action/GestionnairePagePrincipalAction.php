@@ -22,10 +22,10 @@ class GestionnairePagePrincipalAction extends Action
         <body>
         <?php
         // 3) Inclure la nav bar (qui contient son propre <style> pour l’esthétique)
-        include 'src/Gestionnaire/NavBar.html';
+        include 'src/Gestionnaire/Navbar_Generique.html';
 
         // 4) Inclure le contenu principal (déposé dans #main-content par layout.css)
-        include 'src/Gestionnaire/PagePrincipal.php';
+        include 'src/Gestionnaire/Page_Acceuil.php';
         ?>
         </body>
         </html>

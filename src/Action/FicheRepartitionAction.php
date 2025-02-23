@@ -24,10 +24,10 @@ class FicheRepartitionAction extends Action {
 
         <?php
         // Inclure la nav bar top
-        include 'src/Gestionnaire/NavBar.html';
+        include 'src/Gestionnaire/Navbar_Generique.html';
 
         // Inclure le contenu de la page
-        include 'src/Gestionnaire/FicheRepartition.php';
+        include 'src/Gestionnaire/Page_FicheRepartition.php';
 
         ?>
         </body>

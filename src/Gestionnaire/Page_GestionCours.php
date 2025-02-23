@@ -57,7 +57,7 @@
 
         async function loadCours() {
             try {
-                const response = await fetch('src/Gestionnaire/getCours.php');
+                const response = await fetch('src/Gestionnaire/RequeteBD_GetCours.php.php');
                 const cours = await response.json();
                 allCours = cours;
                 displayCours(cours);
@@ -129,7 +129,7 @@
             }
 
             try {
-                const response = await fetch('src/Gestionnaire/editCours.php', {
+                const response = await fetch('src/Gestionnaire/RequeteBD_EditCours.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

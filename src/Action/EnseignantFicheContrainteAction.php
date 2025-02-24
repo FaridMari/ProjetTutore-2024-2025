@@ -2,7 +2,7 @@
 
 namespace src\Action;
 
-class EnseignantFIcheContrainteAction extends Action
+class EnseignantFicheContrainteAction extends Action
 {
     public function execute(): string
     {

@@ -140,16 +140,9 @@
             </div>
 
             <div class="mb-3">
-                <label for="resourceName" class="form-label">Nom de la ressource :</label>
+                <label for="resourceName" class="form-label">Choix de la ressource :</label>
                 <select class="form-select" id="resourceName" name="resourceName">
                     <option value="">-- Sélectionner un nom de ressource --</option>
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <label for="resourceCode" class="form-label">Code de la ressource :</label>
-                <select class="form-select" id="resourceCode" name="resourceCode" required>
-                    <option value="">-- Sélectionner un code de ressource --</option>
                 </select>
             </div>
 
@@ -239,7 +232,6 @@
     document.addEventListener('DOMContentLoaded', function () {
         const semesterSelect = document.getElementById('semester');
         const resourceNameSelect = document.getElementById('resourceName');
-        const resourceCodeSelect = document.getElementById('resourceCode');
         const courseNameCode = document.getElementById('courseNameCode');
         const hoursDistribution = document.getElementById('hours-distribution');
         const noDataMessage = 'Aucune donnée disponible.';
@@ -247,9 +239,7 @@
 
         // Fonction pour récupérer et afficher les cours
         function fetchAndDisplayCourses(semester) {
-            resourceNameSelect.innerHTML = '<option value="">-- Sélectionner un nom de ressource --</option>';
-            resourceCodeSelect.innerHTML = '<option value="">-- Sélectionner un code de ressource --</option>';
-
+            resourceNameSelect.innerHTML = '<option value="">-- Sélectionner une ressource --</option>';
             if (semester) {
                 fetch(`src/Enseignant/get_cours.php?semester=${semester}`)
                     .then(response => {
@@ -264,13 +254,8 @@
                             data.forEach(course => {
                                 const optionName = document.createElement('option');
                                 optionName.value = course.nom_cours;
-                                optionName.textContent = course.nom_cours;
+                                optionName.textContent = course.code_cours + " : "+ course.nom_cours;
                                 resourceNameSelect.appendChild(optionName);
-
-                                const optionCode = document.createElement('option');
-                                optionCode.value = course.code_cours;
-                                optionCode.textContent = course.code_cours;
-                                resourceCodeSelect.appendChild(optionCode);
                             });
                         }
                     })
@@ -306,9 +291,7 @@
         function updateRepartitionFields(repartitions) {
             // Récupère le nom et le code de la ressource depuis le DOM
             const resourceNameElement = document.getElementById('resourceName');
-            const resourceCodeElement = document.getElementById('resourceCode');
             const resourceName = resourceNameElement.options[resourceNameElement.selectedIndex]?.text || 'N/A';
-            const resourceCode = resourceCodeElement.options[resourceCodeElement.selectedIndex]?.text || 'N/A';
 
             const hoursDistribution = document.getElementById('hours-distribution');
 
@@ -327,7 +310,6 @@
             courseInfoDiv.classList.add('mb-3');
             courseInfoDiv.innerHTML = `
         <p><strong>Ressource :</strong> <span>${resourceName}</span></p>
-        <p><strong>Code ressource :</strong> <span>${resourceCode}</span></p>
     `;
             parent.insertBefore(courseInfoDiv, hoursDistribution);
 
@@ -354,10 +336,6 @@
             const selectedName = this.value;
             const matchedCourse = courseData.find(course => course.nom_cours === selectedName);
             if (matchedCourse) {
-                resourceCodeSelect.value = matchedCourse.code_cours;
-                if (courseNameCode) {
-                    courseNameCode.textContent = `${matchedCourse.nom_cours} (${matchedCourse.code_cours})`;
-                }
                 fetchAndDisplayRepartitions(matchedCourse.nom_cours);
             } else {
                 if (courseNameCode) {
@@ -367,23 +345,6 @@
             }
         });
 
-        // Synchronise le nom de ressource lorsque le code est sélectionné
-        resourceCodeSelect.addEventListener('change', function () {
-            const selectedCode = this.value;
-            const matchedCourse = courseData.find(course => course.code_cours === selectedCode);
-            if (matchedCourse) {
-                resourceNameSelect.value = matchedCourse.nom_cours;
-                if (courseNameCode) {
-                    courseNameCode.textContent = `${matchedCourse.nom_cours} (${matchedCourse.code_cours})`;
-                }
-                fetchAndDisplayRepartitions(matchedCourse.nom_cours);
-            } else {
-                if (courseNameCode) {
-                    courseNameCode.textContent = noDataMessage;
-                }
-                fetchAndDisplayRepartitions(null);
-            }
-        });
 
         fetchAndDisplayCourses(semesterSelect.value);
 

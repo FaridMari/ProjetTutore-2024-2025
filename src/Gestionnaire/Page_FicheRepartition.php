@@ -227,7 +227,6 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
 <!--  </style>-->
 
 <style>
-
     #hot {
         margin-top: 20px;
     }
@@ -257,6 +256,8 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
         font-size: 14px;
         padding: 8px;
     }
+
+
 </style>
 
 
@@ -282,9 +283,27 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
   <div id="hot"></div>
   <div id="voeuRemark"></div>
   <button id="saveButton" class="btn btn-primary mt-3">Enregistrer les Affectations</button>
+
 </div>
 
 <script>
+    class Toast {
+        constructor() {
+            this.toastElement = document.createElement('div');
+            this.toastElement.className = 'toast';
+            document.body.appendChild(this.toastElement);
+        }
+
+        show(message, type = 'success') {
+            this.toastElement.textContent = message;
+            this.toastElement.className = `toast show ${type}`;
+            setTimeout(() => {
+                this.toastElement.className = this.toastElement.className.replace('show', '');
+            }, 5000); // Le toast disparaît après 3 secondes
+        }
+    }
+
+    const toast = new Toast();
     // Les données pré-remplies issues de PHP
     const data = <?php echo $prepopulatedData; ?>;
     const listeCours = <?php echo json_encode($coursArray); ?>;
@@ -388,8 +407,9 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
         data: hot.getData(),
         formation: semester
       };
+
       console.log(payload);
-      fetch('src/Gestionnaire/UpdateAffectations.php', {
+      fetch('src/Gestionnaire/RequeteBD_UpdateFicheRepartition.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -403,15 +423,19 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
           const jsonData = JSON.parse(responseText);
           if (jsonData.success) {
             console.log("Affectations enregistrées avec succès.");
+            toast.show("Affectations enregistrées avec succès.", 'success');
           } else {
             console.error("Erreur lors de l'enregistrement.");
+            toast.show("Erreur lors de l'enregistrement.", 'error');
           }
         } catch (error) {
           console.error("Erreur de parsing JSON :", error);
+            toast.show("Erreur lors de l'enregistrement.", 'error');
         }
       })
       .catch(error => {
         console.error("Erreur:", error);
+        toast.show("Erreur lors de l'enregistrement.", 'error');
       });
     });
     
@@ -420,6 +444,8 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
       const semester = select.value;
       window.location.href = `index.php?action=ficheRepartition&semester=${semester}`;
     });
+
+
   </script>
 </body>
 </html>

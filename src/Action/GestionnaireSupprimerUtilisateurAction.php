@@ -4,7 +4,7 @@ namespace src\Action;
 use src\Db\connexionFactory;
 use PDO;
 
-class DeleteEnseignantAction {
+class GestionnaireSupprimerUtilisateurAction {
     public function execute(): string {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
             $email = trim($_POST['email']);
@@ -48,7 +48,7 @@ class DeleteEnseignantAction {
 
         // Inclure le fichier HTML
         ob_start();
-        include __DIR__ . '/../Gestionnaire/DeleteUtilisateur.php';
+        include __DIR__ . '/../Gestionnaire/Page_DeleteUtilisateur.php';
         return ob_get_clean();
     }
 }

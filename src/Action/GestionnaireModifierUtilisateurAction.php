@@ -4,7 +4,7 @@ namespace src\Action;
 use src\Db\connexionFactory;
 use PDO;
 
-class EditUserAction {
+class GestionnaireModifierUtilisateurAction {
     public function execute(): string {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
             // Modifier les informations de l'utilisateur
@@ -62,7 +62,7 @@ class EditUserAction {
 
             // Inclure le fichier HTML
             ob_start();
-            include __DIR__ . '/../Gestionnaire/EditUtilisateur.php';
+            include __DIR__ . '/../Gestionnaire/Page_EditUtilisateur.php';
             return ob_get_clean();
         } catch (\PDOException $e) {
             return "<script>alert('Une erreur est survenue : " . addslashes($e->getMessage()) . "');</script>";

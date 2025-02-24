@@ -2,7 +2,8 @@
 
 namespace src\Action;
 
-class ConfigurationPlanningDetaille extends Action
+
+class GestionnaireGestionCompteUtilisateurAction extends Action
 {
     public function execute(): string
     {
@@ -18,8 +19,9 @@ class ConfigurationPlanningDetaille extends Action
         </head>
         <body>
         <?php
-        include 'src/Gestionnaire/NavBar.html';
-        include 'src/Gestionnaire/InfoSemestres.php';
+        include 'src/Gestionnaire/Navbar_Generique.html';
+
+        include 'src/Gestionnaire/Page_GestionUtilisateur.php';
         ?>
         </body>
         </html>

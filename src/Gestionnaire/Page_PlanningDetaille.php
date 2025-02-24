@@ -60,6 +60,19 @@
     .vacation {
         background-color: #d4edda !important;
     }
+
+    .stage {
+        background-color: #cce5ff !important;
+
+    }
+
+    .atelier {
+        background-color: #fff3cd !important;
+    }
+
+    .projet {
+        background-color: #f8d7da !important;
+    }
     .total-exceeded {
         background-color: #ffcccc !important;
     }
@@ -142,7 +155,6 @@
     const formations = <?php echo json_encode($formations); ?>;
     const semester = '<?php echo $_GET['semester']; ?>';
     const repartitionSansProf = <?php echo json_encode($repartition2); ?>;
-    console.log(repartitionData);
 
     let configData = <?php echo json_encode($configurationPlanningDetailleData); ?>;
 
@@ -170,8 +182,12 @@
     let vacPrintempsFinS = 0;
 
     // Assumons que `configData` est une liste d'objets contenant des informations sur les semestres et les vacances
+    let stages = [];
+    let ateliers = [];
+    let projets = [];
+
     for (let item of configData) {
-        switch (item['type']) {
+        switch (item.type) {
             case 'Semestre1':
                 // Affectation des valeurs pour le semestre 1
                 const semestre1 = item;
@@ -232,9 +248,51 @@
                 allVacances.push(vacPrintempsFinS);
                 break;
 
+            case 'Atelier':
+                // Ajouter l'atelier à la liste des ateliers et calculer les semaines
+                const atelierDebut = new Date(item.dateDebut);
+                const atelierFin = new Date(item.dateFin);
+                const atelierWeekStart = getWeek(atelierDebut);
+                const atelierWeekEnd = getWeek(atelierFin);
+                ateliers.push({
+                    dateDebut: atelierDebut,
+                    dateFin: atelierFin,
+                    description: item.description,
+                    weeks: [atelierWeekStart, atelierWeekEnd]
+                });
+                break;
+
+            case 'Stage':
+                // Ajouter le stage à la liste des stages et calculer les semaines
+                const stageDebut = new Date(item.dateDebut);
+                const stageFin = new Date(item.dateFin);
+                const stageWeekStart = getWeek(stageDebut);
+                const stageWeekEnd = getWeek(stageFin);
+                stages.push({
+                    dateDebut: stageDebut,
+                    dateFin: stageFin,
+                    description: item.description,
+                    weeks: [stageWeekStart, stageWeekEnd]
+                });
+                break;
+
+            case 'Projet':
+                // Ajouter le projet à la liste des projets et calculer les semaines
+                const projetDebut = new Date(item.dateDebut);
+                const projetFin = new Date(item.dateFin);
+                const projetWeekStart = getWeek(projetDebut);
+                const projetWeekEnd = getWeek(projetFin);
+                projets.push({
+                    dateDebut: projetDebut,
+                    dateFin: projetFin,
+                    description: item.description,
+                    weeks: [projetWeekStart, projetWeekEnd]
+                });
+                break;
+
             default:
                 // Ajouter un cas par défaut pour gérer les autres types
-                console.log(`Type inconnu: ${item['type']}`);
+                console.log(`Type inconnu: ${item.type}`);
         }
     }
 
@@ -388,6 +446,21 @@
     // Création du tableau des datas
     //Ligne = vide | semaineActuelle | semaineActuelle en date DD/MM/YYYY | texte vide | si dans repartition heures il y a des données pour ce cours pour les cm ajouté | pour les td | pour les tp | recommencer pour chaque cours
     //pour chaque semaine
+    let descriptions = [];
+    for (let item of configData) {
+        if (item.type === 'Description') {
+            const descriptionDebut = new Date(item.dateDebut);
+            const descriptionFin = new Date(item.dateFin);
+            const descriptionWeekStart = getWeek(descriptionDebut);
+            const descriptionWeekEnd = getWeek(descriptionFin);
+            descriptions.push({
+                dateDebut: descriptionDebut,
+                dateFin: descriptionFin,
+                description: item.description,
+                weeks: [descriptionWeekStart, descriptionWeekEnd]
+            });
+        }
+    }
 
     let dataT = [];
     let semaineActuelle = semaine;
@@ -400,13 +473,26 @@
         let estVacances = allVacances.includes(semaineActuelle);
         let dateActuelleStr = new Date(dateDebutSemestre).toLocaleDateString('fr-FR');
         let semaineData = [];
-        // Gestion des colonnes fixes pour chaque semaine
+        let estStage = stages.some(stage => stage.weeks.includes(semaineActuelle));
+        let estAtelier = ateliers.some(atelier => atelier.weeks.includes(semaineActuelle));
+        let estProjet = projets.some(projet => projet.weeks.includes(semaineActuelle));
+        let estDescription = descriptions.some(desc => desc.weeks.includes(semaineActuelle));
+
+// Gestion des colonnes fixes pour chaque semaine
         if (estVacances) {
             semaineData.push("", semaineActuelle, dateActuelleStr, "Vacances");
+        } else if (estStage) {
+            semaineData.push("", semaineActuelle, dateActuelleStr, "Stage");
+        } else if (estAtelier) {
+            semaineData.push("", semaineActuelle, dateActuelleStr, "Atelier");
+        } else if (estProjet) {
+            semaineData.push("", semaineActuelle, dateActuelleStr, "Projet");}
+        else if (estDescription) {
+            semaineData.push("", semaineActuelle, dateActuelleStr, descriptions.find(desc => desc.weeks.includes(semaineActuelle)).description);
         } else {
             semaineData.push("", semaineActuelle, dateActuelleStr, "");
-
         }
+
 
         // Construire la liste des colonnes pour les cours
 
@@ -498,10 +584,10 @@
     });
 
     let columnsDefs = [];
-    for (let i = 0; i < 4 ; i++) {
+    for (let i = 0; i < 3; i++) {
         columnsDefs.push({readOnly: true});
     }
-    for (let i = 4; i < colCours.length; i++) {
+    for (let i = 3; i < colCours.length; i++) {
         columnsDefs.push({readOnly: false});
         columnsDefs.push({readOnly: false});
         columnsDefs.push({readOnly: false});
@@ -544,9 +630,22 @@
             }
 
             // Mise en forme conditionnelle pour les vacances
-            if (dataT[row] && dataT[row][3] === "Vacances") {
-                cellProperties.className = 'vacation';
-                cellProperties.readOnly = true;
+            if (dataT[row]) {
+                const cellValue = dataT[row][3];
+
+                if (cellValue === "Vacances") {
+                    cellProperties.className = 'vacation';
+                    cellProperties.readOnly = true;
+                } else if (cellValue === "Stage") {
+                    cellProperties.className = 'stage';
+                    cellProperties.readOnly = true;
+                } else if (cellValue === "Atelier") {
+                    cellProperties.className = 'atelier';
+                    cellProperties.readOnly = true;
+                } else if (cellValue === "Projet") {
+                    cellProperties.className = 'projet';
+                    cellProperties.readOnly = true;
+                }
             }
 
             // Mise en forme conditionnelle pour la colonne "Total"
@@ -625,6 +724,7 @@
     function saveAllData() {
         // Préparez toutes les données pour l'envoi
         const repartitions = [];
+        const descriptions = [];
 
         // Parcourir toutes les cellules modifiées et les ajouter à la liste sans la dernière colonne de total
         for (let rowIndex = 0; rowIndex < dataT.length - 1; rowIndex++) { // Exclure la dernière ligne
@@ -655,13 +755,76 @@
                     }
                 });
             }
+            if (row[3]) {
+                const dateDebut = row[2].split('/').reverse().join('-'); // Convertir dd/mm/yyyy en yyyy-mm-dd
+                const dateFin = new Date(dateDebut);
+                dateFin.setDate(dateFin.getDate() + 6);
+                descriptions.push({
+                    dateDebut: dateDebut,
+                    dateFin: dateFin.toISOString().split('T')[0],
+                    description: row[3]
+                });
+            }
+        }
+        // Ajouter les descriptions
+
+        sendRepartitionData(mergeRepartitions(repartitions), semester);
+        sendDescriptionsData(descriptions, semester);
+        toast.show('Données enregistrées avec succès', 'success');
+    }
+    function mergeRepartitions(repartitions) {
+        // Trier les répartitions par codeCours, typeHeure, nbHeures, puis semaineDebut
+        repartitions.sort((a, b) => {
+            if (a.codeCours !== b.codeCours) {
+                return a.codeCours.localeCompare(b.codeCours);
+            }
+            if (a.typeHeure !== b.typeHeure) {
+                return a.typeHeure.localeCompare(b.typeHeure);
+            }
+            if (a.nbHeures !== b.nbHeures) {
+                return a.nbHeures - b.nbHeures;
+            }
+            return a.semaineDebut - b.semaineDebut;
+        });
+
+        const mergedRepartitions = [];
+        let currentRepartition = null;
+
+        repartitions.forEach((repartition, index) => {
+            // Si une répartition est identique à la précédente
+            if (currentRepartition &&
+                currentRepartition.codeCours === repartition.codeCours &&
+                currentRepartition.typeHeure === repartition.typeHeure &&
+                currentRepartition.nbHeures === repartition.nbHeures) {
+
+                // Si elles sont consécutives (semaineFin de la précédente égale à semaineDebut de la nouvelle)
+                if (currentRepartition.semaineFin + 1 === repartition.semaineDebut) {
+                    // On fusionne en mettant à jour la semaine de fin
+                    currentRepartition.semaineFin = repartition.semaineFin;
+                } else {
+                    // Si elles ne sont pas consécutives, on les ajoute séparément
+                    mergedRepartitions.push(currentRepartition);
+                    currentRepartition = { ...repartition }; // Nouvelle répartition
+                }
+            } else {
+                // Si la répartition est différente, on ajoute la précédente (si elle existe) et on commence une nouvelle
+                if (currentRepartition) {
+                    mergedRepartitions.push(currentRepartition);
+                }
+                currentRepartition = { ...repartition }; // Créer une copie de la répartition actuelle
+            }
+        });
+
+        // Ajouter la dernière répartition si elle existe
+        if (currentRepartition) {
+            mergedRepartitions.push(currentRepartition);
         }
 
-        sendRepartitionData(repartitions, semester);
+        return mergedRepartitions;
     }
 
     function sendRepartitionData(repartition,semester) {
-        fetch('src/Gestionnaire/UpdateRepartition.php', {
+        fetch('src/Gestionnaire/RequeteBD_UpdateRepartionsHeures.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json', // Assurez-vous que le serveur peut accepter des données JSON
@@ -687,6 +850,32 @@
             });
     }
 
+    function sendDescriptionsData(descriptions, semester) {
+        fetch('src/Gestionnaire/RequeteBD_UpdateDescriptions.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json', // Assurez-vous que le serveur peut accepter des données JSON
+            },
+            body: JSON.stringify({ descriptions, semester })
+        })
+            .then(response => response.text())
+            .then(data => {
+                try {
+                    const jsonData = JSON.parse(data); // Essayer de parser en JSON
+                    if (jsonData.success) {
+                        console.log("Descriptions insérées avec succès.");
+                    } else {
+                        console.error("Erreur lors de l'insertion des descriptions.");
+                    }
+                } catch (error) {
+                    console.error("Erreur de parsing JSON :", error);
+                }
+            })
+            .catch(error => {
+                console.error("Erreur:", error);
+            });
+    }
+
     container.addEventListener('wheel', (event) => {
         event.preventDefault(); // Empêche le défilement de la page
 
@@ -698,7 +887,7 @@
             selectedRanges.forEach(([startRow, startCol, endRow, endCol]) => {
                 for (let row = startRow; row <= endRow; row++) {
                     for (let col = startCol; col <= endCol; col++) {
-                        if (dataT[row] && dataT[row][3] !== "Vacances" && col >= 4 && col < totalColIndex) {
+                        if (dataT[row] && (dataT[row][3] !== "Vacances" && dataT[row][3] !== "Stage" && dataT[row][3] !== "Projet" && dataT[row][3] !== "Atelier") && col >= 4 && col < totalColIndex && row < totalRowIndex) {
                             let currentValue = parseInt(planning.getDataAtCell(row, col) || '0', 10);
                             const delta = event.deltaY > 0 ? -1 : 1; // -1 pour scroll bas, +1 pour scroll haut
                             currentValue = Math.max(0, currentValue + delta); // Ajuster la valeur sans descendre en dessous de 0
@@ -716,6 +905,25 @@
         const semester = select.value;
         window.location.href = `index.php?action=ficheDetaille&semester=${semester}`;
     });
+
+    class Toast {
+        constructor() {
+            this.toastElement = document.createElement('div');
+            this.toastElement.className = 'toast';
+            document.body.appendChild(this.toastElement);
+        }
+
+        show(message, type = 'success') {
+            this.toastElement.textContent = message;
+            this.toastElement.className = `toast show ${type}`;
+            setTimeout(() => {
+                this.toastElement.className = this.toastElement.className.replace('show', '');
+            }, 5000); // Le toast disparaît après 3 secondes
+        }
+    }
+
+    const toast = new Toast();
+
 
 </script>
 </html>

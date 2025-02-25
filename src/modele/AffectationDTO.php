@@ -64,34 +64,64 @@ class AffectationDTO {
 
     public function save(Affectation $affectation) {
         try {
-            // Si l'objet possède déjà un id, on effectue directement une mise à jour
-            if ($affectation->getIdAffectation()) {
+            // On récupère la valeur saisie dans le champ "idEnseignant" (qui contient en réalité un nom ou plusieurs noms)
+            $enseignantField = trim($affectation->getIdEnseignant());
+    
+            // Si la chaîne contient une virgule, cela signifie que plusieurs enseignants ont été saisis
+            if (strpos($enseignantField, ',') !== false) {
+                // Création d'une map (nom prenom => id) à partir des utilisateurs
+                require_once 'UtilisateurDTO.php';
+                $utilisateurDTO = new UtilisateurDTO();
+                $utilisateurs = $utilisateurDTO->findAll();
+                $teacherMap = [];
+                foreach ($utilisateurs as $utilisateur) {
+                    // On suppose ici que le format est "Nom Prenom"
+                    $key = trim($utilisateur->getNom() . ' ' . $utilisateur->getPrenom());
+                    $teacherMap[$key] = $utilisateur->getIdUtilisateur();
+                }
+    
+                // Décomposer la chaîne en plusieurs noms
+                $teacherNames = array_map('trim', explode(',', $enseignantField));
+    
+                // Suppression des affectations existantes pour ce couple (cours, groupe, type d'heure)
                 $stmt = $this->db->prepare("
-                    UPDATE affectations SET
-                        id_enseignant = :idEnseignant,
-                        id_cours = :idCours,
-                        id_groupe = :idGroupe,
-                        heures_affectees = :heuresAff,
-                        type_heure = :typeHeure
-                    WHERE id_affectation = :id
+                    DELETE FROM affectations 
+                    WHERE id_cours = :idCours 
+                      AND id_groupe = :idGroupe 
+                      AND type_heure = :typeHeure
                 ");
                 $stmt->execute([
-                    'id'             => $affectation->getIdAffectation(),
-                    'idEnseignant'   => $affectation->getIdEnseignant(),
-                    'idCours'        => $affectation->getIdCours(),
-                    'idGroupe'       => $affectation->getIdGroupe(),
-                    'heuresAff'      => $affectation->getHeuresAffectees(),
-                    'typeHeure'      => $affectation->getTypeHeure()
+                    'idCours'   => $affectation->getIdCours(),
+                    'idGroupe'  => $affectation->getIdGroupe(),
+                    'typeHeure' => $affectation->getTypeHeure()
                 ]);
+    
+                // Insertion d'une affectation pour chaque enseignant saisi
+                foreach ($teacherNames as $teacherName) {
+                    if (isset($teacherMap[$teacherName])) {
+                        $stmtInsert = $this->db->prepare("
+                            INSERT INTO affectations (id_enseignant, id_cours, id_groupe, heures_affectees, type_heure)
+                            VALUES (:idEnseignant, :idCours, :idGroupe, :heuresAff, :typeHeure)
+                        ");
+                        $stmtInsert->execute([
+                            'idEnseignant' => $teacherMap[$teacherName],
+                            'idCours'      => $affectation->getIdCours(),
+                            'idGroupe'     => $affectation->getIdGroupe(),
+                            'heuresAff'    => $affectation->getHeuresAffectees(),
+                            'typeHeure'    => $affectation->getTypeHeure()
+                        ]);
+                    } else {
+                        error_log("Enseignant '$teacherName' non trouvé dans la table utilisateurs.");
+                    }
+                }
             } else {
-                // Si aucun id n'est présent, on cherche une affectation existante pour ce couple (cours, groupe, type d'heure)
+                // Cas classique : une seule valeur saisie
                 $existing = $this->findByCourseAndGroupAndType(
                     $affectation->getIdCours(),
                     $affectation->getIdGroupe(),
                     $affectation->getTypeHeure()
                 );
                 if ($existing) {
-                    // Si une affectation existe déjà, on la met à jour si l'enseignant a changé
                     if ($existing->getIdEnseignant() != $affectation->getIdEnseignant()) {
                         $existing->setIdEnseignant($affectation->getIdEnseignant());
                         $stmt = $this->db->prepare("
@@ -106,10 +136,8 @@ class AffectationDTO {
                             'heuresAff'    => $affectation->getHeuresAffectees()
                         ]);
                     }
-                    // On met à jour l'objet en définissant son id existant
                     $affectation->setIdAffectation($existing->getIdAffectation());
                 } else {
-                    // Aucun enregistrement existant, on insère une nouvelle affectation
                     $stmt = $this->db->prepare("
                         INSERT INTO affectations (id_enseignant, id_cours, id_groupe, heures_affectees, type_heure)
                         VALUES (:idEnseignant, :idCours, :idGroupe, :heuresAff, :typeHeure)
@@ -129,6 +157,7 @@ class AffectationDTO {
             throw $e;
         }
     }
+    
 
     public function delete($id) {
         try {
@@ -223,6 +252,45 @@ class AffectationDTO {
             return null;
         }
     }
+
+    public function deleteByCourseAndGroupAndType($idCours, $idGroupe, $typeHeure) {
+        try {
+            $stmt = $this->db->prepare("
+                DELETE FROM affectations 
+                WHERE id_cours = :idCours 
+                  AND id_groupe = :idGroupe 
+                  AND type_heure = :typeHeure
+            ");
+            $stmt->execute([
+                'idCours'   => $idCours,
+                'idGroupe'  => $idGroupe,
+                'typeHeure' => $typeHeure
+            ]);
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+        }
+    }
+
+    public function insert(Affectation $affectation) {
+        try {
+            $stmt = $this->db->prepare("
+                INSERT INTO affectations (id_enseignant, id_cours, id_groupe, heures_affectees, type_heure)
+                VALUES (:idEnseignant, :idCours, :idGroupe, :heuresAff, :typeHeure)
+            ");
+            $stmt->execute([
+                'idEnseignant' => $affectation->getIdEnseignant(),
+                'idCours'      => $affectation->getIdCours(),
+                'idGroupe'     => $affectation->getIdGroupe(),
+                'heuresAff'    => $affectation->getHeuresAffectees(),
+                'typeHeure'    => $affectation->getTypeHeure()
+            ]);
+            $affectation->setIdAffectation($this->db->lastInsertId());
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            throw $e;
+        }
+    }
+    
     
 }
 

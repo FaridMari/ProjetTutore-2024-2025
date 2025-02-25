@@ -27,7 +27,6 @@ class EnseignantAccueilAction extends Action
         // Inclure le contenu de la page
         include 'src/Enseignant/Accueil.php';
         ?>
-        tyjcujvk;tckty
         </body>
         </html>
         <?php

@@ -1,0 +1,62 @@
+Fonctionnalités - Itération 4
+
+1- Fiche de Vœux
+
+- Description : Finalisation de la fiche de vœux avec limitation des choix 
+- Objectif : Permettre aux enseignants d’exprimer leurs préférences avec une limitation de 4 choix et possibilité d'avoir un document imprimable grâce à l'export PDF.
+
+Cas d’utilisation : 
+	Un enseignant peut remplir sa fiche et la télécharger en PDF.
+Rôle : 
+	Laeticia HAROUNA s'est occupée de cette fonctionnalité.
+
+
+2- Fiche Prévisionnelle et Répartition
+
+- Description : Correction des bugs sur la fiche prévisionnelle et avancement de la fiche de répartition.
+- Objectif : Permettre aux enseignants d'ajouter autant de lignes que l'on veut.
+Assurer une bonne affectation des professeurs à chaque groupe.
+
+Cas d’utilisation : 
+	Un gestionnaire peut consulter et ajuster la répartition des enseignants dans les différents groupes.
+	Un professeur peut choisir les modules qu'il souhaite enseigner et on a le calcul automatique du total des heures.
+Rôle : 
+	Lothaire HOLCVART a mené ces corrections et améliorations.
+	
+	
+	
+3- Refonte des Interfaces
+
+- Description : Refonte globale des interfaces pour moderniser et simplifier l’utilisation de l’application.
+- Objectif : Offrir une navigation intuitive et une meilleure lisibilité des informations.
+
+Cas d’utilisation : 
+	Un utilisateur bénéficie d’un parcours fluide et ergonomique lors de la gestion des fiches.
+Rôle : 
+	Farid MARI a effectué cette refonte.
+	
+	
+
+4- Planning Détaillé
+
+- Description : Création d’une page dédiée pour le remplissage du planning détaillé, ajout des totaux dans le planning détaillé,
+- Objectif : Offrir aux gestionnaires un outil performant, proche d’un tableur interactif, pour organiser efficacement les cours.
+
+Cas d’utilisation : 
+	Un gestionnaire peut saisir, consulter et modifier le planning détaillé en bénéficiant de fonctionnalités avancées.
+Rôle : 
+	Yogan RAGOT a pris en charge ces évolutions.
+	
+	
+	
+5- Amélioration des Performances et de la Cohérence
+
+- Description : Optimisation globale des performances et vérification de la cohérence de l’application, incluant l’affichage du « Bonjour » personnalisé à la connexion, la mise à jour de la page d’accueil du gestionnaire et la correction de la suppression d’utilisateurs.
+- Objectif : Garantir une expérience utilisateur fluide et fiable en assurant une réactivité optimale et une interface sans erreurs.
+
+Cas d’utilisation : 
+	Un enseignant voit un message « Bonjour "Nom du prof" » à sa connexion, 
+	Le gestionnaire dispose d’une page d’accueil actualisée avec la liste des professeurs , 
+	La suppression d’un utilisateur s’effectue correctement et on peut récuperer en cas d'erreur.
+Rôle  
+	Yogan RAGOT a mené ces optimisations.

@@ -45,14 +45,15 @@ foreach ($fixedGroups as $groupName) {
     }
 }
 
-// Construire le mapping enseignant: teacherName -> teacherId
+// Construire le mapping enseignant: "nom prenom" (en minuscules) -> teacherId
 $listeEnseignants = $enseignantDTO->findAll();
 $listeUtilisateur = $utilisateurDTO->findAll();
 $teacherMapping = [];
 foreach ($listeEnseignants as $enseignant) {
     foreach ($listeUtilisateur as $utilisateur) {
         if ($enseignant->getIdUtilisateur() === $utilisateur->getIdUtilisateur()) {
-            $teacherMapping[$utilisateur->getNom() . ' ' . $utilisateur->getPrenom()] = $enseignant->getIdEnseignant();
+            $key = strtolower(trim($utilisateur->getNom() . ' ' . $utilisateur->getPrenom()));
+            $teacherMapping[$key] = $enseignant->getIdEnseignant();
         }
     }
 }
@@ -78,36 +79,30 @@ foreach ($tableData as $rowIndex => $row) {
     for ($courseIdx = 0; $courseIdx < $numCourses; $courseIdx++) {
         for ($offset = 0; $offset < 4; $offset++) {
             $colIndex = 2 + $courseIdx * 4 + $offset;
-            $teacherName = trim($row[$colIndex]);
+            $teacherField = trim($row[$colIndex]);
             $typeHour = $offsetMapping[$offset];
             if (!isset($courseIndexMapping[$courseIdx])) {
                 continue;
             }
             $courseId = $courseIndexMapping[$courseIdx];
             
-            // Recherche une affectation existante pour ce cours, ce groupe et ce type d'heure
-            $existingAffectation = $affectationDTO->findByCourseAndGroupAndType($courseId, $groupId, $typeHour);
-            if ($teacherName === "") {
-                // Si vide, supprimer si existant
-                if ($existingAffectation) {
-                    $affectationDTO->delete($existingAffectation->getIdAffectation());
-                }
+            // Supprimer toutes les affectations existantes pour ce couple (cours, groupe, type)
+            $affectationDTO->deleteByCourseAndGroupAndType($courseId, $groupId, $typeHour);
+            
+            if ($teacherField === "") {
+                continue;
             } else {
-                if (!isset($teacherMapping[$teacherName])) {
-                    // Si le nom n'existe pas dans le mapping, ignorer
-                    continue;
-                }
-                $teacherId = $teacherMapping[$teacherName];
-                if ($existingAffectation) {
-                    // Si une affectation existe et que l'enseignant diffère, mettre à jour
-                    if ($existingAffectation->getIdEnseignant() != $teacherId) {
-                        $existingAffectation->setIdEnseignant($teacherId);
-                        $affectationDTO->save($existingAffectation);
+                // Si plusieurs enseignants sont saisis, les séparer par une virgule
+                $teacherNames = array_map('trim', explode(',', $teacherField));
+                foreach ($teacherNames as $tName) {
+                    $tNameNormalized = strtolower(trim($tName));
+                    if (!isset($teacherMapping[$tNameNormalized])) {
+                        continue;
                     }
-                } else {
-                    // Insérer une nouvelle affectation
+                    $teacherId = $teacherMapping[$tNameNormalized];
                     $newAffectation = new Affectation(null, $teacherId, $courseId, $groupId, 0, $typeHour);
-                    $affectationDTO->save($newAffectation);
+                    // Utiliser insert() pour forcer un nouvel enregistrement à chaque fois
+                    $affectationDTO->insert($newAffectation);
                 }
             }
         }
@@ -115,3 +110,4 @@ foreach ($tableData as $rowIndex => $row) {
 }
 
 echo json_encode(['success' => true]);
+?>

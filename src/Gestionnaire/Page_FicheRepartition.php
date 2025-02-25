@@ -67,7 +67,7 @@ foreach ($listeEnseignants as $enseignant) {
 
 // Récupération des groupes
 $listeGroupes = $groupeDTO->findAll();
-// Construction d'une map id_groupe => nom du groupe (ex. "Gr A", "Gr B", etc.)
+// Construction d'une map id_groupe => nom du groupe (ex. "GR A", "GR B", etc.)
 $groupNameMapping = [];
 foreach ($listeGroupes as $groupe) {
     $groupNameMapping[$groupe->getIdGroupe()] = $groupe->getNomGroupe();
@@ -112,7 +112,8 @@ $offsetMapping = [
     'EI' => 3
 ];
 
-// Préremplissage avec les affectations existantes (uniquement si une affectation existe)
+// Nouveau bloc : collecte des affectations par cellule
+$cellValues = [];
 foreach ($filteredAffectations as $affectation) {
     $idCours = $affectation->getIdCours();
     if (!isset($courseIndexMapping[$idCours])) {
@@ -142,7 +143,16 @@ foreach ($filteredAffectations as $affectation) {
     }
     $teacherName = $enseignantsMap[$idEnseignant];
     
-    $tableData[$rowIndex][$colIndex] = $teacherName;
+    $cellKey = $rowIndex . '_' . $colIndex;
+    if (!isset($cellValues[$cellKey])) {
+        $cellValues[$cellKey] = [];
+    }
+    $cellValues[$cellKey][] = $teacherName;
+}
+// Affecter la valeur concaténée dans le tableau prérempli
+foreach ($cellValues as $cellKey => $names) {
+    list($rowIndex, $colIndex) = explode('_', $cellKey);
+    $tableData[$rowIndex][$colIndex] = implode(', ', $names);
 }
 
 $prepopulatedData = json_encode($tableData);
@@ -163,10 +173,10 @@ foreach ($listeCours as $cours) {
     ];
 }
 
-// Pour le dropdown, on souhaite afficher la liste des enseignants issus des voeux pour chaque cours
+// Préparation des données pour le dropdown
 $voeuxFormation = $voeuDTO->findByFormation($formationCode);
-$voeuMapping = []; // clé: "courseId_teacherName" -> remarque
-$enseignantsParCours = []; // courseId -> [list teacher names]
+$voeuMapping = [];
+$enseignantsParCours = [];
 foreach ($voeuxFormation as $voeu) {
     $courseId = $voeu->getIdCours();
     $teacherId = (int)$voeu->getIdEnseignant();
@@ -188,45 +198,12 @@ foreach ($voeuxFormation as $voeu) {
 $voeuMappingJson = json_encode($voeuMapping);
 $enseignantsParCoursJson = json_encode($enseignantsParCours);
 ?>
-<!--  <style>-->
-<!--    #hot {-->
-<!--      margin-top: 20px;-->
-<!--      margin-left: 200px;-->
-<!--      z-index: 1;-->
-<!--      overflow: auto;-->
-<!--      height: 450px;-->
-<!--    }-->
-<!--    .htNonEditable {-->
-<!--      background-color: #f0f0f0;-->
-<!--      font-weight: bold;-->
-<!--      text-align: center;-->
-<!--    }-->
-<!--    .htMiddle {-->
-<!--      vertical-align: middle;-->
-<!--    }-->
-<!--    .form-label.text-white {-->
-<!--      color: white;-->
-<!--      margin-right: 10px;-->
-<!--    }-->
-<!--    .row.mb-3 {-->
-<!--      margin-bottom: 1rem;-->
-<!--    }-->
-<!--    .form-select.w-25 {-->
-<!--      width: 25%;-->
-<!--    }-->
-<!--    .handsontable td, .handsontable th {-->
-<!--      font-size: 14px;-->
-<!--      padding: 8px;-->
-<!--    }-->
-<!--    #voeuRemark {-->
-<!--      margin-top: 20px;-->
-<!--      padding: 10px;-->
-<!--      background-color: #34495e;-->
-<!--      border-radius: 4px;-->
-<!--    }-->
-<!--  </style>-->
-
-<style>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Fiche Répartition</title>
+  <style>
     #hot {
         margin-top: 20px;
     }
@@ -248,20 +225,22 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
     .form-select.w-25 {
         width: 25%;
     }
-    .table-container {
-        overflow-x: auto;
-        box-sizing: border-box;
-    }
     .handsontable td, .handsontable th {
         font-size: 14px;
         padding: 8px;
     }
-
-
-</style>
-
-
-
+    /* Augmentation de la taille des dropdowns via CSS */
+    .handsontable .htAutocompleteEditor,
+    .handsontable .htAutocompleteHolder {
+        min-width: 150px !important;
+        font-size: 16px;
+    }
+  </style>
+  <!-- Inclusion des fichiers CSS/JS de Handsontable -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+</head>
+<body>
 <div id="main-content">
   <h1>Fiche Répartition</h1>
   <form method="GET" action="">
@@ -280,10 +259,10 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
     </div>
   </form>
   <h2>Semestre <?php echo htmlspecialchars($formationCode); ?></h2>
+  <!-- Conteneur principal dans lequel seront ajoutés plusieurs tableaux -->
   <div id="hot"></div>
   <div id="voeuRemark"></div>
   <button id="saveButton" class="btn btn-primary mt-3">Enregistrer les Affectations</button>
-
 </div>
 
 <script>
@@ -293,121 +272,142 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
             this.toastElement.className = 'toast';
             document.body.appendChild(this.toastElement);
         }
-
         show(message, type = 'success') {
             this.toastElement.textContent = message;
             this.toastElement.className = `toast show ${type}`;
             setTimeout(() => {
                 this.toastElement.className = this.toastElement.className.replace('show', '');
-            }, 5000); // Le toast disparaît après 3 secondes
+            }, 5000);
         }
     }
-
     const toast = new Toast();
-    // Les données pré-remplies issues de PHP
+
+    // Données pré-remplies issues de PHP
     const data = <?php echo $prepopulatedData; ?>;
     const listeCours = <?php echo json_encode($coursArray); ?>;
     const semester = '<?php echo htmlspecialchars($formationCode); ?>';
     const enseignantsParCours = <?php echo $enseignantsParCoursJson; ?>;
     const voeuMapping = <?php echo $voeuMappingJson; ?>;
-    console.log("enseignantsParCours:", enseignantsParCours);
-    console.log("voeuMapping:", voeuMapping);
-    
-    // Construction des en-têtes imbriqués (nested headers)
-    const premLigne = [ 'Semestre ' + semester, 'Ressource + SAE' ];
-    listeCours.forEach(cours => {
-      premLigne.push({ label: cours.nomCours, colspan: 4 });
-    });
-    
-    const responsable = [];
-    for (let i = 0; i < listeCours.length; i++) {
-      responsable.push({ label: '', colspan: 4 });
+
+    // Paramètre : nombre de cours par tableau (chunk)
+    const coursesPerChunk = 3;
+    const totalCourses = listeCours.length;
+    const numChunks = Math.ceil(totalCourses / coursesPerChunk);
+
+    // Tableau pour stocker manuellement les instances Handsontable
+    const hotInstances = [];
+    const mainContainer = document.getElementById('hot');
+    mainContainer.innerHTML = '';
+
+    // Création des instances Handsontable pour chaque chunk
+    for (let chunkIndex = 0; chunkIndex < numChunks; chunkIndex++) {
+      const chunkStart = chunkIndex * coursesPerChunk;
+      const chunkEnd = Math.min(chunkStart + coursesPerChunk, totalCourses);
+      const coursesChunk = listeCours.slice(chunkStart, chunkEnd);
+      const tableDataChunk = data.map(row => {
+        const startIndex = 2 + chunkStart * 4;
+        const endIndex = startIndex + (coursesChunk.length * 4);
+        return row.slice(0, 2).concat(row.slice(startIndex, endIndex));
+      });
+
+      const premLigne = [ 'Semestre ' + semester, 'Ressource + SAE' ];
+      coursesChunk.forEach(cours => {
+        premLigne.push({ label: cours.nomCours, colspan: 4 });
+      });
+      const responsable = [];
+      for (let i = 0; i < coursesChunk.length; i++) {
+        responsable.push({ label: '', colspan: 4 });
+      }
+      const deuxLigne = ['2024-2025', 'Responsable', ...responsable];
+      const deuxDemiLigne = ['', 'Code Cours'];
+      coursesChunk.forEach(cours => {
+        deuxDemiLigne.push({ label: cours.codeCours, colspan: 4 });
+      });
+      const troisLigne = ['', 'Heures'];
+      coursesChunk.forEach(() => {
+        troisLigne.push({ label: 'CM', colspan: 1 });
+        troisLigne.push({ label: 'TD', colspan: 1 });
+        troisLigne.push({ label: 'TP', colspan: 1 });
+        troisLigne.push({ label: 'EI', colspan: 1 });
+      });
+      const cinqLigne = ['', 'Heures totales Etudiants'];
+      const sixLigne = ['', 'Heures totales Enseignants'];
+      coursesChunk.forEach(cours => {
+        const totalEtud = cours.nbHeuresCM + cours.nbHeuresTD + cours.nbHeuresTP + cours.nbHeuresEI;
+        cinqLigne.push({ label: totalEtud, colspan: 4 });
+        const totalEns = cours.nbHeuresCM + cours.nbHeuresTD + (cours.nbHeuresTP * 2) + cours.nbHeuresEI;
+        sixLigne.push({ label: totalEns, colspan: 4 });
+      });
+      const nestedHeaders = [ premLigne, deuxLigne, deuxDemiLigne, cinqLigne, sixLigne, troisLigne ];
+
+      // Définition des colonnes pour ce chunk
+      const columnsDefs = [
+        { type: 'text', readOnly: true },
+        { type: 'text', readOnly: true },
+      ];
+      coursesChunk.forEach(cours => {
+        for (let i = 0; i < 4; i++) {
+          const courseTeachers = enseignantsParCours[cours.idCours] || [];
+          const source = [''].concat(courseTeachers);
+          columnsDefs.push({
+            type: 'autocomplete',
+            source: source,
+            allowInvalid: true,
+            strict: false,
+            width: 150,
+          });
+        }
+      });
+
+      const tableDiv = document.createElement('div');
+      tableDiv.style.marginBottom = '20px';
+      mainContainer.appendChild(tableDiv);
+
+      const hot = new Handsontable(tableDiv, {
+        data: tableDataChunk,
+        width: '100%',
+        height: 510,
+        stretchH: 'all',
+        nestedHeaders: nestedHeaders,
+        colWidths: 150,
+        rowHeights: 50,
+        wordWrap: true,
+        licenseKey: 'non-commercial-and-evaluation',
+        columns: columnsDefs,
+        afterChange: function(changes, source) {
+          if (source === 'loadData') return;
+          changes.forEach(([row, col, oldVal, newVal]) => {
+            if (col < 2) return;
+            const courseChunkIndex = Math.floor((col - 2) / 4);
+            const globalCourseIndex = chunkStart + courseChunkIndex;
+            const course = listeCours[globalCourseIndex];
+            if (!course) return;
+            const key = course.idCours + "_" + newVal;
+            const remark = voeuMapping[key] || "";
+            document.getElementById('voeuRemark').innerText = remark ? "Remarque : " + remark : "";
+          });
+        }
+      });
+      hotInstances.push(hot);
     }
-    const deuxLigne = ['2024-2025', 'Responsable', ...responsable];
-    
-    const deuxDemiLigne = ['', 'Code Cours'];
-    listeCours.forEach(cours => {
-      deuxDemiLigne.push({ label: cours.codeCours, colspan: 4 });
-    });
-    
-    const troisLigne = ['', 'Heures'];
-    listeCours.forEach(() => {
-      troisLigne.push({ label: 'CM', colspan: 1 });
-      troisLigne.push({ label: 'TD', colspan: 1 });
-      troisLigne.push({ label: 'TP', colspan: 1 });
-      troisLigne.push({ label: 'EI', colspan: 1 });
-    });
-    
-    const cinqLigne = ['', 'Heures totales Etudiants'];
-    const sixLigne = ['', 'Heures totales Enseignants'];
-    listeCours.forEach(cours => {
-      const totalEtud = cours.nbHeuresCM + cours.nbHeuresTD + cours.nbHeuresTP + cours.nbHeuresEI;
-      cinqLigne.push({ label: totalEtud, colspan: 4 });
-      const totalEns = cours.nbHeuresCM + cours.nbHeuresTD + (cours.nbHeuresTP * 2) + cours.nbHeuresEI;
-      sixLigne.push({ label: totalEns, colspan: 4 });
-    });
-    
-    const nestedHeaders = [
-      premLigne,
-      deuxLigne,
-      deuxDemiLigne,
-      cinqLigne,
-      sixLigne,
-      troisLigne
-    ];
-    
-    // Configuration des colonnes : 2 premières fixes, puis 4 colonnes par cours avec dropdown
-    const columnsDefs = [
-      { type: 'text', readOnly: true },
-      { type: 'text', readOnly: true },
-    ];
-    listeCours.forEach(cours => {
-      for (let i = 0; i < 4; i++) {
-        // Ajout d'une option vide dans le dropdown
-        const courseTeachers = enseignantsParCours[cours.idCours] || [];
-        const source = [''].concat(courseTeachers);
-        columnsDefs.push({
-          type: 'dropdown',
-          source: source,
-          allowInvalid: false,
-          strict: false,
-          width: 100,
-        });
-      }
-    });
-    
-    const container = document.querySelector('#hot');
-    const hot = new Handsontable(container, {
-      data: data,
-      width: '80%',
-      height: 510,
-      nestedHeaders: nestedHeaders,
-      colWidths: 100,        // Toutes les colonnes auront 100px de largeur
-      rowHeights: 50, 
-      wordWrap: true,
-      licenseKey: 'non-commercial-and-evaluation',
-      columns: columnsDefs,
-      afterChange: function(changes, source) {
-        if (source === 'loadData') return;
-        changes.forEach(([row, col, oldVal, newVal]) => {
-          if (col < 2) return;
-          const courseIndex = Math.floor((col - 2) / 4);
-          const course = listeCours[courseIndex];
-          if (!course) return;
-          const key = course.idCours + "_" + newVal;
-          const remark = voeuMapping[key] || "";
-          document.getElementById('voeuRemark').innerText = remark ? "Remarque : " + remark : "";
-        });
-      }
-    });
-    
-    // Lors de la sauvegarde, on envoie un objet JSON contenant les données et la formation
+
+    // Sauvegarde : fusionner les données de toutes les instances avant envoi
     document.getElementById('saveButton').addEventListener('click', function() {
+      let fullData = [];
+      if (hotInstances.length > 0) {
+        fullData = hotInstances[0].getData();
+      }
+      for (let i = 1; i < hotInstances.length; i++) {
+        const instanceData = hotInstances[i].getData();
+        for (let r = 0; r < instanceData.length; r++) {
+          fullData[r] = fullData[r].concat(instanceData[r].slice(2));
+        }
+      }
+      console.log(fullData);
       const payload = {
-        data: hot.getData(),
+        data: fullData,
         formation: semester
       };
-
       console.log(payload);
       fetch('src/Gestionnaire/RequeteBD_UpdateFicheRepartition.php', {
         method: 'POST',
@@ -422,30 +422,24 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
         try {
           const jsonData = JSON.parse(responseText);
           if (jsonData.success) {
-            console.log("Affectations enregistrées avec succès.");
             toast.show("Affectations enregistrées avec succès.", 'success');
           } else {
-            console.error("Erreur lors de l'enregistrement.");
             toast.show("Erreur lors de l'enregistrement.", 'error');
           }
         } catch (error) {
-          console.error("Erreur de parsing JSON :", error);
-            toast.show("Erreur lors de l'enregistrement.", 'error');
+          toast.show("Erreur lors de l'enregistrement.", 'error');
         }
       })
       .catch(error => {
-        console.error("Erreur:", error);
         toast.show("Erreur lors de l'enregistrement.", 'error');
       });
     });
-    
+
     const select = document.querySelector('#semester');
     select.addEventListener('change', () => {
       const semester = select.value;
       window.location.href = `index.php?action=ficheRepartition&semester=${semester}`;
     });
-
-
-  </script>
+</script>
 </body>
 </html>

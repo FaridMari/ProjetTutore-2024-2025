@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestion des Cours</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .btn-group .btn {
+            width: 50%;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+    </style>
 </head>
 <body>
 <div class="container mt-5">
@@ -11,6 +20,75 @@
     <div class="input-group mb-3">
         <input type="text" id="searchInput" class="form-control" placeholder="Rechercher par nom ou code du cours">
     </div>
+    <div class="btn-group mb-3" role="group">
+        <button class="btn btn-success" id="addCoursButton">Ajouter un cours</button>
+    </div>
+    <form id="addCoursForm" style="display: none;">
+        <div class="form-group">
+            <label for="formation" class="form-label">Formation</label>
+            <select class="form-control" id="formation" required>
+                <option value="" disabled selected>Sélectionnez une formation</option>
+                <option value="Autre">Autre</option>
+                <option value="BUT S1">BUT S1</option>
+                <option value="BUT S3">BUT S3</option>
+                <option value="BUT S5 DACS">BUT S5 DACS</option>
+                <option value="BUT S5 RA-DWM">BUT S5 RA-DWM</option>
+                <option value="BUT S5 RA-IL">BUT S5 RA-IL</option>
+                <option value="BUT S2">BUT S2</option>
+                <option value="BUT S6 DACS">BUT S6 DACS</option>
+                <option value="BUT S6 RA-IL">BUT S6 RA-IL</option>
+                <option value="BUT S4 DACS">BUT S4 DACS</option>
+                <option value="BUT S4 RA-DWM">BUT S4 RA-DWM</option>
+                <option value="BUT S4 RA-IL">BUT S4 RA-IL</option>
+                <option value="BUT S6 RA">BUT S6 RA</option>
+                <option value="BUT S6 RA-DWM">BUT S6 RA-DWM</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="semestre" class="form-label">Semestre</label>
+            <select class="form-control" id="semestre" required disabled>
+                <option value="" disabled selected>Sélectionnez une formation</option>
+                <option value="1">Semestre 1</option>
+                <option value="2">Semestre 2</option>
+                <option value="3">Semestre 3</option>
+                <option value="4">Semestre 4</option>
+                <option value="5">Semestre 5</option>
+                <option value="6">Semestre 6</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="nom_cours" class="form-label">Nom du Cours</label>
+            <input type="text" class="form-control" id="nom_cours" required>
+        </div>
+        <div class="form-group">
+            <label for="code_cours" class="form-label">Code du Cours</label>
+            <input type="text" class="form-control" id="code_cours" required>
+        </div>
+        <div class="form-group">
+            <label for="nb_heures_total" class="form-label">Heures Totales</label>
+            <input type="number" class="form-control" id="nb_heures_total" required>
+        </div>
+        <div class="form-group">
+            <label for="nb_heures_cm" class="form-label">Heures CM</label>
+            <input type="number" class="form-control" id="nb_heures_cm" required>
+        </div>
+        <div class="form-group">
+            <label for="nb_heures_td" class="form-label">Heures TD</label>
+            <input type="number" class="form-control" id="nb_heures_td" required>
+        </div>
+        <div class="form-group">
+            <label for="nb_heures_tp" class="form-label">Heures TP</label>
+            <input type="number" class="form-control" id="nb_heures_tp" required>
+        </div>
+        <div class="form-group">
+            <label for="nb_heures_ei" class="form-label">Heures EI</label>
+            <input type="number" class="form-control" id="nb_heures_ei" required>
+        </div>
+        <div class="btn-group" role="group">
+            <button type="submit" class="btn btn-primary">Ajouter</button>
+            <button type="button" class="btn btn-secondary" id="cancelAddCoursButton">Annuler</button>
+        </div>
+    </form>
     <table class="table table-bordered table-hover">
         <thead>
         <tr>
@@ -52,6 +130,34 @@
 
     const toast = new Toast();
 
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const formationSelect = document.getElementById('formation');
+        const semestreSelect = document.getElementById('semestre');
+
+        const formationSemestreMap = {
+            "BUT S1": "1",
+            "BUT S2": "2",
+            "BUT S3": "3",
+            "BUT S4 DACS": "4",
+            "BUT S4 RA-DWM": "4",
+            "BUT S4 RA-IL": "4",
+            "BUT S5 DACS": "5",
+            "BUT S5 RA-DWM": "5",
+            "BUT S5 RA-IL": "5",
+            "BUT S6 DACS": "6",
+            "BUT S6 RA": "6",
+            "BUT S6 RA-DWM": "6",
+            "BUT S6 RA-IL": "6"
+        };
+
+        formationSelect.addEventListener('change', function() {
+            const selectedFormation = formationSelect.value;
+            const correspondingSemestre = formationSemestreMap[selectedFormation] || "";
+            semestreSelect.value = correspondingSemestre;
+        });
+    });
+
     document.addEventListener('DOMContentLoaded', function() {
         let allCours = [];
 
@@ -84,7 +190,10 @@
                 <td contenteditable="true" class="editable">${cours.nb_heures_tp}</td>
                 <td contenteditable="true" class="editable">${cours.nb_heures_ei}</td>
                 <td>
-                    <button class="btn btn-primary btn-sm saveButton">Enregistrer</button>
+                    <div class="btn-group" role="group">
+                        <button class="btn btn-primary btn-sm saveButton">Enregistrer</button>
+                        <button class="btn btn-danger btn-sm deleteButton">Supprimer</button>
+                    </div>
                 </td>
             `;
                 tableBody.appendChild(row);
@@ -118,6 +227,13 @@
                 };
 
                 saveChanges(coursData);
+            } else if (event.target && event.target.classList.contains('deleteButton')) {
+                const row = event.target.closest('tr');
+                const idCours = row.getAttribute('data-id');
+
+                if (confirm('Êtes-vous sûr de vouloir supprimer ce cours ?')) {
+                    deleteCours(idCours);
+                }
             }
         });
 
@@ -138,8 +254,6 @@
                 });
 
                 const result = await response.json();
-                console.log("Réponse du serveur :", result); // Ajoute ceci pour voir la réponse côté JS
-
                 if (result.success) {
                     toast.show('Cours mis à jour avec succès', 'success');
                     loadCours();
@@ -152,6 +266,89 @@
                 toast.show('Erreur lors de la mise à jour du cours', 'error');
             }
         }
+
+        async function deleteCours(idCours) {
+            try {
+                const response = await fetch('src/Gestionnaire/RequeteBD_DeleteCours.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id_cours: idCours })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    toast.show('Cours supprimé avec succès', 'success');
+                    loadCours();
+                } else {
+                    console.error('Erreur lors de la suppression du cours:', result.error);
+                    toast.show('Erreur lors de la suppression du cours', 'error');
+                }
+            } catch (error) {
+                console.error('Erreur lors de la suppression du cours:', error);
+                toast.show('Erreur lors de la suppression du cours', 'error');
+            }
+        }
+
+        const addCoursButton = document.getElementById('addCoursButton');
+        const addCoursForm = document.getElementById('addCoursForm');
+        const cancelAddCoursButton = document.getElementById('cancelAddCoursButton');
+
+        addCoursButton.addEventListener('click', function() {
+            addCoursForm.style.display = 'block';
+            addCoursButton.style.display = 'none';
+        });
+
+        cancelAddCoursButton.addEventListener('click', function() {
+            addCoursForm.style.display = 'none';
+            addCoursButton.style.display = 'block';
+        });
+
+        addCoursForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const coursData = {
+                formation: document.getElementById('formation').value,
+                semestre: document.getElementById('semestre').value,
+                nom_cours: document.getElementById('nom_cours').value,
+                code_cours: document.getElementById('code_cours').value,
+                nb_heures_total: document.getElementById('nb_heures_total').value,
+                nb_heures_cm: document.getElementById('nb_heures_cm').value,
+                nb_heures_td: document.getElementById('nb_heures_td').value,
+                nb_heures_tp: document.getElementById('nb_heures_tp').value,
+                nb_heures_ei: document.getElementById('nb_heures_ei').value
+            };
+
+            const totalHeures = parseFloat(coursData.nb_heures_cm) + parseFloat(coursData.nb_heures_td) + parseFloat(coursData.nb_heures_tp) + parseFloat(coursData.nb_heures_ei);
+            if (totalHeures > parseFloat(coursData.nb_heures_total)) {
+                toast.show('Le cumul des heures est supérieur au total', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('src/Gestionnaire/RequeteBD_AddCours.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(coursData)
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    toast.show('Cours ajouté avec succès', 'success');
+                    loadCours();
+                    addCoursForm.style.display = 'none';
+                    addCoursButton.style.display = 'block';
+                } else {
+                    console.error('Erreur lors de l\'ajout du cours:', result.error);
+                    toast.show('Erreur lors de l\'ajout du cours', 'error');
+                }
+            } catch (error) {
+                console.error('Erreur lors de l\'ajout du cours:', error);
+                toast.show('Erreur lors de l\'ajout du cours', 'error');
+            }
+        });
 
         // Charger les cours au chargement de la page
         loadCours();

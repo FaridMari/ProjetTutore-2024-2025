@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : jeu. 06 fév. 2025 à 14:24
+-- Généré le : mer. 26 fév. 2025 à 02:41
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -27,6 +27,7 @@ SET time_zone = "+00:00";
 -- Structure de la table `affectations`
 --
 
+DROP TABLE IF EXISTS `affectations`;
 CREATE TABLE `affectations` (
   `id_affectation` int(11) NOT NULL,
   `id_enseignant` int(11) NOT NULL,
@@ -42,6 +43,7 @@ CREATE TABLE `affectations` (
 -- Structure de la table `configurationplanningdetaille`
 --
 
+DROP TABLE IF EXISTS `configurationplanningdetaille`;
 CREATE TABLE `configurationplanningdetaille` (
   `id` int(11) NOT NULL,
   `semestre` varchar(255) DEFAULT NULL,
@@ -58,6 +60,7 @@ CREATE TABLE `configurationplanningdetaille` (
 -- Structure de la table `contraintes`
 --
 
+DROP TABLE IF EXISTS `contraintes`;
 CREATE TABLE `contraintes` (
   `id_contrainte` int(11) NOT NULL,
   `id_utilisateur` int(11) NOT NULL,
@@ -74,6 +77,7 @@ CREATE TABLE `contraintes` (
 -- Structure de la table `cours`
 --
 
+DROP TABLE IF EXISTS `cours`;
 CREATE TABLE `cours` (
   `id_cours` int(11) NOT NULL,
   `formation` varchar(255) NOT NULL,
@@ -93,6 +97,7 @@ CREATE TABLE `cours` (
 -- Structure de la table `details_cours`
 --
 
+DROP TABLE IF EXISTS `details_cours`;
 CREATE TABLE `details_cours` (
   `id_ressource` int(11) NOT NULL,
   `id_cours` int(11) NOT NULL,
@@ -108,6 +113,7 @@ CREATE TABLE `details_cours` (
 -- Structure de la table `enseignants`
 --
 
+DROP TABLE IF EXISTS `enseignants`;
 CREATE TABLE `enseignants` (
   `id_enseignant` int(11) NOT NULL,
   `id_utilisateur` int(11) NOT NULL,
@@ -122,6 +128,7 @@ CREATE TABLE `enseignants` (
 -- Structure de la table `groupes`
 --
 
+DROP TABLE IF EXISTS `groupes`;
 CREATE TABLE `groupes` (
   `id_groupe` int(11) NOT NULL,
   `nom_groupe` varchar(255) NOT NULL,
@@ -134,6 +141,7 @@ CREATE TABLE `groupes` (
 -- Structure de la table `historisation`
 --
 
+DROP TABLE IF EXISTS `historisation`;
 CREATE TABLE `historisation` (
   `id_historique` int(11) NOT NULL,
   `id_enseignant` int(11) NOT NULL,
@@ -148,6 +156,7 @@ CREATE TABLE `historisation` (
 -- Structure de la table `repartition_heures`
 --
 
+DROP TABLE IF EXISTS `repartition_heures`;
 CREATE TABLE `repartition_heures` (
   `id_repartition` int(11) NOT NULL,
   `id_cours` int(11) NOT NULL,
@@ -164,6 +173,7 @@ CREATE TABLE `repartition_heures` (
 -- Structure de la table `utilisateurs`
 --
 
+DROP TABLE IF EXISTS `utilisateurs`;
 CREATE TABLE `utilisateurs` (
   `id_utilisateur` int(11) NOT NULL,
   `nom` varchar(255) NOT NULL,
@@ -184,6 +194,7 @@ CREATE TABLE `utilisateurs` (
 -- Structure de la table `voeux`
 --
 
+DROP TABLE IF EXISTS `voeux`;
 CREATE TABLE `voeux` (
   `id_voeu` int(11) NOT NULL,
   `id_enseignant` int(11) NOT NULL,
@@ -202,6 +213,7 @@ CREATE TABLE `voeux` (
 -- Structure de la table `voeux_hors_iut`
 --
 
+DROP TABLE IF EXISTS `voeux_hors_iut`;
 CREATE TABLE `voeux_hors_iut` (
   `id_voeu_hi` int(11) NOT NULL,
   `id_enseignant` int(11) NOT NULL,

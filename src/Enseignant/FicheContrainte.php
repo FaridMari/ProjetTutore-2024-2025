@@ -1,3 +1,22 @@
+<?php
+require_once __DIR__ . '/../Db/connexionFactory.php';
+use src\Db\connexionFactory;
+
+$conn = connexionFactory::makeConnection();
+
+if (!isset($_SESSION['id_utilisateur'])) {
+    die("Utilisateur non connecté.");
+}
+
+$id_utilisateur = $_SESSION['id_utilisateur'];
+$stmt = $conn->prepare("SELECT * FROM contraintes WHERE id_utilisateur = ?");
+$stmt->execute([$id_utilisateur]);
+$contrainte = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// Vérifier si la fiche est validée
+$verrouille = ($contrainte && $contrainte['statut'] === 'valide');
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -8,9 +27,7 @@
 </head>
 <body class="bg-light">
 
-<?php
-
-if (isset($_SESSION['error_message'])): ?>
+<?php if (isset($_SESSION['error_message'])): ?>
     <script>
         alert("<?php echo $_SESSION['error_message']; ?>");
     </script>
@@ -26,8 +43,16 @@ if (isset($_SESSION['error_message'])): ?>
 
 <div class="container my-5">
     <h1 class="text-center mb-4">Fiche de Vœux</h1>
+
+    <?php if ($verrouille): ?>
+        <div class="alert alert-warning text-center">
+            Cette fiche a été validée et ne peut plus être modifiée.
+        </div>
+    <?php endif; ?>
+
     <form id="ficheForm" action="src/Enseignant/EnregistrerContraintes.php" method="post" class="bg-white p-4 shadow-sm rounded">
         <p class="mb-4">Indiquez les plages horaires durant lesquelles vous ne pouvez pas enseigner :</p>
+
         <div class="table-responsive">
             <table class="table table-bordered text-center">
                 <thead>
@@ -41,7 +66,6 @@ if (isset($_SESSION['error_message'])): ?>
                 </tr>
                 </thead>
                 <tbody>
-
                 <?php
                 $horaires = [
                     "8_10" => "8h-10h",
@@ -57,12 +81,12 @@ if (isset($_SESSION['error_message'])): ?>
                     foreach ($jours as $jour) {
                         $name = "{$jour}_{$heure_key}";
                         $checked = (isset($_SESSION['choix_contraintes']) && in_array($name, $_SESSION['choix_contraintes'])) ? 'checked' : '';
-                        echo "<td><input type='checkbox' name='contraintes[]' value='$name' onchange='limiterContraintes()' $checked></td>";
+                        $disabled = $verrouille ? 'disabled' : '';
+                        echo "<td><input type='checkbox' name='contraintes[]' value='$name' onchange='limiterContraintes()' $checked $disabled></td>";
                     }
                     echo "</tr>";
                 }
                 ?>
-
                 </tbody>
             </table>
         </div>
@@ -71,12 +95,12 @@ if (isset($_SESSION['error_message'])): ?>
             <p>Je préfère, si possible, éviter le créneau :</p>
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="creneau_prefere" value="8h-10h" id="pref_8_10"
-                    <?php echo (isset($_SESSION['creneau_prefere']) && $_SESSION['creneau_prefere'] == "8h-10h") ? 'checked' : ''; ?>>
+                    <?php echo (isset($_SESSION['creneau_prefere']) && $_SESSION['creneau_prefere'] == "8h-10h") ? 'checked' : ''; echo $verrouille ? ' disabled' : ''; ?>>
                 <label class="form-check-label" for="pref_8_10">de 8h à 10h</label>
             </div>
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="creneau_prefere" value="16h-18h" id="pref_16_18"
-                    <?php echo (isset($_SESSION['creneau_prefere']) && $_SESSION['creneau_prefere'] == "16h-18h") ? 'checked' : ''; ?>>
+                    <?php echo (isset($_SESSION['creneau_prefere']) && $_SESSION['creneau_prefere'] == "16h-18h") ? 'checked' : ''; echo $verrouille ? ' disabled' : ''; ?>>
                 <label class="form-check-label" for="pref_16_18">de 16h à 18h</label>
             </div>
         </div>
@@ -85,18 +109,18 @@ if (isset($_SESSION['error_message'])): ?>
             <p>J'accepte d'avoir cours le samedi :</p>
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="cours_samedi" value="oui" id="samedi_oui"
-                    <?php echo (isset($_SESSION['cours_samedi']) && $_SESSION['cours_samedi'] == "oui") ? 'checked' : ''; ?>>
+                    <?php echo (isset($_SESSION['cours_samedi']) && $_SESSION['cours_samedi'] == "oui") ? 'checked' : ''; echo $verrouille ? ' disabled' : ''; ?>>
                 <label class="form-check-label" for="samedi_oui">Oui</label>
             </div>
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="cours_samedi" value="non" id="samedi_non"
-                    <?php echo (isset($_SESSION['cours_samedi']) && $_SESSION['cours_samedi'] == "non") ? 'checked' : ''; ?>>
+                    <?php echo (isset($_SESSION['cours_samedi']) && $_SESSION['cours_samedi'] == "non") ? 'checked' : ''; echo $verrouille ? ' disabled' : ''; ?>>
                 <label class="form-check-label" for="samedi_non">Non</label>
             </div>
         </div>
 
         <div class="text-center mt-4">
-            <button type="submit" class="btn btn-primary" id="validerBtn">Valider</button>
+            <button type="submit" class="btn btn-primary" id="validerBtn" <?php echo $verrouille ? 'disabled' : ''; ?>>Valider</button>
         </div>
     </form>
 </div>
@@ -114,30 +138,13 @@ if (isset($_SESSION['error_message'])): ?>
 
         if (checkedCount > 4) {
             alert("Vous ne pouvez sélectionner que 4 contraintes au maximum.");
-            this.checked = false; // Désactive la dernière case cochée
+            event.target.checked = false;
         }
     }
 
     document.addEventListener("DOMContentLoaded", function() {
         document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
             checkbox.addEventListener("change", limiterContraintes);
-        });
-    });
-</script>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        document.getElementById('validerBtn').addEventListener('click', function (e) {
-            e.preventDefault();
-
-            // Soumettre le formulaire
-            const form = document.getElementById('ficheForm');
-            form.submit();
-
-            // Générer le PDF après soumission
-            setTimeout(() => {
-                window.location.href = 'src/User/GenerePdf.php';
-            }, 3000); // Attendre 3 secondes après l'enregistrement
         });
     });
 </script>

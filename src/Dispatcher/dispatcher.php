@@ -18,6 +18,7 @@ use src\Action\GestionnaireSupprimerUtilisateurAction;
 use src\Action\GestionnaireFicheRepartitionAction;
 use src\Action\EnseignantAccueilAction;
 use src\Action\GestionnaireCoursAction;
+use src\Action\GestionnaireValidationFicheAction;
 
 
 
@@ -121,6 +122,11 @@ class Dispatcher {
                 $action = new GestionnaireCoursAction();
                 echo $action->execute();
                 break;
+            case 'ficheEnseignant':
+                $action = new GestionnaireValidationFicheAction();
+                echo $action->execute();
+                break;
+
             default:
                 $action = new SigninAction();
                 echo $action->execute();

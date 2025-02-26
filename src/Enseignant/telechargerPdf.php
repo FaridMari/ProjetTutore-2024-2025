@@ -56,16 +56,21 @@ foreach ($horaires as $heure) {
 $pdf->Ln(5);
 $pdf->Cell(0, 10, 'Je préfère éviter le créneau : ' . $creneau_preference, 0, 1);
 $pdf->Cell(0, 10, 'J\'accepte d\'avoir cours le samedi : ' . $cours_samedi, 0, 1);
+
 $nom_prof = preg_replace('/[^a-zA-Z0-9]/', '_', $nom_prenom);
-$pdf_folder = __DIR__ . '/../../temp/';
 $pdf_filename = 'FicheVoeux2024-2025_' . $nom_prof . '.pdf';
-$pdf_filepath = $pdf_folder . $pdf_filename;
+//Force le téléchargement
+header('Content-Type: application/pdf');
+header('Content-Disposition: attachment; filename="' . $pdf_filename . '"');
+header('Cache-Control: private, must-revalidate, max-age=0');
+header('Pragma: public');
 
-if (!is_dir($pdf_folder)) {
-    mkdir($pdf_folder, 0777, true);
-}
+$pdf->Output($pdf_filename, 'D');
 
-$pdf->Output($pdf_filepath, 'F');
-header("Location: ../../index.php?action=enseignantFicheContrainte");
-exit();
+// ✅ Redirection après téléchargement
+echo "<script>
+            window.location.href = '../../index.php?action=enseignantFicheRessource';
+        </script>";
+exit();;
 ?>
+

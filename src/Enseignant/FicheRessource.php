@@ -1,3 +1,19 @@
+<?php
+require_once __DIR__ . '/../Db/connexionFactory.php';
+use src\Db\connexionFactory;
+
+$conn = connexionFactory::makeConnection();
+
+
+
+$id_utilisateur = $_SESSION['id_utilisateur'];
+$stmt = $conn->prepare("SELECT * FROM details_cours WHERE id_responsable_module = ?");
+$stmt->execute([$id_utilisateur]);
+$fiche = $stmt->fetch(PDO::FETCH_ASSOC);
+
+
+$verrouille = ($fiche && $fiche['statut'] === 'valide');
+?>
 <style>
     /* ===================== Conteneur principal ===================== */
     .fiche-ressource-container {
@@ -123,7 +139,11 @@
     <div class="fiche-ressource-container mt-4">
         <h1 class="text-center">Fiche Ressource : Emploi du Temps 2024-2025</h1>
         <p class="text-center" id="warning">À remplir par le responsable de la ressource</p>
-
+        <?php if ($verrouille): ?>
+            <div class="locked-message">
+                Cette fiche a été validée et ne peut plus être modifiée.
+            </div>
+        <?php endif; ?>
         <!-- Début du formulaire global -->
         <form method="post" action="src/Enseignant/traitement.php">
             <!-- Choix du semestre, ressource, responsable... -->

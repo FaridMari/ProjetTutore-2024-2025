@@ -39,7 +39,14 @@ $enseignant = $enseignantDTO->findByUtilisateurId($userId);
 $idEnseignant = $enseignant ? $enseignant->getIdEnseignant() : null;
 
 $coursList = $coursDTO->findAll();
+//Récupérer le statut de la fiche prévisionnelle
+$stmtStatut = $conn->prepare("SELECT statut FROM voeux WHERE id_enseignant = :idEnseignant LIMIT 1");
+$stmtStatut->bindValue(':idEnseignant', $idEnseignant, PDO::PARAM_INT);
+$stmtStatut->execute();
+$fiche = $stmtStatut->fetch(PDO::FETCH_ASSOC);
 
+// Vérifier si la fiche est validée
+$verrouille = $fiche && $fiche['statut'] === 'valide';
 $existingVoeux = $idEnseignant ? $voeuDTO->findByEnseignant($idEnseignant) : [];
 $existingVoeuxHorsIUT = $idEnseignant ? $voeuHorsIUTDTO->findByEnseignant($idEnseignant) : [];
 

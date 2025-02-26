@@ -8,48 +8,46 @@ $user = 'root';
 $password = '';
 
 try {
+    // ✅ Connexion à la base de données
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $code_cours = $_POST['resourceCode'];
-
-        $stmt = $pdo->prepare("SELECT id_cours FROM cours WHERE code_cours = :code_cours");
-        $stmt->execute([':code_cours' => $code_cours]);
-        $cours = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($cours) {
-            $id_cours = $cours['id_cours'];
-        } else {
-            throw new Exception("Aucun cours trouvé avec le code $code_cours.");
+        // ✅ Vérifier que `resourceName` est bien envoyé et non vide
+        if (!isset($_POST['resourceName']) || empty(trim($_POST['resourceName']))) {
+            throw new Exception("⚠️ Erreur : Aucun cours sélectionné !");
         }
 
-        // Dernier id d'enseignant
-        $id_responsable_module = 55;
+        // ✅ Récupération du nom du cours
+        $nom_cours = trim($_POST['resourceName']);
 
+        // ✅ Récupérer l'ID du cours en fonction du **nom**
+        $stmt = $pdo->prepare("SELECT id_cours, code_cours FROM cours WHERE nom_cours = :nom_cours");
+        $stmt->execute([':nom_cours' => $nom_cours]);
+        $cours = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        if (!$cours) {
+            throw new Exception("⚠️ Erreur : Aucun cours trouvé avec le nom '$nom_cours' !");
+        }
+
+        $id_cours = $cours['id_cours'];
+        $code_cours = $cours['code_cours'];
+        $id_responsable_module = 55; // Remplace par la vraie valeur si nécessaire
+
+        // ✅ Récupération des données du formulaire
         $dsDetails = 'DS : ' . ($_POST['dsDetails'] ?? '');
         $salle016 = $_POST['salle016'] ?? '';
         $scheduleDetails = $_POST['scheduleDetails'] ?? '';
 
-
-        $equipementsSpecifiques = '';
-        if ($salle016 === 'Oui') {
-            $equipementsSpecifiques .= "Intervention en salle 016 : Oui, de préférence\n";
-        } elseif ($salle016 === 'Indifférent') {
-            $equipementsSpecifiques .= "Intervention en salle 016 : Indifférent\n";
-        } elseif ($salle016 === 'Non') {
-            $equipementsSpecifiques .= "Intervention en salle 016 : Non, salle non adaptée\n";
-        }
-
+        // ✅ Construction de la chaîne d'équipements spécifiques
+        $equipementsSpecifiques = "Intervention en salle 016 : $salle016\n";
         if (!empty($scheduleDetails)) {
             $equipementsSpecifiques .= "Besoins en chariots ou salles : $scheduleDetails\n";
         }
 
         $type_salle = $_POST['hour_type'][0] ?? 'Inconnu';
 
-        // Insertion dans la table details_cours
+        // ✅ Insertion dans la table `details_cours`
         $stmtDetails = $pdo->prepare("
             INSERT INTO details_cours (
                 id_cours,
@@ -73,7 +71,7 @@ try {
             ':details' => $dsDetails
         ]);
 
-        // 📄 **Génération du PDF après enregistrement en base**
+        // ✅ **Génération du PDF après enregistrement**
         ob_end_clean();
         $pdf = new TCPDF();
         $pdf->SetCreator(PDF_CREATOR);
@@ -97,8 +95,8 @@ try {
 <h4>Informations Générales</h4>
 <table>
     <tr><th>Semestre</th><td>{$_POST['semester']}</td></tr>
-    <tr><th>Nom de la Ressource</th><td>{$_POST['resourceName']}</td></tr>
-    <tr><th>Code de la Ressource</th><td>{$_POST['resourceCode']}</td></tr>
+    <tr><th>Nom de la Ressource</th><td>{$nom_cours}</td></tr>
+    <tr><th>Code de la Ressource</th><td>{$code_cours}</td></tr>
     <tr><th>Nom du Responsable</th><td>{$_POST['responsibleName']}</td></tr>
     <tr><th>Téléphone</th><td>{$_POST['phone']}</td></tr>
 </table>
@@ -116,34 +114,37 @@ EOD;
 
         $pdf->writeHTML($html, true, false, true, false, '');
 
-
-        $pdf_folder = __DIR__ . '/../../temp/';
-        if (!is_dir($pdf_folder)) {
-            mkdir($pdf_folder, 0777, true);
-        }
-
+        //Envoi du fichier PDF en téléchargement direct
         $nom_prof = preg_replace('/[^a-zA-Z0-9]/', '_', $_POST['responsibleName']);
         $pdf_filename = 'FicheRessource_' . $nom_prof . '.pdf';
-        $pdf_filepath = $pdf_folder . $pdf_filename;
 
-        $pdf->Output($pdf_filepath, 'F');
+        //Force le téléchargement
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: attachment; filename="' . $pdf_filename . '"');
+        header('Cache-Control: private, must-revalidate, max-age=0');
+        header('Pragma: public');
 
+        $pdf->Output($pdf_filename, 'D');
 
+        // ✅ Redirection après téléchargement
         echo "<script>
-            alert('Les vœux ont été enregistrés en base et le PDF a été téléchargé.');
             window.location.href = '../../index.php?action=enseignantFicheRessource';
         </script>";
         exit();
     }
 } catch (PDOException $e) {
-    echo "<script>
+    // ✅ Gestion des erreurs SQL
+    error_log("Erreur Sql : " . $e->getMessage());
+    die("<script>
         alert('Erreur PDO : " . addslashes($e->getMessage()) . "');
-        window.location.href = '../index.php?action=enseignantFicheRessource';
-    </script>";
+        window.location.href = '../../index.php?action=enseignantFicheRessource';
+    </script>");
 } catch (Exception $e) {
-    echo "<script>
+    // ✅ Gestion des autres erreurs
+    error_log("Autres Erreurs : " . $e->getMessage());
+    die("<script>
         alert('Erreur : " . addslashes($e->getMessage()) . "');
-        window.location.href = '../index.php?action=enseignantFicheRessource';
-    </script>";
+        window.location.href = '../../index.php?action=enseignantFicheRessource';
+    </script>");
 }
 ?>

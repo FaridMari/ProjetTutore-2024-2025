@@ -120,16 +120,40 @@
 
     <div>
         <label for="statut">Statut :</label>
-        <select id="statut" name="statut" required>
-            <option value="enseignant-chercheur">Enseignant-Chercheur</option>
-            <option value="enseignant">Enseignant</option>
-            <option value="vacataire">Vacataire</option>
-            <option value="pro">Salarié</option>
+        <select id="statut" name="statut" required onchange="updateHeures()">
+            <option value="enseignant-chercheur">Enseignant-chercheur</option>
+            <option value="ater">ATER</option>
+            <option value="vacataire_enseignant">Vacataire enseignant</option>
+            <option value="vacataire_professionnel">Vacataire professionnel</option>
+            <option value="prce_prag">PRCE/PRAG</option>
+            <option value="doctorant_missionnaire">Doctorant missionnaire</option>
+            <option value="doctorant_vacataire">Doctorant vacataire</option>
+            <option value="enseignant_associé">Enseignant associé</option>
         </select>
+
         <label for="nombre_heures">Nombre d'heures :</label>
-        <input type="number" id="nombre_heures" name="nombre_heures">
+        <input type="text" id="nombre_heures" name="nombre_heures" readonly>
 
     </div>
+
+    <script>
+        function updateHeures() {
+            let statut = document.getElementById("statut").value;
+            let nombreHeuresInput = document.getElementById("nombre_heures");
+
+            let heuresParDefaut = {
+                "enseignant-chercheur": 192,
+                "ater": 192,
+                "prce_prag": 384
+            };
+
+            nombreHeuresInput.value = heuresParDefaut[statut] || 0;
+        }
+
+        // Initialiser au chargement
+        document.addEventListener("DOMContentLoaded", updateHeures);
+    </script>
+
 
 
 

@@ -19,10 +19,7 @@ use src\Action\GestionnaireFicheRepartitionAction;
 use src\Action\EnseignantAccueilAction;
 use src\Action\GestionnaireCoursAction;
 use src\Action\GestionnaireValidationFicheAction;
-
-
-
-
+use src\Action\EnseignantProfilAction;
 
 
 class Dispatcher {
@@ -126,7 +123,10 @@ class Dispatcher {
                 $action = new GestionnaireValidationFicheAction();
                 echo $action->execute();
                 break;
-
+            case 'profilEnseignant':
+                $action = new EnseignantProfilAction();
+                echo $action->execute();
+                break;
             default:
                 $action = new SigninAction();
                 echo $action->execute();

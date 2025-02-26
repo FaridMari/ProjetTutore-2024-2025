@@ -10,6 +10,10 @@ require_once __DIR__ . '/../modele/EnseignantDTO.php';
 require_once __DIR__ . '/../modele/UtilisateurDTO.php';
 require_once __DIR__ . '/../modele/GroupeDTO.php';
 
+use src\Db\connexionFactory;
+
+$pdo = connexionFactory::makeConnection();
+
 // Lecture du payload JSON envoyé par le client
 $dataRaw = file_get_contents('php://input');
 $payload = json_decode($dataRaw, true);
@@ -100,7 +104,149 @@ foreach ($tableData as $rowIndex => $row) {
                         continue;
                     }
                     $teacherId = $teacherMapping[$tNameNormalized];
-                    $newAffectation = new Affectation(null, $teacherId, $courseId, $groupId, 0, $typeHour);
+
+
+
+// Récupérer la valeur correspondante dans la table voeux en fonction du type d'heure
+                    $stmt = $pdo->prepare("
+                    SELECT nb_CM, nb_TD, nb_TP, nb_EI
+                    FROM voeux
+                    WHERE id_enseignant = :id_enseignant
+                    AND id_cours = :id_cours
+                    LIMIT 1
+                ");
+                    $stmt->bindParam(':id_enseignant', $teacherId, PDO::PARAM_INT);
+                    $stmt->bindParam(':id_cours', $courseId, PDO::PARAM_INT);
+                    $stmt->execute();
+                    $voeu = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// Déterminer la valeur des heures affectées en fonction du type d'heure
+                    $heuresAffectees = 0;
+                    if ($voeu) {
+                        switch ($typeHour) {
+                            case 'CM':
+                                $heuresAffectees = $voeu['nb_CM'];
+                                break;
+                            case 'TD':
+                                $heuresAffectees = $voeu['nb_TD'];
+                                break;
+                            case 'TP':
+                                $heuresAffectees = $voeu['nb_TP'];
+                                break;
+                            case 'EI':
+                                $heuresAffectees = $voeu['nb_EI'];
+                                break;
+                        }
+                    }
+
+
+                    // Récupérer l'ID utilisateur associé à l'enseignant
+                    $stmt = $pdo->prepare("
+    SELECT id_utilisateur 
+    FROM enseignants 
+    WHERE id_enseignant = :id_enseignant
+");
+                    $stmt->bindParam(':id_enseignant', $teacherId, PDO::PARAM_INT);
+                    $stmt->execute();
+                    $enseignant = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                    $statut = null;
+                    if ($enseignant) {
+                        // Récupérer le statut de l'utilisateur
+                        $stmt = $pdo->prepare("
+        SELECT statut 
+        FROM utilisateurs 
+        WHERE id_utilisateur = :id_utilisateur
+    ");
+                        $stmt->bindParam(':id_utilisateur', $enseignant['id_utilisateur'], PDO::PARAM_INT);
+                        $stmt->execute();
+                        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                        if ($user) {
+                            $statut = $user['statut'];
+                        }
+                    }
+
+// Déterminer heures_affectees_reel en fonction du statut et du type d'heure
+                    $heures_affectees_reel = $heuresAffectees; // Par défaut, garder la valeur originale
+
+                    if ($statut) {
+                        switch (true) {
+                            case preg_match('/^doctorant missionnaire$/', $statut):
+                                switch ($typeHour) {
+                                    case 'TD': case 'TP': case 'CM': case 'EI': case 'PBUT':
+                                    $heures_affectees_reel = $heuresAffectees;
+                                    break;
+                                }
+                                break;
+
+                            case preg_match('/^ater$/', $statut):
+                                switch ($typeHour) {
+                                    case 'TD': case 'CM':case 'PBUT':
+                                    $heures_affectees_reel = $heuresAffectees;
+                                    break;
+                                    case 'EI':
+                                        $heures_affectees_reel = $heuresAffectees * 7 / 6;
+                                        break;
+                                    case 'TP':
+                                        $heures_affectees_reel = $heuresAffectees * 2 / 3;
+                                        break;
+                                }
+                                break;
+
+                            case preg_match('/^(vacataire enseignant|vacataire professionnel|doctorant vacataire)$/', $statut):
+                                switch ($typeHour) {
+                                    case 'TD': case 'PBUT':
+                                    $heures_affectees_reel = $heuresAffectees;
+                                    break;
+                                    case 'TP':
+                                        $heures_affectees_reel = $heuresAffectees * 2 / 3;
+                                        break;
+                                    case 'EI':
+                                        $heures_affectees_reel = $heuresAffectees * 7 / 6;
+                                        break;
+                                    case 'CM':
+                                        $heures_affectees_reel = $heuresAffectees * 1.5;
+                                        break;
+                                }
+                                break;
+
+                            case preg_match('/^(enseignant-chercheur|enseignant associé)$/', $statut):
+                                switch ($typeHour) {
+                                    case 'TD': case 'DS': case 'PBUT': case 'TP':
+                                    $heures_affectees_reel = $heuresAffectees;
+                                    break;
+                                    case 'CM':
+                                        $heures_affectees_reel = $heuresAffectees * 1.5;
+                                        break;
+                                    case 'EI':
+                                        $heures_affectees_reel = $heuresAffectees * 7 / 6;
+                                        break;
+                                }
+                                break;
+
+//                            case preg_match('/^PRCE/PRAG$/', $statut):
+//                                switch ($typeHour) {
+//                                    case 'TD': case 'DS': case 'PBUT': case 'TPL': case 'TP':
+//                                    $heures_affectees_reel = $heuresAffectees;
+//                                    break;
+//                                    case 'CM':
+//                                        $heures_affectees_reel = $heuresAffectees * 1.5;
+//                                        break;
+//                                    case 'EI':
+//                                        $heures_affectees_reel = $heuresAffectees * 7 / 6;
+//                                        break;
+//                                }
+//                                break;
+                        }
+                    }
+
+
+
+// Utiliser cette valeur lors de l'insertion
+                    $newAffectation = new Affectation(null, $teacherId, $courseId, $groupId, $heures_affectees_reel, $typeHour);
+
+
                     // Utiliser insert() pour forcer un nouvel enregistrement à chaque fois
                     $affectationDTO->insert($newAffectation);
                 }

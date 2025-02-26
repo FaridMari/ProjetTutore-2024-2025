@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : jeu. 06 fév. 2025 à 14:24
+-- Généré le : mer. 26 fév. 2025 à 02:40
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -27,6 +27,7 @@ SET time_zone = "+00:00";
 -- Structure de la table `affectations`
 --
 
+DROP TABLE IF EXISTS `affectations`;
 CREATE TABLE `affectations` (
   `id_affectation` int(11) NOT NULL,
   `id_enseignant` int(11) NOT NULL,
@@ -41,12 +42,17 @@ CREATE TABLE `affectations` (
 --
 
 INSERT INTO `affectations` (`id_affectation`, `id_enseignant`, `id_cours`, `id_groupe`, `heures_affectees`, `type_heure`) VALUES
-(1, 64, 189, 1, 0, 'CM'),
-(3, 1, 189, 2, 24, 'TD'),
-(4, 1, 189, 2, 0, 'TP'),
-(5, 1, 189, 3, 0, 'CM'),
-(6, 1, 189, 3, 0, 'EI'),
-(7, 1, 189, 4, 0, 'CM');
+(8, 72, 192, 1, 0, 'TP'),
+(10, 72, 192, 2, 0, 'TP'),
+(11, 72, 192, 3, 0, 'TP'),
+(12, 72, 192, 4, 0, 'TP'),
+(13, 72, 192, 5, 0, 'TP'),
+(18, 73, 186, 1, 0, 'TD'),
+(19, 73, 186, 2, 0, 'CM'),
+(20, 73, 186, 3, 0, 'TP'),
+(21, 73, 186, 4, 0, 'TP'),
+(23, 76, 188, 1, 0, 'CM'),
+(24, 76, 188, 2, 0, 'TD');
 
 -- --------------------------------------------------------
 
@@ -54,6 +60,7 @@ INSERT INTO `affectations` (`id_affectation`, `id_enseignant`, `id_cours`, `id_g
 -- Structure de la table `configurationplanningdetaille`
 --
 
+DROP TABLE IF EXISTS `configurationplanningdetaille`;
 CREATE TABLE `configurationplanningdetaille` (
   `id` int(11) NOT NULL,
   `semestre` varchar(255) DEFAULT NULL,
@@ -69,12 +76,42 @@ CREATE TABLE `configurationplanningdetaille` (
 --
 
 INSERT INTO `configurationplanningdetaille` (`id`, `semestre`, `type`, `dateDebut`, `dateFin`, `description`, `nbSemaines`) VALUES
-(31, NULL, 'Semestre1', '2025-02-20', '2025-06-27', '', 18),
-(32, NULL, 'Semestre2', '2024-09-02', '2025-01-20', '', 20),
-(33, NULL, 'VacancesToussaint', '2024-10-28', '2024-11-01', 'Test', 0),
-(34, NULL, 'VacancesNoel', '2025-02-24', '2025-01-03', 'Test', 0),
-(35, NULL, 'VacancesHiver', '2025-02-18', '2025-02-21', '', 0),
-(36, NULL, 'VacancesPrintemps', '2025-04-07', '2025-04-11', '', 0);
+(519, NULL, 'Semestre1', '2025-01-20', '2025-06-27', '', 22),
+(520, NULL, 'Semestre2', '2024-08-26', '2025-01-20', '', 21),
+(521, NULL, 'VacancesToussaint', '2024-10-28', '2024-11-01', 'Test', 0),
+(522, NULL, 'VacancesNoel', '2024-12-23', '2025-01-03', 'Test', 0),
+(523, NULL, 'VacancesHiver', '2025-02-17', '2025-02-21', '', 0),
+(524, NULL, 'VacancesPrintemps', '2025-04-07', '2025-04-11', '', 0),
+(525, 'S1', 'Atelier', '2024-09-23', '2024-10-05', '', 0),
+(526, 'S1', 'Atelier', '2024-09-23', '2024-10-05', '', 0),
+(527, 'S1', 'Stage', '2024-09-09', '2024-09-20', 'Remarques', 1),
+(528, 'S1', 'Stage', '2024-09-09', '2024-09-20', 'Remarques', 1),
+(529, 'S1', 'Projet', '2024-11-25', '2024-12-06', '', 0),
+(530, 'S1', 'Projet', '2024-11-25', '2024-12-06', '', 0),
+(560, 'S3', 'Description', '2024-09-02', '2024-09-08', 'test', NULL),
+(561, 'S3', 'Description', '2024-09-09', '2024-09-15', 'Stage', NULL),
+(562, 'S3', 'Description', '2024-09-16', '2024-09-22', 'Stage', NULL),
+(563, 'S3', 'Description', '2024-09-23', '2024-09-29', 'Atelier', NULL),
+(564, 'S3', 'Description', '2024-09-30', '2024-10-06', 'Atelier', NULL),
+(565, 'S3', 'Description', '2024-10-28', '2024-11-03', 'Vacances', NULL),
+(566, 'S3', 'Description', '2024-11-25', '2024-12-01', 'Projet', NULL),
+(567, 'S3', 'Description', '2024-12-02', '2024-12-08', 'Projet', NULL),
+(568, 'S3', 'Description', '2024-12-23', '2024-12-29', 'Vacances', NULL),
+(569, 'S3', 'Description', '2024-12-30', '2025-01-05', 'Vacances', NULL),
+(570, 'S4 DACS', 'Description', '2025-02-17', '2025-02-23', 'Vacances', NULL),
+(571, 'S4 DACS', 'Description', '2025-04-07', '2025-04-13', 'Vacances', NULL),
+(846, 'S2', 'Description', '2025-02-17', '2025-02-23', 'Vacances', NULL),
+(847, 'S2', 'Description', '2025-04-07', '2025-04-13', 'Vacances', NULL),
+(1538, 'S1', 'Description', '2024-09-02', '2024-09-08', 'test', NULL),
+(1539, 'S1', 'Description', '2024-09-09', '2024-09-15', 'Stage', NULL),
+(1540, 'S1', 'Description', '2024-09-16', '2024-09-22', 'Stage', NULL),
+(1541, 'S1', 'Description', '2024-09-23', '2024-09-29', 'Atelier', NULL),
+(1542, 'S1', 'Description', '2024-09-30', '2024-10-06', 'Atelier', NULL),
+(1543, 'S1', 'Description', '2024-10-28', '2024-11-03', 'Vacances', NULL),
+(1544, 'S1', 'Description', '2024-11-25', '2024-12-01', 'Projet', NULL),
+(1545, 'S1', 'Description', '2024-12-02', '2024-12-08', 'Projet', NULL),
+(1546, 'S1', 'Description', '2024-12-23', '2024-12-29', 'Vacances', NULL),
+(1547, 'S1', 'Description', '2024-12-30', '2025-01-05', 'Vacances', NULL);
 
 -- --------------------------------------------------------
 
@@ -82,6 +119,7 @@ INSERT INTO `configurationplanningdetaille` (`id`, `semestre`, `type`, `dateDebu
 -- Structure de la table `contraintes`
 --
 
+DROP TABLE IF EXISTS `contraintes`;
 CREATE TABLE `contraintes` (
   `id_contrainte` int(11) NOT NULL,
   `id_utilisateur` int(11) NOT NULL,
@@ -97,10 +135,11 @@ CREATE TABLE `contraintes` (
 --
 
 INSERT INTO `contraintes` (`id_contrainte`, `id_utilisateur`, `jour`, `heure_debut`, `heure_fin`, `creneau_preference`, `cours_samedi`) VALUES
-(61, 19, 'lundi', 8, 10, '8h-10h', 'oui'),
-(62, 19, 'mardi', 10, 12, '8h-10h', 'oui'),
-(64, 20, 'lundi', 8, 10, '8h-10h', 'oui'),
-(65, 20, 'mardi', 10, 12, '8h-10h', 'oui');
+(72, 27, '', 0, 0, NULL, NULL),
+(73, 28, '', 0, 0, NULL, NULL),
+(74, 29, '', 0, 0, NULL, NULL),
+(75, 30, '', 0, 0, NULL, NULL),
+(76, 31, '', 0, 0, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -108,6 +147,7 @@ INSERT INTO `contraintes` (`id_contrainte`, `id_utilisateur`, `jour`, `heure_deb
 -- Structure de la table `cours`
 --
 
+DROP TABLE IF EXISTS `cours`;
 CREATE TABLE `cours` (
   `id_cours` int(11) NOT NULL,
   `formation` varchar(255) NOT NULL,
@@ -199,7 +239,7 @@ INSERT INTO `cours` (`id_cours`, `formation`, `semestre`, `nom_cours`, `code_cou
 (253, 'BUT S5 RA-IL', '5', 'Anglais', 'R5-RA-IL-14', 24, 0, 24, 0, 0),
 (254, 'BUT S5 RA-IL', '5', 'Logique', 'R5-RA-IL-15', 32, 0, 32, 0, 0),
 (255, 'BUT S1', '1', 'Implémentation d\'un besoin client', 'S1-01', 12, 0, 12, 0, 0),
-(256, 'BUT S1', '1', 'Comparaison d\'approches algorithmique', 'S1-02', 12, 0, 12, 0, 0),
+(256, 'BUT S1', '', 'Comparaison d\'approches algorithmique', 'S1-02', 12, 0, 12, 0, 0),
 (257, 'BUT S1', '1', 'Installation d\'un poste développement', 'S1-03', 12, 0, 12, 0, 0),
 (258, 'BUT S1', '1', 'Création d\'une BD', 'S1-04', 12, 0, 12, 0, 0),
 (259, 'BUT S1', '1', 'Recueil de besoins', 'S1-05', 12, 0, 12, 0, 0),
@@ -315,6 +355,7 @@ INSERT INTO `cours` (`id_cours`, `formation`, `semestre`, `nom_cours`, `code_cou
 -- Structure de la table `details_cours`
 --
 
+DROP TABLE IF EXISTS `details_cours`;
 CREATE TABLE `details_cours` (
   `id_ressource` int(11) NOT NULL,
   `id_cours` int(11) NOT NULL,
@@ -329,9 +370,9 @@ CREATE TABLE `details_cours` (
 --
 
 INSERT INTO `details_cours` (`id_ressource`, `id_cours`, `id_responsable_module`, `type_salle`, `equipements_specifiques`, `details`) VALUES
-(6, 186, 55, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : Bonjour'),
-(7, 187, 55, 'Inconnu', 'Intervention en salle 016 : Indifférent\n', 'DS : Bonjour'),
-(8, 186, 55, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : t');
+(15, 186, 73, 'Inconnu', 'Intervention en salle 016 : Indifférent\n', 'DS : Detail cours Resp'),
+(16, 192, 72, 'Inconnu', 'Intervention en salle 016 : Indifférent\n', 'DS : Detail cours'),
+(18, 188, 76, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : Detail cours');
 
 -- --------------------------------------------------------
 
@@ -339,6 +380,7 @@ INSERT INTO `details_cours` (`id_ressource`, `id_cours`, `id_responsable_module`
 -- Structure de la table `enseignants`
 --
 
+DROP TABLE IF EXISTS `enseignants`;
 CREATE TABLE `enseignants` (
   `id_enseignant` int(11) NOT NULL,
   `id_utilisateur` int(11) NOT NULL,
@@ -354,8 +396,11 @@ CREATE TABLE `enseignants` (
 INSERT INTO `enseignants` (`id_enseignant`, `id_utilisateur`, `heures_affectees`, `statut`, `total_hetd`) VALUES
 (1, 2, 0, 'vacataire', 0),
 (55, 1, 0, 'vacataire', 0),
-(64, 19, 0, 'enseignant-chercheur', 0),
-(65, 20, 0, 'enseignant-chercheur', 0);
+(72, 27, 0, 'enseignant', 0),
+(73, 28, 0, 'enseignant-chercheur', 0),
+(74, 29, 0, 'enseignant-chercheur', 0),
+(75, 30, 0, 'enseignant-chercheur', 0),
+(76, 31, 0, 'enseignant', 0);
 
 -- --------------------------------------------------------
 
@@ -363,6 +408,7 @@ INSERT INTO `enseignants` (`id_enseignant`, `id_utilisateur`, `heures_affectees`
 -- Structure de la table `groupes`
 --
 
+DROP TABLE IF EXISTS `groupes`;
 CREATE TABLE `groupes` (
   `id_groupe` int(11) NOT NULL,
   `nom_groupe` varchar(255) NOT NULL,
@@ -391,6 +437,7 @@ INSERT INTO `groupes` (`id_groupe`, `nom_groupe`, `niveau`) VALUES
 -- Structure de la table `historisation`
 --
 
+DROP TABLE IF EXISTS `historisation`;
 CREATE TABLE `historisation` (
   `id_historique` int(11) NOT NULL,
   `id_enseignant` int(11) NOT NULL,
@@ -405,6 +452,7 @@ CREATE TABLE `historisation` (
 -- Structure de la table `repartition_heures`
 --
 
+DROP TABLE IF EXISTS `repartition_heures`;
 CREATE TABLE `repartition_heures` (
   `id_repartition` int(11) NOT NULL,
   `id_cours` int(11) NOT NULL,
@@ -420,65 +468,48 @@ CREATE TABLE `repartition_heures` (
 --
 
 INSERT INTO `repartition_heures` (`id_repartition`, `id_cours`, `semaine_debut`, `semaine_fin`, `type_heure`, `nb_heures_par_semaine`, `semestre`) VALUES
-(20922, 262, 1, 1, 'CM', 0, 'S3'),
-(20923, 262, 2, 2, 'CM', 0, 'S3'),
-(20924, 262, 3, 3, 'CM', 0, 'S3'),
-(20925, 262, 36, 36, 'CM', 0, 'S3'),
-(20926, 262, 37, 37, 'CM', 0, 'S3'),
-(20927, 262, 38, 38, 'CM', 0, 'S3'),
-(20928, 262, 39, 39, 'CM', 0, 'S3'),
-(20929, 262, 40, 40, 'CM', 0, 'S3'),
-(20930, 262, 41, 41, 'CM', 0, 'S3'),
-(20931, 262, 42, 42, 'CM', 0, 'S3'),
-(20932, 262, 43, 43, 'CM', 0, 'S3'),
-(20933, 262, 44, 44, 'CM', 0, 'S3'),
-(20934, 262, 45, 45, 'CM', 0, 'S3'),
-(20935, 262, 46, 46, 'CM', 0, 'S3'),
-(20936, 262, 47, 47, 'CM', 0, 'S3'),
-(20937, 262, 48, 48, 'CM', 0, 'S3'),
-(20938, 262, 49, 49, 'CM', 0, 'S3'),
-(20939, 262, 50, 50, 'CM', 0, 'S3'),
-(20940, 262, 51, 51, 'CM', 0, 'S3'),
-(20941, 262, 52, 52, 'CM', 0, 'S3'),
-(21000, 348, 8, 8, 'TD', 0, 'S2'),
-(21001, 348, 9, 9, 'TD', 0, 'S2'),
-(21002, 348, 10, 10, 'TD', 0, 'S2'),
-(21003, 348, 11, 11, 'TD', 0, 'S2'),
-(21004, 348, 12, 12, 'TD', 0, 'S2'),
-(21005, 348, 13, 13, 'TD', 0, 'S2'),
-(21006, 348, 14, 14, 'TD', 0, 'S2'),
-(21007, 348, 15, 15, 'TD', 0, 'S2'),
-(21008, 348, 16, 16, 'TD', 0, 'S2'),
-(21009, 348, 17, 17, 'TD', 0, 'S2'),
-(21010, 348, 18, 18, 'TD', 0, 'S2'),
-(21011, 348, 19, 19, 'TD', 0, 'S2'),
-(21012, 348, 20, 20, 'TD', 0, 'S2'),
-(21013, 348, 21, 21, 'TD', 0, 'S2'),
-(21014, 348, 22, 22, 'TD', 0, 'S2'),
-(21015, 348, 23, 23, 'TD', 0, 'S2'),
-(21016, 348, 24, 24, 'TD', 0, 'S2'),
-(21017, 348, 25, 25, 'TD', 0, 'S2'),
-(21512, 186, 39, 40, 'TP', 4, 'S1'),
-(21513, 257, 1, 1, 'CM', 0, 'S1'),
-(21514, 257, 2, 2, 'CM', 0, 'S1'),
-(21515, 257, 3, 3, 'CM', 0, 'S1'),
-(21516, 257, 36, 36, 'CM', 0, 'S1'),
-(21517, 257, 37, 37, 'CM', 0, 'S1'),
-(21518, 257, 38, 38, 'CM', 0, 'S1'),
-(21519, 257, 39, 39, 'CM', 0, 'S1'),
-(21520, 257, 40, 40, 'CM', 0, 'S1'),
-(21521, 257, 41, 41, 'CM', 0, 'S1'),
-(21522, 257, 42, 42, 'CM', 0, 'S1'),
-(21523, 257, 43, 43, 'CM', 0, 'S1'),
-(21524, 257, 44, 44, 'CM', 0, 'S1'),
-(21525, 257, 45, 45, 'CM', 0, 'S1'),
-(21526, 257, 46, 46, 'CM', 0, 'S1'),
-(21527, 257, 47, 47, 'CM', 0, 'S1'),
-(21528, 257, 48, 48, 'CM', 0, 'S1'),
-(21529, 257, 49, 49, 'CM', 0, 'S1'),
-(21530, 257, 50, 50, 'CM', 0, 'S1'),
-(21531, 257, 51, 51, 'CM', 0, 'S1'),
-(21532, 257, 52, 52, 'CM', 0, 'S1');
+(34986, 186, 41, 43, 'CM', 1, 'S1'),
+(34987, 186, 36, 36, 'CM', 2, 'S1'),
+(34988, 186, 45, 47, 'CM', 2, 'S1'),
+(34989, 186, 35, 35, 'CM', 10, 'S1'),
+(34990, 186, 50, 51, 'CM', 11, 'S1'),
+(34991, 186, 41, 43, 'TD', 1, 'S1'),
+(34992, 186, 36, 36, 'TD', 2, 'S1'),
+(34993, 186, 45, 46, 'TD', 5, 'S1'),
+(34994, 186, 35, 35, 'TD', 10, 'S1'),
+(34995, 186, 41, 43, 'TP', 1, 'S1'),
+(34996, 186, 36, 36, 'TP', 2, 'S1'),
+(34997, 186, 35, 35, 'TP', 10, 'S1'),
+(34998, 187, 45, 47, 'CM', 5, 'S1'),
+(34999, 187, 35, 35, 'CM', 10, 'S1'),
+(35000, 187, 41, 42, 'TD', 2, 'S1'),
+(35001, 187, 45, 47, 'TD', 5, 'S1'),
+(35002, 187, 35, 35, 'TD', 10, 'S1'),
+(35003, 187, 41, 43, 'TP', 4, 'S1'),
+(35004, 187, 45, 47, 'TP', 5, 'S1'),
+(35005, 187, 35, 35, 'TP', 10, 'S1'),
+(35006, 188, 45, 47, 'CM', 5, 'S1'),
+(35007, 188, 45, 47, 'TD', 5, 'S1'),
+(35008, 188, 45, 47, 'TP', 5, 'S1'),
+(35009, 188, 50, 51, 'TP', 6, 'S1'),
+(35010, 189, 50, 51, 'CM', 6, 'S1'),
+(35011, 189, 45, 47, 'CM', 7, 'S1'),
+(35012, 189, 45, 47, 'TD', 7, 'S1'),
+(35013, 189, 45, 47, 'TP', 7, 'S1'),
+(35014, 190, 45, 47, 'CM', 7, 'S1'),
+(35015, 190, 45, 47, 'TD', 7, 'S1'),
+(35016, 190, 45, 47, 'TP', 7, 'S1'),
+(35017, 197, 50, 51, 'TD', 1, 'S1'),
+(35018, 197, 50, 51, 'TP', 1, 'S1'),
+(35019, 255, 2, 3, 'CM', 1, 'S1'),
+(35020, 255, 36, 36, 'CM', 1, 'S1'),
+(35021, 255, 43, 43, 'CM', 1, 'S1'),
+(35022, 255, 45, 47, 'CM', 1, 'S1'),
+(35023, 255, 50, 51, 'CM', 1, 'S1'),
+(35024, 255, 41, 42, 'CM', 2, 'S1'),
+(35025, 255, 35, 35, 'CM', 3, 'S1'),
+(35026, 255, 35, 36, 'TD', 1, 'S1'),
+(35027, 255, 41, 43, 'TD', 1, 'S1');
 
 -- --------------------------------------------------------
 
@@ -486,6 +517,7 @@ INSERT INTO `repartition_heures` (`id_repartition`, `id_cours`, `semaine_debut`,
 -- Structure de la table `utilisateurs`
 --
 
+DROP TABLE IF EXISTS `utilisateurs`;
 CREATE TABLE `utilisateurs` (
   `id_utilisateur` int(11) NOT NULL,
   `nom` varchar(255) NOT NULL,
@@ -507,8 +539,11 @@ CREATE TABLE `utilisateurs` (
 INSERT INTO `utilisateurs` (`id_utilisateur`, `nom`, `prenom`, `email`, `mot_de_passe`, `role`, `statut`, `nombre_heures`, `reset_token`, `reset_token_expiration`, `supprimer`) VALUES
 (1, 'test2', 'gestionnaire', 'test2@gmail.com', 'azertyuiop', 'gestionnaire', NULL, NULL, NULL, NULL, 0),
 (2, 'test', 'enseignant', 'test@gmail.com', 'azertyuiop', 'enseignant', NULL, NULL, NULL, NULL, 0),
-(19, 'Test', 'Prenom', 'tp@gmail.com', '$2y$10$AH8akmk4QoUyHHKyDH1ei.58VXQC70ESENNRdiQMgfDnhJ1.ui9wO', 'enseignant', 'enseignant-chercheur', 123, NULL, NULL, 0),
-(20, 'lundi', 'lundi', 'lundi@gmail.com', '$2y$10$uSs/EOKo.8D4uyr/nGVqguDi4wvU.MFMOo7KHV9CPudYalaR1KS3e', 'enseignant', 'enseignant-chercheur', 132, NULL, NULL, 1);
+(27, 'Binet', 'Julien', 'binetj@mail.com', '$2y$10$r63juErl1ImwZTpjJm8jFO8swiqMXjUcz9itH05Bsv02HQjD.UG2e', 'enseignant', 'enseignant', 192, NULL, NULL, 0),
+(28, 'Dosch', 'Philippe', 'doschp@mail.com', '$2y$10$iVGNZ7nrQXF5HybW60wdi.fUo5do5fYdepX7cPeuEyvGYmQFgFzqS', 'enseignant', 'enseignant-chercheur', 192, NULL, NULL, 0),
+(29, 'Ouni', 'Slim', 'ounis@mail.com', '$2y$10$QkKfb4rfvR98IZpg3lwjPeoWy3lEf6bthNCsh4eeCeTLDKxfTGq56', 'enseignant', 'enseignant-chercheur', 192, NULL, NULL, 0),
+(30, 'tests', 'tests', 'tests@mail.com', '$2y$10$/3jcroM85KTeZfN7Y4xI6.D4Zk95x8mhGOt.nR/xDYKaxxCPlFTqu', 'enseignant', 'enseignant-chercheur', 192, NULL, NULL, 1),
+(31, 'Ragot', 'Yogan', 'ragoty@mail.com', '$2y$10$B0g8E9eyjt0HFV5AHbtGVeJpKQ3mouXG50W1OoJ4.pOniteSUNbIy', 'enseignant', 'enseignant', 192, NULL, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -516,6 +551,7 @@ INSERT INTO `utilisateurs` (`id_utilisateur`, `nom`, `prenom`, `email`, `mot_de_
 -- Structure de la table `voeux`
 --
 
+DROP TABLE IF EXISTS `voeux`;
 CREATE TABLE `voeux` (
   `id_voeu` int(11) NOT NULL,
   `id_enseignant` int(11) NOT NULL,
@@ -533,10 +569,17 @@ CREATE TABLE `voeux` (
 --
 
 INSERT INTO `voeux` (`id_voeu`, `id_enseignant`, `id_cours`, `semestre`, `nb_CM`, `nb_TD`, `nb_TP`, `nb_EI`, `remarques`) VALUES
-(44, 64, 189, '1', 0, 24, 0, 0, '2 groupes en TD'),
-(45, 1, 189, '1', 1, 24, 1, 1, '1 groupes TD'),
-(46, 1, 192, '1', 1, 48, 1, 1, '2 groupes TP'),
-(47, 1, 283, '2', 8, 24, 1, 1, '3');
+(55, 72, 192, '1', 0, 28, 0, 0, ''),
+(56, 72, 195, '1', 0, 36, 0, 0, ''),
+(57, 72, 282, '2', 0, 40, 0, 0, ''),
+(58, 72, 287, '2', 0, 24, 0, 0, ''),
+(59, 73, 186, '1', 0, 32, 0, 0, ''),
+(60, 73, 187, '1', 0, 24, 16, 0, ''),
+(61, 73, 283, '2', 0, 12, 8, 0, ''),
+(64, 76, 188, '1', 0, 24, 8, 0, ''),
+(65, 76, 189, '1', 0, 24, 0, 0, ''),
+(68, 1, 186, '1', 0, 32, 0, 0, ''),
+(69, 1, 187, '1', 0, 0, 0, 0, '');
 
 -- --------------------------------------------------------
 
@@ -544,6 +587,7 @@ INSERT INTO `voeux` (`id_voeu`, `id_enseignant`, `id_cours`, `semestre`, `nb_CM`
 -- Structure de la table `voeux_hors_iut`
 --
 
+DROP TABLE IF EXISTS `voeux_hors_iut`;
 CREATE TABLE `voeux_hors_iut` (
   `id_voeu_hi` int(11) NOT NULL,
   `id_enseignant` int(11) NOT NULL,
@@ -562,7 +606,10 @@ CREATE TABLE `voeux_hors_iut` (
 --
 
 INSERT INTO `voeux_hors_iut` (`id_voeu_hi`, `id_enseignant`, `composant`, `formation`, `module`, `nb_heures_cm`, `nb_heures_td`, `nb_heures_tp`, `nb_heures_ei`, `nb_total`) VALUES
-(4, 1, 'INFO COM', 'BUT 2', 'TRUC', 2, 3, 4, 6, 15);
+(8, 73, 'IDMC', 'MASTER 1', 'MATHS', 10, 20, 6, 0, 36),
+(11, 76, 'IDMC', 'MASTER 1', 'MATHS', 12, 0, 0, 0, 12),
+(14, 1, 'INFO COM', 'BUT 2', 'TRUC', 2, 3, 4, 6, 15),
+(15, 1, 'IDMC', 'MASTER 2', 'MATH', 1, 147, 36, 0, 184);
 
 --
 -- Index pour les tables déchargées
@@ -663,37 +710,37 @@ ALTER TABLE `voeux_hors_iut`
 -- AUTO_INCREMENT pour la table `affectations`
 --
 ALTER TABLE `affectations`
-  MODIFY `id_affectation` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_affectation` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT pour la table `configurationplanningdetaille`
 --
 ALTER TABLE `configurationplanningdetaille`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1548;
 
 --
 -- AUTO_INCREMENT pour la table `contraintes`
 --
 ALTER TABLE `contraintes`
-  MODIFY `id_contrainte` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
+  MODIFY `id_contrainte` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
 
 --
 -- AUTO_INCREMENT pour la table `cours`
 --
 ALTER TABLE `cours`
-  MODIFY `id_cours` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=365;
+  MODIFY `id_cours` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=366;
 
 --
 -- AUTO_INCREMENT pour la table `details_cours`
 --
 ALTER TABLE `details_cours`
-  MODIFY `id_ressource` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_ressource` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT pour la table `enseignants`
 --
 ALTER TABLE `enseignants`
-  MODIFY `id_enseignant` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
+  MODIFY `id_enseignant` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
 
 --
 -- AUTO_INCREMENT pour la table `groupes`
@@ -711,25 +758,25 @@ ALTER TABLE `historisation`
 -- AUTO_INCREMENT pour la table `repartition_heures`
 --
 ALTER TABLE `repartition_heures`
-  MODIFY `id_repartition` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21533;
+  MODIFY `id_repartition` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35028;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateurs`
 --
 ALTER TABLE `utilisateurs`
-  MODIFY `id_utilisateur` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id_utilisateur` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT pour la table `voeux`
 --
 ALTER TABLE `voeux`
-  MODIFY `id_voeu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id_voeu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 
 --
 -- AUTO_INCREMENT pour la table `voeux_hors_iut`
 --
 ALTER TABLE `voeux_hors_iut`
-  MODIFY `id_voeu_hi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_voeu_hi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- Contraintes pour les tables déchargées

@@ -18,6 +18,8 @@ use src\Action\GestionnaireSupprimerUtilisateurAction;
 use src\Action\GestionnaireFicheRepartitionAction;
 use src\Action\EnseignantAccueilAction;
 use src\Action\GestionnaireCoursAction;
+use src\Action\EnseignantProfilAction;
+
 
 
 
@@ -119,6 +121,10 @@ class Dispatcher {
                 break;
             case 'gestionRessource':
                 $action = new GestionnaireCoursAction();
+                echo $action->execute();
+                break;
+            case 'profilEnseignant':
+                $action = new EnseignantProfilAction();
                 echo $action->execute();
                 break;
             default:

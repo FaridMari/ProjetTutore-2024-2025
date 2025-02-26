@@ -67,10 +67,7 @@ header('Pragma: public');
 
 $pdf->Output($pdf_filename, 'D');
 
-// ✅ Redirection après téléchargement
-echo "<script>
-            window.location.href = '../../index.php?action=enseignantFicheRessource';
-        </script>";
+
 exit();;
 ?>
 

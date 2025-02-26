@@ -2,6 +2,7 @@
 namespace src\Dispatcher;
 
 
+use src\Action\EnseignantVisualisationPlanningAction;
 use src\Action\GestionnaireConfigurationPlanningDetaille;
 use src\Action\GestionnaireAfficherPageCreerUtilisateurAction;
 use src\Action\GestionnaireModifierUtilisateurAction;
@@ -125,6 +126,10 @@ class Dispatcher {
                 break;
             case 'profilEnseignant':
                 $action = new EnseignantProfilAction();
+                echo $action->execute();
+                break;
+            case 'visualisationPlanning':
+                $action = new EnseignantVisualisationPlanningAction();
                 echo $action->execute();
                 break;
             default:

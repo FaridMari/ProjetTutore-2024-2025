@@ -15,7 +15,7 @@
     </style>
 </head>
 <body>
-<div class="container mt-5">
+<div id="tableauCours" class="container mt-5">
     <h1 class="mb-4">Gestion des Cours</h1>
     <div class="input-group mb-3">
         <input type="text" id="searchInput" class="form-control" placeholder="Rechercher par nom ou code du cours">

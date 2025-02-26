@@ -29,7 +29,8 @@ class GestionnaireValidationFicheAction extends Action
         // Récupération des fiches
         $tables = [
             'contraintes' => "SELECT contraintes.*, utilisateurs.nom, utilisateurs.prenom, 'Fiche Contrainte' AS fiche_type FROM contraintes
-                              JOIN utilisateurs ON contraintes.id_utilisateur = utilisateurs.id_utilisateur
+                              JOIN utilisateurs ON contraintes.id_utilisateur = utilisateurs.id_utilisateur where 
+                              contraintes.creneau_preference IS NOT NULL
                               ORDER BY contraintes.statut ASC",
 
             'details_cours' => "SELECT details_cours.*, utilisateurs.nom, utilisateurs.prenom, 'Fiche Ressource' AS fiche_type FROM details_cours

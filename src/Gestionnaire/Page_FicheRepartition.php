@@ -43,6 +43,7 @@ if (isset($_GET['semester']) && in_array($_GET['semester'], $formationsDisponibl
 // Récupération des cours pour la formation sélectionnée
 $listeCours = $coursDTO->findByFormation($formationCode);
 
+
 // Récupération de toutes les affectations puis filtrage pour ne conserver que celles dont le cours fait partie de la formation
 $listeAffectations = $affectationDTO->findAll();
 $courseIds = [];
@@ -235,7 +236,11 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
         min-width: 150px !important;
         font-size: 16px;
     }
-  </style>
+    
+  
+
+</style>
+
   <!-- Inclusion des fichiers CSS/JS de Handsontable -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css">
   <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
@@ -386,6 +391,28 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
             const remark = voeuMapping[key] || "";
             document.getElementById('voeuRemark').innerText = remark ? "Remarque : " + remark : "";
           });
+        },
+        afterGetColHeader: function () {
+            const headerRows = tableDiv.querySelectorAll('.ht_clone_top thead tr');
+
+            headerRows.forEach((row, rowIndex) => {
+                if (rowIndex === 0) {
+                    row.querySelectorAll('th').forEach((th) => {
+                        th.style.backgroundColor = '#007bff';
+                        th.style.color = '#ffffff';
+                    });
+                } else if (rowIndex === 1) {
+                    row.querySelectorAll('th').forEach((th) => {
+                        th.style.backgroundColor = '#ffc107';
+                        th.style.color = '#000000';
+                    });
+                } else if (rowIndex === 2) {
+                    row.querySelectorAll('th').forEach((th) => {
+                        th.style.backgroundColor = '#28a745';
+                        th.style.color = '#ffffff';
+                    });
+                }
+            });
         }
       });
       hotInstances.push(hot);

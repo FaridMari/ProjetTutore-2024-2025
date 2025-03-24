@@ -125,11 +125,14 @@
                     ['semestre' => 'S2'],
                     ['semestre' => 'S3'],
                     ['semestre' => 'S4 DACS'],
+                    ['semestre' => 'S5 DACS'],
+                    ['semestre' => 'S6 DACS'],
                     ['semestre' => 'S4 RA-DWM'],
+                    ['semestre' => 'S5 RA-DWM'],
+                    ['semestre' => 'S6 RA-DWM'],
                     ['semestre' => 'S4 RA-IL'],
-                    ['semestre' => 'S5-S6 DACS'],
-                    ['semestre' => 'S5-S6 RA-DWM'],
-                    ['semestre' => 'S5-S6 RA-IL'],
+                    ['semestre' => 'S5 RA-IL'],
+                    ['semestre' => 'S6 RA-IL'],
                 ];
 
                 // Génération des options du dropdown
@@ -324,12 +327,6 @@
         return weekNumber;
     }
 
-
-
-
-
-
-
     colCours = [];
     for (let i = 0; i < coursListSansSae.length; i++) {
         colCours.push(coursListSansSae[i].nom_cours);
@@ -465,9 +462,15 @@
     let dataT = [];
     let semaineActuelle = semaine;
     let colCoursTotaux = [];
+
+    // Définir clairement les colonnes SAE
+    let colonneSAE = [];
     for (let sae of coursListSae) {
-        colCours.push(sae.nom_cours);
+        colonneSAE.push(sae.nom_cours);
     }
+
+    // Ne pas modifier colCours ici, on garde la séparation
+    // On ne veut pas ajouter les SAE à colCours
 
     for (let i = 0; i < nbSemaine; i++) {
         let estVacances = allVacances.includes(semaineActuelle);
@@ -478,7 +481,7 @@
         let estProjet = projets.some(projet => projet.weeks.includes(semaineActuelle));
         let estDescription = descriptions.some(desc => desc.weeks.includes(semaineActuelle));
 
-// Gestion des colonnes fixes pour chaque semaine
+        // Gestion des colonnes fixes pour chaque semaine
         if (estVacances) {
             semaineData.push("", semaineActuelle, dateActuelleStr, "Vacances");
         } else if (estStage) {
@@ -486,68 +489,52 @@
         } else if (estAtelier) {
             semaineData.push("", semaineActuelle, dateActuelleStr, "Atelier");
         } else if (estProjet) {
-            semaineData.push("", semaineActuelle, dateActuelleStr, "Projet");}
-        else if (estDescription) {
+            semaineData.push("", semaineActuelle, dateActuelleStr, "Projet");
+        } else if (estDescription) {
             semaineData.push("", semaineActuelle, dateActuelleStr, descriptions.find(desc => desc.weeks.includes(semaineActuelle)).description);
         } else {
             semaineData.push("", semaineActuelle, dateActuelleStr, "");
         }
 
-
-        // Construire la liste des colonnes pour les cours
-
-
+        // Construire la liste des colonnes pour les cours normaux (non SAE)
         for (let cours of colCours) {
             let valueCM = "";
             let valueTD = "";
             let valueTP = "";
-            let valueEI = "";
-            let cmAjoute = false;
-            let tdAjoute = false;
-            let tpAjoute = false;
-            let eiAjoute = false;
-            let estSae = coursListSae.some(sae => sae.nom_cours === cours); // Vérifie si le cours est une SAE
 
             for (let rep of repartitionSansProf) {
                 if (cours === rep.nom_cours && rep.semaine_debut <= semaineActuelle && rep.semaine_fin >= semaineActuelle) {
                     if (!estVacances) {
-                        if (estSae) { // Si c'est une SAE, uniquement gérer EI
-                            if (rep.type_heure === 'CM') {
-                                valueEI = rep.nb_heures_par_semaine;
-                                eiAjoute = true;
-                            }
-                        } else { // Sinon, gérer les types standards (CM, TD, TP)
-                            if (rep.type_heure === 'CM') {
-                                valueCM = rep.nb_heures_par_semaine;
-                                cmAjoute = true;
-                            } else if (rep.type_heure === 'TD') {
-                                valueTD = rep.nb_heures_par_semaine;
-                                tdAjoute = true;
-                            } else if (rep.type_heure === 'TP') {
-                                valueTP = rep.nb_heures_par_semaine;
-                                tpAjoute = true;
-                            }
+                        if (rep.type_heure === 'CM') {
+                            valueCM = rep.nb_heures_par_semaine;
+                        } else if (rep.type_heure === 'TD') {
+                            valueTD = rep.nb_heures_par_semaine;
+                        } else if (rep.type_heure === 'TP') {
+                            valueTP = rep.nb_heures_par_semaine;
                         }
                     }
                 }
             }
 
-            // Ajouter les valeurs CM, TD, TP ou combiner sur 3 colonnes pour les SAEs
-            if (estSae) {
-                if (valueEI !== 0) {
-                    semaineData.push(valueEI);
-                } else {
-                    semaineData.push('');
-                }
-            } else {
-                // Pour les autres cours, utiliser trois colonnes (CM, TD, TP)
-                if (valueCM !== 0 && valueTD !== 0 && valueTP !== 0) {
-                    semaineData.push(valueCM, valueTD, valueTP);
-                } else {
-                    semaineData.push('', '', ''); // Ajouter des cellules vides au lieu de 0
+            // Ajouter les valeurs CM, TD, TP
+            semaineData.push(valueCM !== 0 ? valueCM : '', valueTD !== 0 ? valueTD : '', valueTP !== 0 ? valueTP : '');
+        }
+
+        // Ajouter les colonnes pour les SAE séparément
+        for (let sae of coursListSae) {
+            let valueEI = "";
+
+            for (let rep of repartitionSansProf) {
+                if (sae.nom_cours === rep.nom_cours && rep.semaine_debut <= semaineActuelle && rep.semaine_fin >= semaineActuelle) {
+                    if (!estVacances) {
+                        valueEI = rep.nb_heures_par_semaine;
+                    }
                 }
             }
+
+            semaineData.push(valueEI !== 0 ? valueEI : '');
         }
+
         dataT.push(semaineData);
 
         // Passer à la semaine suivante
@@ -555,9 +542,14 @@
         dateDebutSemestre.setDate(dateDebutSemestre.getDate() + 7);
     }
 
-    let lettrestart = Handsontable.helper.spreadsheetColumnLabel(4);
-    let lettreend = Handsontable.helper.spreadsheetColumnLabel(4 + coursListSansSae.length * 3 + coursListSae.length - 2 );
+    // Calculer les index des colonnes pour les formules de somme
+    const indexDebutColonnes = 4; // Premier index après les colonnes fixes
+    const indexFinCours = indexDebutColonnes + (colCours.length * 3) - 1; // Dernier index des cours normaux
+    const indexFinSae = indexFinCours + coursListSae.length; // Dernier index incluant les SAE
 
+    // Lettres pour la formule de somme des cours (sans les SAE)
+    let lettrestart = Handsontable.helper.spreadsheetColumnLabel(indexDebutColonnes);
+    let lettreend = Handsontable.helper.spreadsheetColumnLabel(indexFinSae);
 
     // Ajouter une colonne de totaux à chaque ligne
     for (let i = 0; i < dataT.length; i++) {
@@ -570,9 +562,6 @@
     totalRow[0] = 'Total';
     dataT.push(totalRow);
 
-
-
-
     let pendingChanges = []; // Stocke les changements en attente
     let debounceTimer = null; // Timer pour limiter les requêtes
 
@@ -583,17 +572,24 @@
         licenseKey: 'internal-use-in-handsontable',
     });
 
+    // Définir les propriétés des colonnes
     let columnsDefs = [];
-    for (let i = 0; i < 3; i++) {
+    // Les 4 premières colonnes sont en lecture seule
+    for (let i = 0; i < 4; i++) {
         columnsDefs.push({readOnly: true});
     }
-    for (let i = 3; i < colCours.length; i++) {
-        columnsDefs.push({readOnly: false});
-        columnsDefs.push({readOnly: false});
+    // Colonnes pour les cours normaux (3 colonnes par cours: CM, TD, TP)
+    for (let i = 0; i < colCours.length; i++) {
+        for (let j = 0; j < 3; j++) { // CM, TD, TP
+            columnsDefs.push({readOnly: false});
+        }
+    }
+    // Colonnes pour les SAE (1 colonne par SAE)
+    for (let i = 0; i < coursListSae.length; i++) {
         columnsDefs.push({readOnly: false});
     }
+    // Dernière colonne (total) en lecture seule
     columnsDefs.push({readOnly: true});
-
 
     // Ajouter une mise en forme conditionnelle pour mettre en rouge si > 32h (à gérer dans l'affichage)
     const planning = new Handsontable(container, {
@@ -623,15 +619,17 @@
                 }, 3000);
             }
         },
-        cells: (row, col) => {
+        cells: function(row, col) {
             const cellProperties = {};
+
+            // Dernière ligne (Total) toujours en lecture seule
             if (row == dataT.length - 1) {
                 cellProperties.readOnly = true;
             }
 
-            // Mise en forme conditionnelle pour les vacances
+            // Mise en forme conditionnelle pour les vacances et autres périodes spéciales
             if (dataT[row]) {
-                const cellValue = dataT[row][3];
+                const cellValue = dataT[row][3]; // 4ème colonne (index 3)
 
                 if (cellValue === "Vacances") {
                     cellProperties.className = 'vacation';
@@ -649,40 +647,24 @@
             }
 
             // Mise en forme conditionnelle pour la colonne "Total"
-            if (col === dataT[0].length - 1) { // Dernière colonne (Total)
+            if (col === dataT[0].length - 1 && row < dataT.length - 1) { // Dernière colonne (Total)
                 const cellAddress = { sheet: 0, row, col };
                 const totalValue = hyperformulaInstance.getCellValue(cellAddress); // Obtenir la valeur calculée
                 if (totalValue > 32) {
                     cellProperties.className = (cellProperties.className || '') + ' total-exceeded';
-                }
-                else {
-                    cellProperties.className = ' ';
+                } else {
+                    cellProperties.className = (cellProperties.className || '') + ' total-normal';
                 }
             }
 
             // Mise en forme conditionnelle pour la ligne "Total"
-            if (row === dataT.length - 1) { // Dernière ligne (Total)
-                const cellAddress = { sheet: 0, row, col };
-                const totalValue = hyperformulaInstance.getCellValue(cellAddress); // Obtenir la valeur calculée
-
-                // Obtenir la valeur de la ligne "Heures totales Etudiants"
-                let heuresEtudiants = trueNH[6][col]
-
-                if (typeof heuresEtudiants === 'object') {
-                    heuresEtudiants = heuresEtudiants.label;
-                }
-
-                if (totalValue > heuresEtudiants) {
-                    cellProperties.className = (cellProperties.className || '') + ' total-exceeded';
-                }
-                else {
-                    cellProperties.className = ' ';
-                }
+            if (row === dataT.length - 1 && col >= 4) { // Dernière ligne (Total) et colonnes des cours
+                cellProperties.className = 'total-row';
             }
 
             return cellProperties;
         },
-        afterGetColHeader: function () {
+        afterGetColHeader: function() {
             const headerRows = container.querySelectorAll('.ht_clone_top thead tr');
 
             headerRows.forEach((row, rowIndex) => {
@@ -710,9 +692,8 @@
     const totalRowIndex = dataT.length - 1;
     const totalColIndex = dataT[0].length - 1;
 
-
-
     planning.batch(() => {
+        // Pour chaque colonne de données (à partir de la colonne 4)
         for (let i = 4; i < totalColIndex; i++) {
             let totalFormula = `=SUM(${Handsontable.helper.spreadsheetColumnLabel(i)}1:${Handsontable.helper.spreadsheetColumnLabel(i)}${totalRowIndex})`;
             planning.setDataAtCell(totalRowIndex, i, totalFormula);
@@ -729,15 +710,19 @@
         // Parcourir toutes les cellules modifiées et les ajouter à la liste sans la dernière colonne de total
         for (let rowIndex = 0; rowIndex < dataT.length - 1; rowIndex++) { // Exclure la dernière ligne
             const row = dataT[rowIndex];
-            for (let colIndex = 0; colIndex < colCours.length ; colIndex++) {
+
+            // Parcourir les colonnes des cours (sans SAE)
+            let currentCol = 4; // Commencer à la colonne 4 (première colonne après la description)
+
+            for (let colIndex = 0; colIndex < coursListSansSae.length; colIndex++) {
                 // Pour chaque type d'heure (CM, TD, TP)
                 ['CM', 'TD', 'TP'].forEach((typeHeure, typeIndex) => {
-                    // Calcul de l'indice correct pour récupérer les données dans dataT
-                    let colData = row[4 + colIndex * 3 + typeIndex]; // Colonne correspondante pour CM, TD, TP
-                    // Si on est pas dans la dernière colonne
+                    // Récupérer la valeur de la cellule
+                    let colData = row[currentCol + typeIndex];
                     if (typeof colData === 'string' && colData.includes('=')) {
                         colData = null;
                     }
+
                     if (colData) {
                         const semaineDebut = row[1]; // Semaine de début (colonne dédiée)
                         const semaineFin = semaineDebut; // Par défaut, semaineFin = semaineDebut
@@ -746,15 +731,40 @@
                         repartitions.push({
                             semaineDebut: semaineDebut,
                             semaineFin: semaineFin,
-                            // Code du cours qui se trouve dans la ligne 3 du header du tableau
-                            codeCours: trueNH[2][4 + colIndex].label,
+                            codeCours: coursListSansSae[colIndex].code_cours, // Code du cours directement depuis coursListSansSae
                             typeHeure: typeHeure, // Type d'heure (CM, TD, TP)
                             nbHeures: colData, // Nombre d'heures par semaine
                             semestre: semester // Semestre actuel
                         });
                     }
                 });
+                currentCol += 3; // Avancer de 3 colonnes (CM, TD, TP)
             }
+
+            // Parcourir les colonnes des SAE
+            for (let saeIndex = 0; saeIndex < coursListSae.length; saeIndex++) {
+                let colData = row[currentCol + saeIndex]; // Colonne correspondante pour SAE
+                if (typeof colData === 'string' && colData.includes('=')) {
+                    colData = null;
+                }
+
+                if (colData) {
+                    const semaineDebut = row[1]; // Semaine de début (colonne dédiée)
+                    const semaineFin = semaineDebut; // Par défaut, semaineFin = semaineDebut
+
+                    // Ajout de la répartition dans le tableau
+                    repartitions.push({
+                        semaineDebut: semaineDebut,
+                        semaineFin: semaineFin,
+                        codeCours: coursListSae[saeIndex].code_cours, // Utiliser le code du cours SAE
+                        typeHeure: 'EI', // Type d'heure pour SAE
+                        nbHeures: colData, // Nombre d'heures par semaine
+                        semestre: semester // Semestre actuel
+                    });
+                }
+            }
+
+            // Traitement des descriptions
             if (row[3]) {
                 const dateDebut = row[2].split('/').reverse().join('-'); // Convertir dd/mm/yyyy en yyyy-mm-dd
                 const dateFin = new Date(dateDebut);
@@ -766,12 +776,16 @@
                 });
             }
         }
-        // Ajouter les descriptions
 
+        // Ajouter les descriptions
         sendRepartitionData(mergeRepartitions(repartitions), semester);
         sendDescriptionsData(descriptions, semester);
         toast.show('Données enregistrées avec succès', 'success');
     }
+
+
+
+
     function mergeRepartitions(repartitions) {
         // Trier les répartitions par codeCours, typeHeure, nbHeures, puis semaineDebut
         repartitions.sort((a, b) => {

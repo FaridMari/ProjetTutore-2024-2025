@@ -30,7 +30,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const enseignantId = 1; // Remplacez par l'ID de l'enseignant souhaité
+        const enseignantId = 74; // Remplacez par l'ID de l'enseignant souhaité
 
         // Récupérer les données de répartition
         fetch('src/Enseignant/RequeteBD_GetRepartition.php')

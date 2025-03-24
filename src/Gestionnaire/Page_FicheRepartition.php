@@ -205,6 +205,11 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
   <meta charset="UTF-8">
   <title>Fiche Répartition</title>
   <style>
+    #main-content {
+        margin: 0;
+        margin-top: 40px;
+        padding: 30px;
+    }
     #hot {
         margin-top: 20px;
     }

@@ -6,10 +6,37 @@ use src\Db\connexionFactory;
 
 try {
     $bdd = connexionFactory::makeConnection();
+
     // Vérifie si la requête est de type POST
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+        //recuperer liste intervenants
+        $stmt = $bdd->prepare("SELECT nom, prenom 
+                       FROM utilisateurs");
+        $stmt->execute();
+        $intervenants = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+        /** Version qui marche pas
         // Récupération du code du cours depuis le formulaire
-        $code_cours = $_POST['resourceCode'];
+        $code_cours = $_POST['resourceName'];
+         * */
+
+
+
+        // Récupération du code du cours depuis le formulaire
+        $full = $_POST['resourceName'] ?? '';
+
+        echo "$full 111";
+
+        $parts = explode(':', $full);
+
+        echo "$parts 222";
+
+        $code_cours = trim($parts[0]);
+
+        echo "$code_cours 333";
+
 
         // Récupération de l'id_cours correspondant au code_cours
         $stmt = $bdd->prepare("SELECT id_cours FROM cours WHERE code_cours = :code_cours");
@@ -58,13 +85,16 @@ try {
                 id_responsable_module,
                 type_salle,
                 equipements_specifiques,
-                details
+                details,
+                statut
             ) VALUES (
                 :id_cours,
                 :id_responsable_module,
                 :type_salle,
                 :equipements_specifiques,
-                :details
+                :details,
+                :statut
+                
             )
         ");
         $stmtDetails->execute([
@@ -72,7 +102,9 @@ try {
             ':id_responsable_module' => $id_responsable_module,
             ':type_salle' => $type_salle,
             ':equipements_specifiques' => $equipementsSpecifiques,
-            ':details' => $dsDetails
+            ':details' => $dsDetails,
+            ':statut' => "Validée",
+
         ]);
 
         //Alert et redirection

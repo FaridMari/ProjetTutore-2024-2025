@@ -104,7 +104,9 @@ CREATE TABLE `details_cours` (
   `id_responsable_module` int(11) NOT NULL,
   `type_salle` varchar(255) NOT NULL,
   `equipements_specifiques` text NOT NULL,
-  `details` text NOT NULL
+  `details` text NOT NULL,
+  `statut` varchar(255) NOT NULL DEFAULT 'Non validée'
+
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------

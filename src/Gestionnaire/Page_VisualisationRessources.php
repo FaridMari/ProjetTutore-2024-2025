@@ -5,19 +5,31 @@ use src\Db\connexionFactory;
 try {
     $bdd = connexionFactory::makeConnection();
 
-    $requete = "SELECT semestre, code_cours, nom_cours FROM cours EXCEPT 
-    (SELECT semestre, code_cours, nom_cours from cours WHERE nom_cours = \"Autre (préciser dans les remarques)\"
-    UNION
-    SELECT semestre, code_cours, nom_cours from cours WHERE nom_cours = \"Forfait suivi de stage\");";
+    $requete = "
+        SELECT distinct
+            c.semestre,
+            c.code_cours,
+            c.nom_cours,
+            dc.statut,
+            u.nom AS nom_responsable,
+            u.prenom AS prenom_responsable
+        FROM cours c
+        LEFT JOIN details_cours dc ON c.id_cours = dc.id_cours
+        LEFT JOIN enseignants e ON dc.id_responsable_module = e.id_enseignant
+        LEFT JOIN utilisateurs u ON e.id_utilisateur = u.id_utilisateur
+        WHERE c.nom_cours NOT IN (
+            'Autre (préciser dans les remarques)',
+            'Forfait suivi de stage'
+        )
+    ";
 
-    $stmt = $bdd->query("$requete");
+    $stmt = $bdd->query($requete);
     $coursList = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 } catch (PDOException $e) {
     echo "Erreur : " . $e->getMessage();
 }
 ?>
-
 
 <style>
         #main-content {
@@ -55,10 +67,9 @@ try {
     </style>
 
 
-
 <div id="main-content">
     <h2>Fiches ressources des modules</h2>
-    <table style="width:100%; border-collapse: collapse; margin-top: 20px;">
+    <table id="coursTable" style="width:100%; border-collapse: collapse; margin-top: 20px;">
         <thead>
         <tr style="background-color: #f0f0f0;">
             <th style="padding: 10px; border: 1px solid #ddd;">Semestre</th>
@@ -66,7 +77,6 @@ try {
             <th style="padding: 10px; border: 1px solid #ddd;">Nom du cours</th>
             <th style="padding: 10px; border: 1px solid #ddd;">Responsable</th>
             <th style="padding: 10px; border: 1px solid #ddd;">Statut</th>
-
         </tr>
         </thead>
         <tbody>
@@ -75,16 +85,23 @@ try {
                 <td style="padding: 10px; border: 1px solid #ddd;"><?= htmlspecialchars($cours['semestre']) ?></td>
                 <td style="padding: 10px; border: 1px solid #ddd;"><?= htmlspecialchars($cours['code_cours']) ?></td>
                 <td style="padding: 10px; border: 1px solid #ddd;"><?= htmlspecialchars($cours['nom_cours']) ?></td>
-                <td style="padding: 10px; border: 1px solid #ddd;">...</td>
                 <td style="padding: 10px; border: 1px solid #ddd;">
-                    <span style="background-color: #f8d7da; color: #721c24; padding: 4px 8px; border-radius: 4px;">Non validée</span>
+                    <?= (!empty($cours['prenom_responsable']) || !empty($cours['nom_responsable']))
+                        ? htmlspecialchars($cours['prenom_responsable'] . ' ' . $cours['nom_responsable'])
+                        : '/' ?>
+                </td>
+                <td style="padding: 10px; border: 1px solid #ddd;">
+                    <?php if (!empty($cours['statut']) && strtolower($cours['statut']) === 'validée'): ?>
+                        <span class="status-valid">Validée</span>
+                    <?php else: ?>
+                        <span class="status-invalid">Non validée</span>
+                    <?php endif; ?>
                 </td>
             </tr>
         <?php endforeach; ?>
         </tbody>
     </table>
 </div>
-
 
 
 

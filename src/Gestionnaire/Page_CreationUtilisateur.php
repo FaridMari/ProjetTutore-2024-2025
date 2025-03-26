@@ -44,7 +44,8 @@
         input[type="text"],
         input[type="email"],
         input[type="number"],
-        input[type="password"] {
+        input[type="password"],
+        input[type="tel"] {
             width: 95%;
             padding: 10px;
             margin-bottom: 15px;
@@ -133,6 +134,10 @@
 
     <label for="email">Email :</label>
     <input type="email" id="email" name="email" required>
+
+    <label for="telephone">Numéro de téléphone</label>
+    <input type="tel" id="telephone" name="telephone" required>
+
 
     <!-- Partie spécifique aux enseignants -->
     <div id="enseignantFields" style="display: none;">

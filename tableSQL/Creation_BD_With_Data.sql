@@ -473,7 +473,8 @@ CREATE TABLE `utilisateurs` (
   `nombre_heures` int(11) DEFAULT NULL,
   `reset_token` varchar(255) DEFAULT NULL,
   `reset_token_expiration` datetime DEFAULT NULL,
-  `supprimer` tinyint(1) NOT NULL DEFAULT 0
+  `supprimer` tinyint(1) NOT NULL DEFAULT 0,
+  `responsable` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --

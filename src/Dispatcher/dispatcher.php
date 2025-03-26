@@ -8,6 +8,7 @@ use src\Action\GestionnaireAfficherPageCreerUtilisateurAction;
 use src\Action\GestionnaireModifierUtilisateurAction;
 use src\Action\EnseignantFicheContrainteAction;
 use src\Action\EnseignantFicheRessourceAction;
+use src\Action\GestionnaireVisualisationFichesRessources;
 use src\Action\SigninAction;
 use src\Action\GestionnaireGestionCompteUtilisateurAction;
 use src\Action\GestionnaireAcceuilAction;
@@ -96,7 +97,7 @@ class Dispatcher {
                 echo $action->execute();
                 break;
             case 'creer-utilisateur':
-                $action = new GestionnaireAfficherPageCreerUtilisateurAction();
+                $action = new GestionnaireCreerUtilisateurAction();
                 echo $action->execute();
                 break;
             case 'edit-user':
@@ -126,6 +127,10 @@ class Dispatcher {
                 break;
             case 'profilEnseignant':
                 $action = new EnseignantProfilAction();
+                echo $action->execute();
+                break;
+            case 'visualisationFicheRessources':
+                $action = new GestionnaireVisualisationFichesRessources();
                 echo $action->execute();
                 break;
             case 'visualisationPlanning':

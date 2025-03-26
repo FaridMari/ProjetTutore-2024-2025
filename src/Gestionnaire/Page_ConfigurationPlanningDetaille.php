@@ -273,8 +273,8 @@
                 <input type="color" class="form-control " value="${item.couleur}" style="padding: 0em !important; height: 50% !important;">
             </div>
             <div class="col-md-1">
-                <label>Checkbox</label>
-                <input type="checkbox" class="form-control" ${item.checkbox ? "checked" : ""} style="padding: 1em !important; height: 30% !important;">
+                <label>Modifiable</label>
+                <input type="checkbox" class="form-control" ${item.modifiable === 1 ? "checked" : ""} style="padding: 1em !important; height: 30% !important;">
             </div>
         `;
         // Ajouter la ligne au conteneur

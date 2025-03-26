@@ -6,12 +6,15 @@
 
 body {
     font-family: 'Poppins', sans-serif;
+    font-size: 5px;
 }
 
 #main-content {
     margin-top: 60px;
     padding: 2em;
     min-height: 100vh;
+    font-size: 5px;
+
 }
 
 .toast {

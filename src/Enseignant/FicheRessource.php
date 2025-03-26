@@ -176,8 +176,9 @@ $verrouille = ($fiche && $fiche['statut'] === 'valide');
 
             <div class="mb-3">
                 <label for="phone" class="form-label">Téléphone :</label>
-                <input type="tel" class="form-control" id="phone" name="phone" placeholder="Numéro de téléphone">
+                <input type="tel" class="form-control" id="phone" name="phone" placeholder="Numéro de téléphone" readonly>
             </div>
+
 
             <!-- 1. Répartition des heures par semaines -->
             <h4 class="mt-4">1. Répartition des heures par semaines :</h4>
@@ -260,9 +261,9 @@ $verrouille = ($fiche && $fiche['statut'] === 'valide');
         let courseData = [];
         fetchAndDisplayIntervenants();
 
-        // fonction pour recuperer tous les intervenants
         function fetchAndDisplayIntervenants() {
             const responsibleNameSelect = document.getElementById('responsibleName');
+            const telephoneInput = document.getElementById('phone');
 
             responsibleNameSelect.innerHTML = '<option value="">-- Sélectionner un intervenant --</option>';
 
@@ -275,19 +276,30 @@ $verrouille = ($fiche && $fiche['statut'] === 'valide');
                     if (data.error) {
                         console.error('Erreur :', data.error);
                     } else {
-                        data.forEach(intervenant => {
+                        // On vide le champ téléphone initialement
+                        telephoneInput.value = '';
+
+                        // Stocker les intervenants dans une variable accessible
+                        const intervenants = data;
+
+                        // Ajout des options dans le select
+                        intervenants.forEach(intervenant => {
                             const option = document.createElement('option');
                             option.value = intervenant.id_utilisateur;
                             option.textContent = intervenant.nom + ' ' + intervenant.prenom;
+                            option.dataset.telephone = intervenant.telephone; // on stocke le téléphone dans l’option
                             responsibleNameSelect.appendChild(option);
+                        });
+
+                        // Mettre à jour le champ téléphone quand un intervenant est sélectionné
+                        responsibleNameSelect.addEventListener('change', () => {
+                            const selectedOption = responsibleNameSelect.selectedOptions[0];
+                            telephoneInput.value = selectedOption.dataset.telephone || '';
                         });
                     }
                 })
-
-
-            .catch(error => console.error('Erreur lors de la récupération des intervenants :', error));
+                .catch(error => console.error('Erreur lors de la récupération des intervenants :', error));
         }
-
 
         // Fonction pour récupérer et afficher les cours
         function fetchAndDisplayCourses(semester) {

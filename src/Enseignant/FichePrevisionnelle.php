@@ -39,14 +39,17 @@ $enseignant = $enseignantDTO->findByUtilisateurId($userId);
 $idEnseignant = $enseignant ? $enseignant->getIdEnseignant() : null;
 
 $coursList = $coursDTO->findAll();
-//Récupérer le statut de la fiche prévisionnelle
+
+// A FAIRE PLUS TARD
+/*//Récupérer le statut de la fiche prévisionnelle
 $stmtStatut = $conn->prepare("SELECT statut FROM voeux WHERE id_enseignant = :idEnseignant LIMIT 1");
 $stmtStatut->bindValue(':idEnseignant', $idEnseignant, PDO::PARAM_INT);
 $stmtStatut->execute();
 $fiche = $stmtStatut->fetch(PDO::FETCH_ASSOC);
 
 // Vérifier si la fiche est validée
-$verrouille = $fiche && $fiche['statut'] === 'valide';
+$verrouille = $fiche && $fiche['statut'] === 'valide';*/
+
 $existingVoeux = $idEnseignant ? $voeuDTO->findByEnseignant($idEnseignant) : [];
 $existingVoeuxHorsIUT = $idEnseignant ? $voeuHorsIUTDTO->findByEnseignant($idEnseignant) : [];
 
@@ -62,6 +65,7 @@ foreach ($existingVoeux as $voeu) {
         $voeuxJanvier[] = $voeu;
     }
 }
+
 // Préparer les données pour le PDF
 $_SESSION['pdf_data'] = [
   'enseignant' => 'Nom Prenom Exemple', // Vous pouvez adapter cette valeur
@@ -117,6 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     // Initialisation de la structure pour SEPTEMBRE et JANVIER
     // La valeur du select est le nom du cours (pour que findByName() fonctionne)
     $postData['septembre'] = [
+        'id'         => [],
         'ressource'  => [],
         'remarques'  => [],
         'formation'  => [],
@@ -128,6 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     ];
     foreach ($voeuxSeptembre as $v) {
         $cours = $coursDTO->findById($v->getIdCours());
+        $postData['septembre']['id'][] = $v->getIdVoeu();
         $postData['septembre']['ressource'][] = $cours ? $cours->getNomCours() : '';
         $postData['septembre']['remarques'][]  = $v->getRemarque();
         $postData['septembre']['formation'][]  = ''; // Non renseigné ici
@@ -139,6 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     }
     
     $postData['janvier'] = [
+        'id'         => [],
         'ressource'  => [],
         'remarques'  => [],
         'formation'  => [],
@@ -150,6 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     ];
     foreach ($voeuxJanvier as $v) {
         $cours = $coursDTO->findById($v->getIdCours());
+        $postData['janvier']['id'][] = $v->getIdVoeu();
         $postData['janvier']['ressource'][] = $cours ? $cours->getNomCours() : '';
         $postData['janvier']['remarques'][]  = $v->getRemarque();
         $postData['janvier']['formation'][]  = '';
@@ -186,6 +194,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // Traitement du formulaire en POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['envoyer'])) {
+      $voeuHorsIUTDTO->deleteByEnseignant($idEnseignant);
         if (isset($_POST['hors_iut'])) {
             $hors_iut = $_POST['hors_iut'];
             foreach ($hors_iut['composant'] as $i => $composant) {
@@ -207,60 +216,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
         if (empty($errors)) {
-            // Suppression des voeux existants pour cet enseignant
-            if ($idEnseignant !== null) {
-                $voeuDTO->deleteByEnseignant($idEnseignant);
-                $voeuHorsIUTDTO->deleteByEnseignant($idEnseignant);
+            // --------- Gestion des voeux de SEPTEMBRE et JANVIER en mode CRUD ---------
+            // Récupérer tous les voeux existants pour cet enseignant
+            $existing = [];
+            foreach ($voeuDTO->findByEnseignant($idEnseignant) as $v) {
+                $existing[$v->getIdVoeu()] = $v;
             }
             
-            // Enregistrement des voeux pour la période SEPTEMBRE
-            if (isset($_POST['septembre'])) {
-                $septData = $_POST['septembre'];
-                foreach ($septData['ressource'] as $i => $nomCours) {
-                    if (!empty($nomCours)) {
+            foreach (['septembre','janvier'] as $period) {
+                if (!empty($_POST[$period]['ressource'])) {
+                    foreach ($_POST[$period]['id'] as $i => $idVoeu) {
+                        $nomCours = trim($_POST[$period]['ressource'][$i]);
+                        if ($nomCours === '') continue;
+                        
                         $coursFound = $coursDTO->findByName($nomCours);
-                        if (!empty($coursFound)) {
-                            $cours = $coursFound[0];
-                            $idCours = $cours->getIdCours();
-                            $remarque = $septData['remarques'][$i] ?? '';
-                            $semestre = $septData['semestre'][$i] ?? '';
-                            // Si l'utilisateur n'a pas modifié la valeur, on prend la valeur par défaut du cours
-                            $nbCM = (isset($septData['cm'][$i]) && $septData['cm'][$i] !== '') ? (float)$septData['cm'][$i] : $cours->getNbHeuresCM();
-                            $nbTD = (isset($septData['td'][$i]) && $septData['td'][$i] !== '') ? (float)$septData['td'][$i] : $cours->getNbHeuresTD();
-                            $nbTP = (isset($septData['tp'][$i]) && $septData['tp'][$i] !== '') ? (float)$septData['tp'][$i] : $cours->getNbHeuresTP();
-                            $nbEI = (isset($septData['ei'][$i]) && $septData['ei'][$i] !== '') ? (float)$septData['ei'][$i] : $cours->getNbHeuresEI();
-                            
-                            $voeu = new Voeu(null, $idEnseignant, $idCours, $remarque, $semestre, $nbCM, $nbTD, $nbTP, $nbEI);
-                            $voeuDTO->save($voeu);
+                        if (empty($coursFound)) continue;
+                        $cours = $coursFound[0];
+                        
+                        $remarque = trim($_POST[$period]['remarques'][$i] ?? '');
+                        $semestre = $_POST[$period]['semestre'][$i] ?? '';
+                        $nbCM = isset($_POST[$period]['cm'][$i]) && $_POST[$period]['cm'][$i] !== '' ? floatval($_POST[$period]['cm'][$i]) : $cours->getNbHeuresCM();
+                        $nbTD = isset($_POST[$period]['td'][$i]) && $_POST[$period]['td'][$i] !== '' ? floatval($_POST[$period]['td'][$i]) : $cours->getNbHeuresTD();
+                        $nbTP = isset($_POST[$period]['tp'][$i]) && $_POST[$period]['tp'][$i] !== '' ? floatval($_POST[$period]['tp'][$i]) : $cours->getNbHeuresTP();
+                        $nbEI = isset($_POST[$period]['ei'][$i]) && $_POST[$period]['ei'][$i] !== '' ? floatval($_POST[$period]['ei'][$i]) : $cours->getNbHeuresEI();
+                        
+                        $voeu = new Voeu(
+                            $idVoeu ?: null,
+                            $idEnseignant,
+                            $cours->getIdCours(),
+                            $remarque,
+                            $semestre,
+                            $nbCM,
+                            $nbTD,
+                            $nbTP,
+                            $nbEI
+                        );
+                        $voeuDTO->save($voeu);
+                        if ($idVoeu) {
+                            unset($existing[$idVoeu]);
                         }
                     }
                 }
             }
             
-            // Enregistrement des voeux pour la période JANVIER
-            if (isset($_POST['janvier'])) {
-                $janData = $_POST['janvier'];
-                foreach ($janData['ressource'] as $i => $nomCours) {
-                    if (!empty($nomCours)) {
-                        $coursFound = $coursDTO->findByName($nomCours);
-                        if (!empty($coursFound)) {
-                            $cours = $coursFound[0];
-                            $idCours = $cours->getIdCours();
-                            $remarque = $janData['remarques'][$i] ?? '';
-                            $semestre = $janData['semestre'][$i] ?? '';
-                            $nbCM = (isset($janData['cm'][$i]) && $janData['cm'][$i] !== '') ? (float)$janData['cm'][$i] : $cours->getNbHeuresCM();
-                            $nbTD = (isset($janData['td'][$i]) && $janData['td'][$i] !== '') ? (float)$janData['td'][$i] : $cours->getNbHeuresTD();
-                            $nbTP = (isset($janData['tp'][$i]) && $janData['tp'][$i] !== '') ? (float)$janData['tp'][$i] : $cours->getNbHeuresTP();
-                            $nbEI = (isset($janData['ei'][$i]) && $janData['ei'][$i] !== '') ? (float)$janData['ei'][$i] : $cours->getNbHeuresEI();
-                            
-                            $voeu = new Voeu(null, $idEnseignant, $idCours, $remarque, $semestre, $nbCM, $nbTD, $nbTP, $nbEI);
-                            $voeuDTO->save($voeu);
-                        }
-                    }
-                }
+            // Supprimer les voeux non soumis
+            foreach (array_keys($existing) as $toDelete) {
+                $voeuDTO->delete($toDelete);
             }
             
-            // Enregistrement des voeux hors IUT
+            // --------- Enregistrement des voeux hors IUT (inchangé) ---------
             if (isset($_POST['hors_iut'])) {
                 $hors_iut = $_POST['hors_iut'];
                 foreach ($hors_iut['composant'] as $i => $composant) {
@@ -301,6 +305,7 @@ function generateTableRows(string $type, array $coursList, int $count, array $po
     $tds        = $data['td'] ?? [];
     $tps        = $data['tp'] ?? [];
     $eis        = $data['ei'] ?? [];
+    $ids        = $data['id'] ?? [];
     
     for ($i = 0; $i < $count; $i++) {
         $selectedCours = $ressources[$i] ?? '';
@@ -325,6 +330,8 @@ function generateTableRows(string $type, array $coursList, int $count, array $po
         $valEI = (isset($eis[$i]) && $eis[$i] !== '') ? $eis[$i] : $defaultEI;
         
         echo '<tr>';
+            // Champ caché pour l\'id du voeu
+            echo '<input type="hidden" name="' . $type . '[id][]" value="' . htmlspecialchars($ids[$i] ?? '') . '">';
             echo '<td><input type="text" name="' . $type . '[formation][]" value="' . htmlspecialchars($formations[$i] ?? '') . '" readonly></td>';
             echo '<td><select name="' . $type . '[ressource][]">';
                 echo '<option value="">-- Sélectionner un cours --</option>';
@@ -726,8 +733,8 @@ function generateHorsIUTRows(array $horsIUTData): void {
         var coursInfo = window.coursData.find(function(c) {
           return c.nomCours === nomCours;
         });
-        var formationInput = tr.querySelector('td:nth-child(1) input');
-        var semestreInput  = tr.querySelector('td:nth-child(3) input');
+        var formationInput = tr.querySelector('td:nth-of-type(1) input');
+        var semestreInput  = tr.querySelector('td:nth-of-type(3) input');
         var numberInputs   = tr.querySelectorAll('input[type="number"]');
         
         if (coursInfo) {

@@ -13,6 +13,7 @@ class GestionnaireCreerUtilisateurAction {
             $statut = $_POST['statut'] ?? '';
             $role = $_POST['role'] ?? '';
             $nombre_heures = $_POST['nombre_heures'] ?? 0;
+            $nb_contraintes = $_POST['nombre_contrainte'] ?? 4;
 
             // Validation des champs
             if (empty($nom) || empty($prenom) || empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -42,11 +43,12 @@ class GestionnaireCreerUtilisateurAction {
 
                 // Insertion dans la table enseignants
                 $stmt2 = $conn->prepare("
-                    INSERT INTO enseignants (id_utilisateur, statut)
-                    VALUES (:id_utilisateur, :statut)
+                    INSERT INTO enseignants (id_utilisateur, statut, nb_contrainte)
+                    VALUES (:id_utilisateur, :statut, :nb_contrainte)
                 ");
                 $stmt2->bindParam(':id_utilisateur', $id_utilisateur);
                 $stmt2->bindParam(':statut', $statut);
+                $stmt2->bindParam(':nb_contrainte', $nb_contraintes);
                 $stmt2->execute();
 
                 // Insérer dans la table contraintes (avec id_utilisateur)

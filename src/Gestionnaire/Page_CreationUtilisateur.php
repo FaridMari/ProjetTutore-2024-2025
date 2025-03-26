@@ -134,6 +134,9 @@
         <label for="nombre_heures">Nombre d'heures :</label>
         <input type="text" id="nombre_heures" name="nombre_heures" readonly>
 
+        <label for="nombre_contrainte">Nombre limite de contrainte :</label>
+        <input type="text" id="nombre_contrainte" name="nombre_contrainte" >
+
     </div>
 
     <script>

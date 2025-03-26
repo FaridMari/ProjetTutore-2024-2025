@@ -15,6 +15,12 @@ $contrainte = $stmt->fetch(PDO::FETCH_ASSOC);
 
 // Vérifier si la fiche est validée
 $verrouille = ($contrainte && $contrainte['statut'] === 'valide');
+
+//Selectionner le nb de contrainte d'un enseignant
+$stmt2 = $conn->prepare("SELECT nb_contrainte FROM enseignants WHERE id_utilisateur = ?");
+$stmt2->execute([$id_utilisateur]);
+$nb_contrainte = $stmt2->fetch(PDO::FETCH_ASSOC);
+
 ?>
 
 <!DOCTYPE html>
@@ -126,6 +132,8 @@ $verrouille = ($contrainte && $contrainte['statut'] === 'valide');
 </div>
 
 <script>
+    let nbContraintes = <?php echo $nb_contrainte['nb_contrainte']; ?>;
+
     function limiterContraintes() {
         let checkboxes = document.querySelectorAll('input[type="checkbox"]');
         let checkedCount = 0;
@@ -136,8 +144,8 @@ $verrouille = ($contrainte && $contrainte['statut'] === 'valide');
             }
         });
 
-        if (checkedCount > 4) {
-            alert("Vous ne pouvez sélectionner que 4 contraintes au maximum.");
+        if (checkedCount > nbContraintes) {
+            alert("Vous ne pouvez sélectionner que " + nbContraintes +" contraintes au maximum.");
             event.target.checked = false;
         }
     }

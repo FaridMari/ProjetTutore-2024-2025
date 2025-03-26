@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Fiche Prévisionnelle de Service</title>
   <!-- Inclusion de Bootstrap pour les onglets -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/css/bootstrap.min.css">
   <style>
     /* ================== STYLE DU DOCUMENT ================== */
     .container {

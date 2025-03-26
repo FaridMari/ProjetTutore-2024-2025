@@ -321,7 +321,8 @@ function generateTableRows(string $type, array $coursList, int $count, array $po
                     if (in_array($cours->getSemestre(), $allowedSemesters)) {
                         $selected = ($cours->getNomCours() === $selectedCours) ? 'selected' : '';
                         $optionDisplay = $cours->getCodeCours() . ' - ' . $cours->getNomCours();
-                        echo '<option value="' . htmlspecialchars($cours->getNomCours()) . '" ' . $selected . '>' . htmlspecialchars($optionDisplay) . '</option>';
+                        // Ajout de l'attribut data-id avec l'identifiant du cours
+                        echo '<option value="' . htmlspecialchars($cours->getNomCours()) . '" data-id="' . htmlspecialchars($cours->getIdCours()) . '" ' . $selected . '>' . htmlspecialchars($optionDisplay) . '</option>';
                     }
                 }
             echo '</select></td>';
@@ -335,6 +336,7 @@ function generateTableRows(string $type, array $coursList, int $count, array $po
         echo '</tr>';
     }
 }
+
 
 /**
  * Fonction pour générer les lignes du tableau "hors IUT"

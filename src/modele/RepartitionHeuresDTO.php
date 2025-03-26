@@ -2,6 +2,7 @@
 
 use src\Db\connexionFactory;
 require_once 'RepartitionHeures.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 class RepartitionHeuresDTO {
     private $db;
@@ -17,7 +18,7 @@ class RepartitionHeuresDTO {
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $result[] = new RepartitionHeures(
                 $row['idRepartition'],
-                $row['idCours'],
+                $row['id_cours'],
                 $row['semaineDebut'],
                 $row['semaineFin'],
                 $row['nbHeuresSemaine'],
@@ -34,8 +35,7 @@ class RepartitionHeuresDTO {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($row) {
             return new RepartitionHeures(
-                $row['idRepartition'],
-                $row['idCours'],
+                $row['id_cours'],
                 $row['semaineDebut'],
                 $row['semaineFin'],
                 $row['nbHeuresSemaine'],
@@ -81,17 +81,17 @@ class RepartitionHeuresDTO {
 
     // Retourne tous les enregistrements correspondant à un idCours donné
     public function findByIdCours($idCours) {
-        $stmt = $this->db->prepare("SELECT * FROM repartition_heures WHERE idCours = ?");
+        $stmt = $this->db->prepare("SELECT * FROM repartition_heures WHERE id_cours = ?");
         $stmt->execute([$idCours]);
         $result = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $result[] = new RepartitionHeures(
-                $row['idRepartition'],
-                $row['idCours'],
-                $row['semaineDebut'],
-                $row['semaineFin'],
-                $row['nbHeuresSemaine'],
-                $row['semestre']
+                $row['id_repartition'],       
+                $row['id_cours'],             
+                $row['semaine_debut'],        
+                $row['semaine_fin'],          
+                $row['nb_heures_par_semaine'],    
+                $row['semestre']              
             );
         }
         return $result;

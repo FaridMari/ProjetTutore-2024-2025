@@ -14,6 +14,7 @@ class GestionnaireCreerUtilisateurAction {
             $role = $_POST['role'] ?? '';
             $nombre_heures = $_POST['nombre_heures'] ?? 0;
             $nb_contraintes = $_POST['nombre_contrainte'] ?? 4;
+            $responsable = isset($_POST['responsable']) ? 'oui' : 'non';
 
             // Validation des champs
             if (empty($nom) || empty($prenom) || empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -36,28 +37,34 @@ class GestionnaireCreerUtilisateurAction {
                 $stmt->bindParam(':statut', $statut);
                 $stmt->bindParam(':role', $role);
                 $stmt->bindParam(':nombre_heures', $nombre_heures);
+                $stmt->bindParam(':responsable', $responsable);
+
                 $stmt->execute();
 
                 // Récupération l'id_utilisateur
                 $id_utilisateur = $conn->lastInsertId();
 
-                // Insertion dans la table enseignants
-                $stmt2 = $conn->prepare("
-                    INSERT INTO enseignants (id_utilisateur, statut, nb_contrainte)
+                // Insérer dans enseignants/contraintes seulement si le rôle est "enseignant"
+                if ($role === 'enseignant') {
+
+                    $stmt2 = $conn->prepare("
+                    INSERT INTO enseignants (id_utilisateur, statut, id_responsable, nb_contrainte)
                     VALUES (:id_utilisateur, :statut, :nb_contrainte)
                 ");
-                $stmt2->bindParam(':id_utilisateur', $id_utilisateur);
-                $stmt2->bindParam(':statut', $statut);
-                $stmt2->bindParam(':nb_contrainte', $nb_contraintes);
-                $stmt2->execute();
+                    $stmt2->bindParam(':id_utilisateur', $id_utilisateur);
+                    $stmt2->bindParam(':statut', $statut);
+                    $stmt2->bindParam(':id_responsable', $id_responsable);
+                    $stmt2->bindParam(':nb_contrainte', $nb_contraintes);
+                    $stmt2->execute();
 
-                // Insérer dans la table contraintes (avec id_utilisateur)
-                $stmt3 = $conn->prepare("
+                    // Insérer dans la table contraintes (avec id_utilisateur)
+                    $stmt3 = $conn->prepare("
                     INSERT INTO contraintes (id_utilisateur)
                     VALUES (:id_utilisateur)
                 ");
-                $stmt3->bindParam(':id_utilisateur', $id_utilisateur);
-                $stmt3->execute();
+                    $stmt3->bindParam(':id_utilisateur', $id_utilisateur);
+                    $stmt3->execute();
+                }
 
                 // Confirmer la transaction
                 $conn->commit();

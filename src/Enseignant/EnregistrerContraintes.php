@@ -1,10 +1,10 @@
 <?php
 session_start();
 require_once __DIR__ . '/../Db/connexionFactory.php';
+
 use src\Db\connexionFactory;
 
 try {
-    // Connexion à la base de données
     $conn = connexionFactory::makeConnection();
 
     if (!isset($_SESSION['id_utilisateur'])) {
@@ -12,28 +12,33 @@ try {
     }
 
     $id_utilisateur = $_SESSION['id_utilisateur'];
+
+    // Gestion verrouillage par le gestionnaire
+    if (isset($_SESSION['fiche_contrainte_en_edition']) && $_SESSION['fiche_contrainte_en_edition'] == $id_utilisateur) {
+        $_SESSION['error_message'] = "Vous ne pouvez plus accéder à cette fiche, elle est en cours de consultation par un gestionnaire.";
+        header("Location: ../../index.php?action=enseignantFicheContrainte");
+        exit();
+    }
+
+    // Récupération infos utilisateur
     $stmtUser = $conn->prepare("SELECT nom, prenom FROM utilisateurs WHERE id_utilisateur = :id_utilisateur");
     $stmtUser->bindValue(':id_utilisateur', $id_utilisateur, PDO::PARAM_INT);
     $stmtUser->execute();
     $user = $stmtUser->fetch();
 
-
-    // Vérifier si la fiche est déjà validée
+    // Vérification fiche validée
     $stmtCheck = $conn->prepare("SELECT statut FROM contraintes WHERE id_utilisateur = :id_utilisateur LIMIT 1");
     $stmtCheck->bindValue(':id_utilisateur', $id_utilisateur, PDO::PARAM_INT);
     $stmtCheck->execute();
     $existingContrainte = $stmtCheck->fetch();
 
-    if ($existingContrainte && $existingContrainte['statut'] === 'valide') {
-        $_SESSION['error_message'] = "Votre fiche a été validée et ne peut plus être modifiée.";
-        header("Location: ../../index.php?action=enseignantFicheContrainte");
-        exit();
-    }
+    $ficheValidee = $existingContrainte && $existingContrainte['statut'] === 'valide';
 
-    // Récupérer les valeurs du formulaire
-    $creneau_preference = isset($_POST['creneau_prefere']) ? $_POST['creneau_prefere'] : "Non spécifié";
-    $cours_samedi = isset($_POST['cours_samedi']) ? $_POST['cours_samedi'] : "Non spécifié";
-    $choix_contraintes = isset($_POST['contraintes']) ? $_POST['contraintes'] : [];
+    // Récupération des données
+    $creneau_preference = $_POST['creneau_prefere'] ?? "Non spécifié";
+    $cours_samedi = $_POST['cours_samedi'] ?? "Non spécifié";
+    $choix_contraintes = $_POST['contraintes'] ?? [];
+    $commentaire = $_POST['commentaire'] ?? "";
 
     if (count($choix_contraintes) > 4) {
         $_SESSION['error_message'] = "Vous ne pouvez sélectionner que 4 contraintes au maximum.";
@@ -41,49 +46,53 @@ try {
         exit();
     }
 
-    $conn->beginTransaction();
+    if (!$ficheValidee) {
+        $conn->beginTransaction();
 
-    // 🔹 Supprimer les anciennes contraintes seulement si elles ne sont pas validées
-    $stmtDelete = $conn->prepare("DELETE FROM contraintes WHERE id_utilisateur = :id_utilisateur AND statut != 'valide'");
-    $stmtDelete->bindValue(':id_utilisateur', $id_utilisateur, PDO::PARAM_INT);
-    $stmtDelete->execute();
+        // Suppression anciennes contraintes
+        $stmtDelete = $conn->prepare("DELETE FROM contraintes WHERE id_utilisateur = :id_utilisateur AND statut != 'valide'");
+        $stmtDelete->bindValue(':id_utilisateur', $id_utilisateur, PDO::PARAM_INT);
+        $stmtDelete->execute();
 
-    // 🔹 Insérer les nouvelles contraintes avec `statut = en attente`
-    foreach ($choix_contraintes as $contrainte) {
-        $stmtInsert = $conn->prepare("INSERT INTO contraintes (id_utilisateur, jour, heure_debut, heure_fin, creneau_preference, cours_samedi, statut) VALUES (?, ?, ?, ?, ?, ?, 'en attente')");
-        $jour_heure = explode('_', $contrainte);
-        $jour = $jour_heure[0];
-        $heure_debut = str_replace('h', '', $jour_heure[1]);
-        $heure_fin = intval($heure_debut) + 2;
+        // Insertion des contraintes
+        foreach ($choix_contraintes as $contrainte) {
+            $stmtInsert = $conn->prepare("INSERT INTO contraintes (id_utilisateur, jour, heure_debut, heure_fin, creneau_preference, cours_samedi, commentaire, statut) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, 'en attente')");
+            $jour_heure = explode('_', $contrainte);
+            $jour = $jour_heure[0];
+            $heure_debut = str_replace('h', '', $jour_heure[1]);
+            $heure_fin = intval($heure_debut) + 2;
 
-        $stmtInsert->execute([$id_utilisateur, $jour, $heure_debut, $heure_fin, $creneau_preference, $cours_samedi]);
+
+            $stmtInsert->execute([$id_utilisateur, $jour, $heure_debut, $heure_fin, $creneau_preference, $cours_samedi, $commentaire]);
+        }
+
+        $conn->commit();
     }
 
-    $conn->commit();
-
-    // Stockage des données pour la génération du PDF
+    // Enregistrement en session pour affichage
     $_SESSION['pdf_data'] = [
         'nom_prenom' => $user['nom'] . ' ' . $user['prenom'],
         'choix_contraintes' => $choix_contraintes,
         'creneau_prefere' => $creneau_preference,
-        'cours_samedi' => $cours_samedi
+        'cours_samedi' => $cours_samedi,
+        'commentaire' => $commentaire
     ];
 
-    // ✅ Affichage de l'alerte et génération du PDF
-    echo "<script>
-        alert('Les contraintes ont bien été enregistrées.');
-        if (confirm('Voulez-vous télécharger la fiche de vœux en PDF ?')) {
-            window.location.href = 'telechargerPdf.php';
-        } else {
-            window.location.href = '../../index.php?action=enseignantFicheContrainte';
-        }
-    </script>";
+    $_SESSION['success_message'] = "Les contraintes ont bien été enregistrées.";
+
+    // Affichage fiche selon statut
+    if ($ficheValidee) {
+        $_SESSION['info_message'] = "Votre fiche a été validée. Vous pouvez la télécharger au format PDF.";
+        header("Location: ../../index.php?action=enseignantFicheContrainte&pdf=1");
+    } else {
+        header("Location: ../../index.php?action=enseignantFicheContrainte");
+    }
     exit();
 
 } catch (Exception $e) {
-    $conn->rollBack();
+    if ($conn->inTransaction()) $conn->rollBack();
     $_SESSION['error_message'] = "Erreur : " . $e->getMessage();
     header("Location: ../../index.php?action=enseignantFicheContrainte");
     exit();
 }
-?>

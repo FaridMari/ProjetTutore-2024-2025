@@ -1,8 +1,6 @@
 <?php
 namespace src\Action;
 
-
-
 use src\Db\connexionFactory;
 
 class SigninAction extends Action {
@@ -22,16 +20,20 @@ class SigninAction extends Action {
 
                 if ( ($password === $user['mot_de_passe'] || password_verify($password, $user['mot_de_passe'])) && !$user['supprimer']) {
                     // Authentification réussie
-                    session_destroy();
-                    session_start();
+                    if (session_status() !== PHP_SESSION_ACTIVE) {
+                        session_start(); // Vérifie que la session est active
+                    }
+
+                    // Sauvegarder l'information dans la session
                     $_SESSION['user_id'] = $user['id_utilisateur'];
                     $_SESSION['id_utilisateur'] = $user['id_utilisateur'];
                     $_SESSION['user_nom'] = $user['nom'];
                     $_SESSION['user_prenom'] = $user['prenom'];
 
-                    // Création d'un cookie avec l'idUser
-                    setcookie('user_id', $user['id_utilisateur'], time() + 3600, '/', '', false, true); // Cookie sécurisé
+                    // Création du cookie (sécurisé) pour Puppeteer
+                    setcookie('user_id', $user['id_utilisateur'], time() + 3600, '/', '', false, true);
 
+                    // Redirection en fonction du rôle de l'utilisateur
                     if ($user['role'] === 'gestionnaire') {
                         header('Location: index.php?action=gestionnairePagePrincipal');
                     } else {
@@ -39,12 +41,13 @@ class SigninAction extends Action {
                     }
                     exit();
                 } else {
-                    echo "L'authentification a échoué. Veuillez vérifier vos identifiants.(sign in action)";
+                    echo "L'authentification a échoué. Veuillez vérifier vos identifiants.";
                 }
             } catch (\PDOException $e) {
                 echo "Erreur d'authentification: " . $e->getMessage();
             }
         } else {
+            // Afficher le formulaire de connexion si c'est un GET
             ob_start();
             include 'src/User/login.php';
             return returnHTML();

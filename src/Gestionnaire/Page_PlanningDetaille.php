@@ -921,6 +921,8 @@
     }
 
     let eventTexts = evenements.map(event => event.checkbox === 0 ? event.eventType : "");
+    //Enlever les valeurs vides
+    eventTexts = eventTexts.filter(eventText => eventText !== "");
     container.addEventListener('wheel', (event) => {
 
         event.preventDefault(); // Empêche le défilement de la page
@@ -928,7 +930,6 @@
         if (!selectedRanges) return;
         //Texts des evenements si checkbox = 0
         console.log(eventTexts);
-        console.log(evenements);
         // Utiliser batch pour regrouper les modifications
         planning.batch(() => {
             selectedRanges.forEach(([startRow, startCol, endRow, endCol]) => {

@@ -12,7 +12,7 @@ class EnseignantFicheContrainteAction extends Action
         <html lang="fr">
         <head>
             <meta charset="UTF-8">
-            <title>Fiche ressource</title>
+            <title>Fiche contrainte</title>
             <!-- 1) Feuille de style globale qui place #menu à gauche et #main-content à droite -->
             <link rel="stylesheet" href="src/Action/layout.css">
 

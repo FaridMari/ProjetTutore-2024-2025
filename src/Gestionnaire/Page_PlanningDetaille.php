@@ -61,18 +61,6 @@
         background-color: #d4edda !important;
     }
 
-    .stage {
-        background-color: #cce5ff !important;
-
-    }
-
-    .atelier {
-        background-color: #fff3cd !important;
-    }
-
-    .projet {
-        background-color: #f8d7da !important;
-    }
     .total-exceeded {
         background-color: #ffcccc !important;
     }
@@ -187,9 +175,6 @@
     let vacPrintempsFinS = 0;
 
     // Assumons que `configData` est une liste d'objets contenant des informations sur les semestres et les vacances
-    let stages = [];
-    let ateliers = [];
-    let projets = [];
     let evenements = [];
 
     for (let item of configData) {
@@ -253,49 +238,6 @@
                 allVacances.push(vacPrintemps);
                 allVacances.push(vacPrintempsFinS);
                 break;
-
-            case 'Atelier':
-                // Ajouter l'atelier à la liste des ateliers et calculer les semaines
-                const atelierDebut = new Date(item.dateDebut);
-                const atelierFin = new Date(item.dateFin);
-                const atelierWeekStart = getWeek(atelierDebut);
-                const atelierWeekEnd = getWeek(atelierFin);
-                ateliers.push({
-                    dateDebut: atelierDebut,
-                    dateFin: atelierFin,
-                    description: item.description,
-                    weeks: [atelierWeekStart, atelierWeekEnd]
-                });
-                break;
-
-            case 'Stage':
-                // Ajouter le stage à la liste des stages et calculer les semaines
-                const stageDebut = new Date(item.dateDebut);
-                const stageFin = new Date(item.dateFin);
-                const stageWeekStart = getWeek(stageDebut);
-                const stageWeekEnd = getWeek(stageFin);
-                stages.push({
-                    dateDebut: stageDebut,
-                    dateFin: stageFin,
-                    description: item.description,
-                    weeks: [stageWeekStart, stageWeekEnd]
-                });
-                break;
-
-            case 'Projet':
-                // Ajouter le projet à la liste des projets et calculer les semaines
-                const projetDebut = new Date(item.dateDebut);
-                const projetFin = new Date(item.dateFin);
-                const projetWeekStart = getWeek(projetDebut);
-                const projetWeekEnd = getWeek(projetFin);
-                projets.push({
-                    dateDebut: projetDebut,
-                    dateFin: projetFin,
-                    description: item.description,
-                    weeks: [projetWeekStart, projetWeekEnd]
-                });
-                break;
-
             default:
                 // Ajouter l'événement à la liste des événements et calculer les semaines
                 const eventType = item.type;
@@ -493,21 +435,12 @@
         let estVacances = allVacances.includes(semaineActuelle);
         let dateActuelleStr = new Date(dateDebutSemestre).toLocaleDateString('fr-FR');
         let semaineData = [];
-        let estStage = stages.some(stage => stage.weeks.includes(semaineActuelle));
-        let estAtelier = ateliers.some(atelier => atelier.weeks.includes(semaineActuelle));
-        let estProjet = projets.some(projet => projet.weeks.includes(semaineActuelle));
         let estDescription = descriptions.some(desc => desc.weeks.includes(semaineActuelle));
         let estEvenement = evenements.some(event => event.weeks.includes(semaineActuelle));
 
         // Gestion des colonnes fixes pour chaque semaine
         if (estVacances) {
             semaineData.push("", semaineActuelle, dateActuelleStr, "Vacances");
-        } else if (estStage) {
-            semaineData.push("", semaineActuelle, dateActuelleStr, "Stage");
-        } else if (estAtelier) {
-            semaineData.push("", semaineActuelle, dateActuelleStr, "Atelier");
-        } else if (estProjet) {
-            semaineData.push("", semaineActuelle, dateActuelleStr, "Projet");
         } else if (estDescription) {
             semaineData.push("", semaineActuelle, dateActuelleStr, descriptions.find(desc => desc.weeks.includes(semaineActuelle)).description);
         } else if (estEvenement) {

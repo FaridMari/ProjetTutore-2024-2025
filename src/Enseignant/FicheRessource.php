@@ -259,6 +259,7 @@ $verrouille = ($fiche && $fiche['statut'] === 'valide');
         const hoursDistribution = document.getElementById('hours-distribution');
         const noDataMessage = 'Aucune donnée disponible.';
         let courseData = [];
+        console.log("test")
         fetchAndDisplayIntervenants();
 
         function fetchAndDisplayIntervenants() {
@@ -291,6 +292,8 @@ $verrouille = ($fiche && $fiche['statut'] === 'valide');
                             responsibleNameSelect.appendChild(option);
                         });
 
+                        console.log(intervenants);
+
                         // Mettre à jour le champ téléphone quand un intervenant est sélectionné
                         responsibleNameSelect.addEventListener('change', () => {
                             const selectedOption = responsibleNameSelect.selectedOptions[0];
@@ -299,6 +302,7 @@ $verrouille = ($fiche && $fiche['statut'] === 'valide');
                     }
                 })
                 .catch(error => console.error('Erreur lors de la récupération des intervenants :', error));
+
         }
 
         // Fonction pour récupérer et afficher les cours

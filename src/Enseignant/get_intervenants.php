@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../Db/connexionFactory.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 use src\Db\connexionFactory;
 
 header('Content-Type: application/json');

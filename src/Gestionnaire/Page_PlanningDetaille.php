@@ -76,6 +76,8 @@
     .total-exceeded {
         background-color: #ffcccc !important;
     }
+
+
 </style>
 
 <div id="main-content">
@@ -188,6 +190,7 @@
     let stages = [];
     let ateliers = [];
     let projets = [];
+    let evenements = [];
 
     for (let item of configData) {
         switch (item.type) {
@@ -294,8 +297,22 @@
                 break;
 
             default:
-                // Ajouter un cas par défaut pour gérer les autres types
-                console.log(`Type inconnu: ${item.type}`);
+                // Ajouter l'événement à la liste des événements et calculer les semaines
+                const eventType = item.type;
+                const eventDebut = new Date(item.dateDebut);
+                const eventFin = new Date(item.dateFin);
+                const eventWeekStart = getWeek(eventDebut);
+                const eventWeekEnd = getWeek(eventFin);
+                evenements.push({
+                    eventType: eventType,
+                    dateDebut: eventDebut,
+                    dateFin: eventFin,
+                    description: item.description,
+                    weeks: [eventWeekStart, eventWeekEnd],
+                    couleur: item.couleur,
+                    checkbox: item.checkbox,
+                });
+                break;
         }
     }
 
@@ -480,6 +497,7 @@
         let estAtelier = ateliers.some(atelier => atelier.weeks.includes(semaineActuelle));
         let estProjet = projets.some(projet => projet.weeks.includes(semaineActuelle));
         let estDescription = descriptions.some(desc => desc.weeks.includes(semaineActuelle));
+        let estEvenement = evenements.some(event => event.weeks.includes(semaineActuelle));
 
         // Gestion des colonnes fixes pour chaque semaine
         if (estVacances) {
@@ -492,7 +510,11 @@
             semaineData.push("", semaineActuelle, dateActuelleStr, "Projet");
         } else if (estDescription) {
             semaineData.push("", semaineActuelle, dateActuelleStr, descriptions.find(desc => desc.weeks.includes(semaineActuelle)).description);
-        } else {
+        } else if (estEvenement) {
+            console.log("Evenement Trouvé pour semaine : " + semaineActuelle);
+            semaineData.push("", semaineActuelle, dateActuelleStr, evenements.find(event => event.weeks.includes(semaineActuelle)).eventType);
+        }
+        else {
             semaineData.push("", semaineActuelle, dateActuelleStr, "");
         }
 
@@ -634,15 +656,13 @@
                 if (cellValue === "Vacances") {
                     cellProperties.className = 'vacation';
                     cellProperties.readOnly = true;
-                } else if (cellValue === "Stage") {
-                    cellProperties.className = 'stage';
-                    cellProperties.readOnly = true;
-                } else if (cellValue === "Atelier") {
-                    cellProperties.className = 'atelier';
-                    cellProperties.readOnly = true;
-                } else if (cellValue === "Projet") {
-                    cellProperties.className = 'projet';
-                    cellProperties.readOnly = true;
+                }else if (cellValue !== "") {
+                    const event = evenements.find(event => event.weeks.includes(dataT[row][1]));
+                    if (event) {
+                        const className = generateColorClass(event.couleur);
+                        cellProperties.className = className;
+                        cellProperties.readOnly = !!event.readOnly;
+                    }
                 }
             }
 
@@ -700,7 +720,17 @@
         }
     });
 
+    function generateColorClass(color) {
+        const className = `color-${color.replace("#", "")}`;
 
+        if (!document.querySelector(`.${className}`)) {
+            const style = document.createElement("style");
+            style.innerHTML = `.${className} { background-color: ${color} !important; }`;
+            document.head.appendChild(style);
+        }
+
+        return className;
+    }
 
     function saveAllData() {
         // Préparez toutes les données pour l'envoi
@@ -895,13 +925,17 @@
 
         const selectedRanges = planning.getSelected();
         if (!selectedRanges) return;
-
+        //Texts des evenements si checkbox = 0
+        let eventTexts = evenements.map(event => event.checkbox === 0 ? event.eventType : "");
+        console.log(eventTexts);
+        console.log(evenements);
         // Utiliser batch pour regrouper les modifications
         planning.batch(() => {
             selectedRanges.forEach(([startRow, startCol, endRow, endCol]) => {
                 for (let row = startRow; row <= endRow; row++) {
                     for (let col = startCol; col <= endCol; col++) {
-                        if (dataT[row] && (dataT[row][3] !== "Vacances" && dataT[row][3] !== "Stage" && dataT[row][3] !== "Projet" && dataT[row][3] !== "Atelier") && col >= 4 && col < totalColIndex && row < totalRowIndex) {
+
+                        if (dataT[row] && (dataT[row][3] !== "Vacances" && eventTexts.includes(dataT[row][3])) && col >= 4 && col < totalColIndex && row < totalRowIndex) {
                             let currentValue = parseInt(planning.getDataAtCell(row, col) || '0', 10);
                             const delta = event.deltaY > 0 ? -1 : 1; // -1 pour scroll bas, +1 pour scroll haut
                             currentValue = Math.max(0, currentValue + delta); // Ajuster la valeur sans descendre en dessous de 0

@@ -7,7 +7,7 @@ header('Content-Type: application/json');
 try {
     $bdd = connexionFactory::makeConnection();
 
-    $stmt = $bdd->prepare("SELECT nom, prenom FROM utilisateurs");
+    $stmt = $bdd->prepare("SELECT id_utilisateur, nom, prenom, telephone FROM utilisateurs WHERE responsable = 'oui'");
     $stmt->execute();
     $intervenants = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

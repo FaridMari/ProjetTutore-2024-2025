@@ -467,28 +467,30 @@ CREATE TABLE `utilisateurs` (
   `nom` varchar(255) NOT NULL,
   `prenom` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
+  `telephone` varchar(20) NOT NULL,
   `mot_de_passe` varchar(255) NOT NULL,
   `role` varchar(255) NOT NULL,
   `statut` varchar(255) DEFAULT NULL,
   `nombre_heures` int(11) DEFAULT NULL,
   `reset_token` varchar(255) DEFAULT NULL,
   `reset_token_expiration` datetime DEFAULT NULL,
-  `supprimer` tinyint(1) NOT NULL DEFAULT 0
+  `supprimer` tinyint(1) NOT NULL DEFAULT 0,
+  `responsable` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Déchargement des données de la table `utilisateurs`
 --
 
-INSERT INTO `utilisateurs` (`id_utilisateur`, `nom`, `prenom`, `email`, `mot_de_passe`, `role`, `statut`, `nombre_heures`, `reset_token`, `reset_token_expiration`, `supprimer`) VALUES
-(1, 'test2', 'gestionnaire', 'test2@gmail.com', 'azertyuiop', 'gestionnaire', NULL, NULL, NULL, NULL, 0),
-(2, 'test', 'enseignant', 'test@gmail.com', 'azertyuiop', 'enseignant', NULL, NULL, NULL, NULL, 0),
-(27, 'Binet', 'Julien', 'binetj@mail.com', '$2y$10$r63juErl1ImwZTpjJm8jFO8swiqMXjUcz9itH05Bsv02HQjD.UG2e', 'enseignant', 'enseignant', 192, NULL, NULL, 0),
-(28, 'Dosch', 'Philippe', 'doschp@mail.com', '$2y$10$iVGNZ7nrQXF5HybW60wdi.fUo5do5fYdepX7cPeuEyvGYmQFgFzqS', 'enseignant', 'enseignant-chercheur', 192, NULL, NULL, 0),
-(29, 'Ouni', 'Slim', 'ounis@mail.com', '$2y$10$QkKfb4rfvR98IZpg3lwjPeoWy3lEf6bthNCsh4eeCeTLDKxfTGq56', 'enseignant', 'enseignant-chercheur', 192, NULL, NULL, 0),
-(30, 'tests', 'tests', 'tests@mail.com', '$2y$10$/3jcroM85KTeZfN7Y4xI6.D4Zk95x8mhGOt.nR/xDYKaxxCPlFTqu', 'enseignant', 'enseignant-chercheur', 192, NULL, NULL, 1),
-(31, 'Ragot', 'Yogan', 'ragoty@mail.com', '$2y$10$B0g8E9eyjt0HFV5AHbtGVeJpKQ3mouXG50W1OoJ4.pOniteSUNbIy', 'enseignant', 'enseignant', 192, NULL, NULL, 0),
-(34, 'RagotLimiteContrainte', 'Yogan', 'mail@mail.com', '', 'enseignant', 'enseignant-chercheur', 192, NULL, NULL, 0);
+INSERT INTO `utilisateurs` (`id_utilisateur`, `nom`, `prenom`, `email`, `telephone`, `mot_de_passe`, `role`, `statut`, `nombre_heures`, `reset_token`, `reset_token_expiration`, `supprimer`, `responsable`) VALUES
+(1, 'test2', 'gestionnaire', 'test2@gmail.com', '06 84 99 99 99', 'azertyuiop', 'gestionnaire', NULL, NULL, NULL, NULL, 0, 'non'),
+(2, 'test', 'enseignant', 'test@gmail.com', '06 84 99 99 99', 'azertyuiop', 'enseignant', NULL, NULL, NULL, NULL, 0, 'non'),
+(27, 'Binet', 'Julien', 'binetj@mail.com', '06 84 99 99 99', '$2y$10$r63juErl1ImwZTpjJm8jFO8swiqMXjUcz9itH05Bsv02HQjD.UG2e', 'enseignant', 'enseignant', 192, NULL, NULL, 0, 'oui'),
+(28, 'Dosch', 'Philippe', 'doschp@mail.com', '06 84 99 99 99', '$2y$10$iVGNZ7nrQXF5HybW60wdi.fUo5do5fYdepX7cPeuEyvGYmQFgFzqS', 'enseignant', 'enseignant-chercheur', 192, NULL, NULL, 0, 'oui'),
+(29, 'Ouni', 'Slim', 'ounis@mail.com', '06 84 99 99 99', '$2y$10$QkKfb4rfvR98IZpg3lwjPeoWy3lEf6bthNCsh4eeCeTLDKxfTGq56', 'enseignant', 'enseignant-chercheur', 192, NULL, NULL, 0, 'oui'),
+(30, 'tests', 'tests', 'tests@mail.com', '06 84 99 99 99', '$2y$10$/3jcroM85KTeZfN7Y4xI6.D4Zk95x8mhGOt.nR/xDYKaxxCPlFTqu', 'enseignant', 'enseignant-chercheur', 192, NULL, NULL, 1, 'non'),
+(31, 'Ragot', 'Yogan', 'ragoty@mail.com', '06 84 99 99 99', '$2y$10$B0g8E9eyjt0HFV5AHbtGVeJpKQ3mouXG50W1OoJ4.pOniteSUNbIy', 'enseignant', 'enseignant', 192, NULL, NULL, 0, 'non'),
+(34, 'RagotLimiteContrainte', 'Yogan', 'mail@mail.com', '06 84 99 99 99', '', 'enseignant', 'enseignant-chercheur', 192, NULL, NULL, 0, 'non');
 
 -- --------------------------------------------------------
 

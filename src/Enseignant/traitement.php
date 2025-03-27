@@ -16,27 +16,8 @@ try {
         $stmt->execute();
         $intervenants = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-
-        /** Version qui marche pas
         // Récupération du code du cours depuis le formulaire
         $code_cours = $_POST['resourceName'];
-         * */
-
-
-
-        // Récupération du code du cours depuis le formulaire
-        $full = $_POST['resourceName'] ?? '';
-
-        echo "$full 111";
-
-        $parts = explode(':', $full);
-
-        echo "$parts 222";
-
-        $code_cours = trim($parts[0]);
-
-        echo "$code_cours 333";
-
 
         // Récupération de l'id_cours correspondant au code_cours
         $stmt = $bdd->prepare("SELECT id_cours FROM cours WHERE code_cours = :code_cours");
@@ -49,12 +30,26 @@ try {
             throw new Exception("Aucun cours trouvé avec le code $code_cours.");
         }
 
-        //recuperer l'id enseignant avec une requete sql
-        $stmt = $bdd->prepare("SELECT id_enseignant FROM enseignants where id_utilisateur = :id_utilisateur");
-        $stmt->execute([':id_utilisateur' => $_SESSION['id_utilisateur']]);
-        $enseignant = $stmt->fetch(PDO::FETCH_ASSOC);
+//        //recuperer l'id enseignant avec une requete sql
+//        $stmt = $bdd->prepare("SELECT id_enseignant FROM enseignants where id_utilisateur = :id_utilisateur");
+//        $stmt->execute([':id_utilisateur' => $_SESSION['id_utilisateur']]);
+//        $enseignant = $stmt->fetch(PDO::FETCH_ASSOC);
+//
+//        $id_responsable_module = $enseignant['id_enseignant'];
 
-        $id_responsable_module = $enseignant['id_enseignant'];
+
+        $id_utilisateur_responsable = $_POST['responsibleName'];
+
+        $stmt = $bdd->prepare("SELECT id_enseignant FROM enseignants WHERE id_utilisateur = :id_utilisateur");
+        $stmt->execute([':id_utilisateur' => $id_utilisateur_responsable]);
+        $responsable = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if ($responsable) {
+            $id_responsable_module = $responsable['id_enseignant'];
+        } else {
+            throw new Exception("Aucun enseignant trouvé pour l'utilisateur sélectionné.");
+        }
+
 
         // Récupération des données spécifiques
         $dsDetails = 'DS : ' . ($_POST['dsDetails'] ?? ''); // Détails DS
@@ -103,7 +98,7 @@ try {
             ':type_salle' => $type_salle,
             ':equipements_specifiques' => $equipementsSpecifiques,
             ':details' => $dsDetails,
-            ':statut' => "Validée",
+            ':statut' => "en attente",
 
         ]);
 

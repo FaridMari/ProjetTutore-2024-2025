@@ -6,7 +6,7 @@ body {
 }
 
 #container {
-    max-width: 50vw;
+    width: 90% !important;
     margin: 40px auto;
     padding: 20px;
     background-color: #ffffff;
@@ -68,4 +68,6 @@ hr {
 .toast.error {
     background-color: rgba(255, 0, 0, 0.7); /* Rouge transparent */
 }
+
+
 

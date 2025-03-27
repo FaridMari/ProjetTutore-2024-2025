@@ -1,0 +1,61 @@
+Fonctionnalités – Itération 5
+
+
+1 – Validation des fiches par le gestionnaire
+
+- Description : Le gestionnaire peut désormais valider une fiche une fois que les informations sont complètes. Une fois validée la fiche est automatiquement verrouillée, empêchant toute modification l’enseignant.  
+- Objectif : Apporter un contrôle final au gestionnaire pour garantir la cohérence des données avant utilisation.  
+- Cas d’utilisation :  
+  Le gestionnaire valide une fiche. Elle devient non modifiable et considérée comme finalisée.  
+- Rôle :  
+  Laeticia HAROUNA
+
+
+
+2 – Ajout d’un profil enseignant
+
+- Description : Un profil enseignant distinct a été ajouté, avec une interface dédiée.  
+- Objectif : Offrir une vue propre au profil d'un enseignant.  
+- Cas d’utilisation :  
+  Un enseignant peut accéder à son espace, consulter ses affectations et voir ses heures prévues.  
+- Rôle :  
+  Farid MARI
+
+
+3 – Modification de la fiche de répartition
+
+- Description : Il est désormais possible d’affecter plusieurs enseignants à un même cours, et la fiche de répartition a été repensée pour un affichage en scroll vertical (au lieu d’un long scroll horizontal).  
+- Objectif : Améliorer l’ergonomie et répondre aux cas réels d’enseignement partagé.  
+- Cas d’utilisation :  
+  Un gestionnaire affecte deux enseignants à une ressource pédagogique dans une même ligne.  
+- Rôle :  
+  Lothaire HOLCVART
+
+
+
+4 – Configuration avancée du planning détaillé
+
+- Description : Ajout d'une vue planning pour l'enseignant | Corrections bugs
+- Objectif : Ameliorer l'ergonomie du planning détaillé, résoudre des problèmes crutiaux.
+- Rôle :  
+  Yogan RAGOT
+
+
+5 – Modification des cours
+
+- Description : Une page a été développée pour permettre la création, la modification ou la suppression des cours existants.  
+- Objectif : Offrir plus de flexibilité dans la gestion des ressources pédagogiques.  
+- Cas d’utilisation :  
+  Un gestionnaire met à jour le nom ou le code d’un cours dans la base.  
+- Rôle :  
+  Yogan RAGOT
+
+
+6 – Ajout des heures calculées dans l’accueil enseignant
+
+- Description : Le tableau de bord de l’enseignant affiche désormais automatiquement un résumé des heures totales affectées, calculées selon les affectations validées.  
+- Objectif : Apporter de la lisibilité à l’enseignant sur sa charge horaire.  
+- Cas d’utilisation :  
+  Un enseignant consulte son profil et voit directement ses informations essentielles.  
+- Rôle :  
+  Farid MARI

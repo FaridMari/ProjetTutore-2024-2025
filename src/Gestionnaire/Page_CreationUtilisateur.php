@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="styles.css">
     <style>
 
-        
         body {
             font-family: Arial, sans-serif;
             display: flex;
@@ -45,7 +44,8 @@
         input[type="text"],
         input[type="email"],
         input[type="number"],
-        input[type="password"] {
+        input[type="password"],
+        input[type="tel"] {
             width: 95%;
             padding: 10px;
             margin-bottom: 15px;
@@ -107,8 +107,25 @@
     </style>
 </head>
 <body>
+
 <h1>Créer un Utilisateur</h1>
+
 <form method="post" action="index.php?action=creer-utilisateur">
+
+    <!-- Rôle -->
+    <div>
+        <label for="role_gestionnaire">
+            <input type="radio" id="role_gestionnaire" name="role" value="gestionnaire">
+            Gestionnaire
+        </label>
+        <label for="role_enseignant">
+            <input type="radio" id="role_enseignant" name="role" value="enseignant" required>
+            Enseignant
+        </label>
+
+    </div>
+
+    <!-- Champs communs -->
     <label for="nom">Nom :</label>
     <input type="text" id="nom" name="nom" required>
 
@@ -118,9 +135,14 @@
     <label for="email">Email :</label>
     <input type="email" id="email" name="email" required>
 
-    <div>
+    <label for="telephone">Numéro de téléphone</label>
+    <input type="tel" id="telephone" name="telephone" required>
+
+
+    <!-- Partie spécifique aux enseignants -->
+    <div id="enseignantFields" style="display: none;">
         <label for="statut">Statut :</label>
-        <select id="statut" name="statut" required onchange="updateHeures()">
+        <select id="statut" name="statut" onchange="updateHeures()">
             <option value="enseignant-chercheur">Enseignant-chercheur</option>
             <option value="ater">ATER</option>
             <option value="vacataire_enseignant">Vacataire enseignant</option>
@@ -134,9 +156,34 @@
         <label for="nombre_heures">Nombre d'heures :</label>
         <input type="text" id="nombre_heures" name="nombre_heures" readonly>
 
+        <label for="nombre_contrainte">Nombre limite de contrainte :</label>
+        <input type="text" id="nombre_contrainte" name="nombre_contrainte" >
+
+        <div id="responsableDiv">
+            <label for="responsable_module">
+                <input type="checkbox" id="responsable_module" name="responsable" value="responsable">
+                Responsable de module
+            </label>
+        </div>
     </div>
 
+    <button type="submit">Créer l'utilisateur</button>
+    <button id="retour" onclick="window.location.href='index.php?action=gestionCompteUtilisateur'; return false;">Retour au menu</button>
+
+    <!-- Script JS -->
     <script>
+        const roleEnseignant = document.getElementById('role_enseignant');
+        const roleGestionnaire = document.getElementById('role_gestionnaire');
+        const enseignantFields = document.getElementById('enseignantFields');
+
+        function toggleFields() {
+            if (roleEnseignant.checked) {
+                enseignantFields.style.display = 'block';
+            } else {
+                enseignantFields.style.display = 'none';
+            }
+        }
+
         function updateHeures() {
             let statut = document.getElementById("statut").value;
             let nombreHeuresInput = document.getElementById("nombre_heures");
@@ -150,29 +197,19 @@
             nombreHeuresInput.value = heuresParDefaut[statut] || 0;
         }
 
-        // Initialiser au chargement
-        document.addEventListener("DOMContentLoaded", updateHeures);
+        // Événements
+        roleEnseignant.addEventListener('change', toggleFields);
+        roleGestionnaire.addEventListener('change', toggleFields);
+        document.getElementById("statut").addEventListener("change", updateHeures);
+
+        // Initialisation
+        document.addEventListener("DOMContentLoaded", () => {
+            toggleFields();
+            updateHeures();
+        });
     </script>
-
-
-
-
-    <div>
-        <label for="role_enseignant">
-            <input type="radio" id="role_enseignant" name="role" value="enseignant" required>
-            Enseignant
-        </label>
-        <label for="role_gestionnaire">
-            <input type="radio" id="role_gestionnaire" name="role" value="gestionnaire">
-            Gestionnaire
-        </label>
-    </div>
-
-
-    <button type="submit">Créer l'utilisateur</button>
-    <button id="retour" onclick="window.location.href='index.php?action=gestionCompteUtilisateur'; return false;">Retour au menu</button>
-
 
 </form>
 </body>
 </html>
+

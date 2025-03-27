@@ -6,10 +6,18 @@ use src\Db\connexionFactory;
 
 try {
     $bdd = connexionFactory::makeConnection();
+
     // Vérifie si la requête est de type POST
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+        //recuperer liste intervenants
+        $stmt = $bdd->prepare("SELECT nom, prenom 
+                       FROM utilisateurs");
+        $stmt->execute();
+        $intervenants = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
         // Récupération du code du cours depuis le formulaire
-        $code_cours = $_POST['resourceCode'];
+        $code_cours = $_POST['resourceName'];
 
         // Récupération de l'id_cours correspondant au code_cours
         $stmt = $bdd->prepare("SELECT id_cours FROM cours WHERE code_cours = :code_cours");
@@ -22,12 +30,26 @@ try {
             throw new Exception("Aucun cours trouvé avec le code $code_cours.");
         }
 
-        //recuperer l'id enseignant avec une requete sql
-        $stmt = $bdd->prepare("SELECT id_enseignant FROM enseignants where id_utilisateur = :id_utilisateur");
-        $stmt->execute([':id_utilisateur' => $_SESSION['id_utilisateur']]);
-        $enseignant = $stmt->fetch(PDO::FETCH_ASSOC);
+//        //recuperer l'id enseignant avec une requete sql
+//        $stmt = $bdd->prepare("SELECT id_enseignant FROM enseignants where id_utilisateur = :id_utilisateur");
+//        $stmt->execute([':id_utilisateur' => $_SESSION['id_utilisateur']]);
+//        $enseignant = $stmt->fetch(PDO::FETCH_ASSOC);
+//
+//        $id_responsable_module = $enseignant['id_enseignant'];
 
-        $id_responsable_module = $enseignant['id_enseignant'];
+
+        $id_utilisateur_responsable = $_POST['responsibleName'];
+
+        $stmt = $bdd->prepare("SELECT id_enseignant FROM enseignants WHERE id_utilisateur = :id_utilisateur");
+        $stmt->execute([':id_utilisateur' => $id_utilisateur_responsable]);
+        $responsable = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if ($responsable) {
+            $id_responsable_module = $responsable['id_enseignant'];
+        } else {
+            throw new Exception("Aucun enseignant trouvé pour l'utilisateur sélectionné.");
+        }
+
 
         // Récupération des données spécifiques
         $dsDetails = 'DS : ' . ($_POST['dsDetails'] ?? ''); // Détails DS
@@ -58,13 +80,16 @@ try {
                 id_responsable_module,
                 type_salle,
                 equipements_specifiques,
-                details
+                details,
+                statut
             ) VALUES (
                 :id_cours,
                 :id_responsable_module,
                 :type_salle,
                 :equipements_specifiques,
-                :details
+                :details,
+                :statut
+                
             )
         ");
         $stmtDetails->execute([
@@ -72,7 +97,9 @@ try {
             ':id_responsable_module' => $id_responsable_module,
             ':type_salle' => $type_salle,
             ':equipements_specifiques' => $equipementsSpecifiques,
-            ':details' => $dsDetails
+            ':details' => $dsDetails,
+            ':statut' => "en attente",
+
         ]);
 
         //Alert et redirection

@@ -168,14 +168,17 @@ $verrouille = ($fiche && $fiche['statut'] === 'valide');
 
             <div class="mb-3">
                 <label for="responsibleName" class="form-label">Nom du responsable :</label>
-                <input type="text" class="form-control" id="responsibleName" name="responsibleName"
-                       placeholder="Nom du responsable" required>
+                <select class="form-select" id="responsibleName" name="responsibleName" required>
+                    <option value="">-- Sélectionner un intervenant --</option>
+                </select>
             </div>
+
 
             <div class="mb-3">
                 <label for="phone" class="form-label">Téléphone :</label>
-                <input type="tel" class="form-control" id="phone" name="phone" placeholder="Numéro de téléphone">
+                <input type="tel" class="form-control" id="phone" name="phone" placeholder="Numéro de téléphone" readonly>
             </div>
+
 
             <!-- 1. Répartition des heures par semaines -->
             <h4 class="mt-4">1. Répartition des heures par semaines :</h4>
@@ -238,7 +241,7 @@ $verrouille = ($fiche && $fiche['statut'] === 'valide');
             </div>
 
             <!-- Bouton d’envoi global -->
-            <button type="submit" class="btn btn-primary">Envoyer</button>
+            <button type="submit" class="btn btn-primary">Enregistrer et valider</button>
         </form>
         <!-- Fin du formulaire global -->
     </div>
@@ -256,6 +259,47 @@ $verrouille = ($fiche && $fiche['statut'] === 'valide');
         const hoursDistribution = document.getElementById('hours-distribution');
         const noDataMessage = 'Aucune donnée disponible.';
         let courseData = [];
+        fetchAndDisplayIntervenants();
+
+        function fetchAndDisplayIntervenants() {
+            const responsibleNameSelect = document.getElementById('responsibleName');
+            const telephoneInput = document.getElementById('phone');
+
+            responsibleNameSelect.innerHTML = '<option value="">-- Sélectionner un intervenant --</option>';
+
+            fetch('src/Enseignant/get_intervenants.php')
+                .then(response => {
+                    if (!response.ok) throw new Error(`Erreur HTTP ! statut : ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.error) {
+                        console.error('Erreur :', data.error);
+                    } else {
+                        // On vide le champ téléphone initialement
+                        telephoneInput.value = '';
+
+                        // Stocker les intervenants dans une variable accessible
+                        const intervenants = data;
+
+                        // Ajout des options dans le select
+                        intervenants.forEach(intervenant => {
+                            const option = document.createElement('option');
+                            option.value = intervenant.id_utilisateur;
+                            option.textContent = intervenant.nom + ' ' + intervenant.prenom;
+                            option.dataset.telephone = intervenant.telephone; // on stocke le téléphone dans l’option
+                            responsibleNameSelect.appendChild(option);
+                        });
+
+                        // Mettre à jour le champ téléphone quand un intervenant est sélectionné
+                        responsibleNameSelect.addEventListener('change', () => {
+                            const selectedOption = responsibleNameSelect.selectedOptions[0];
+                            telephoneInput.value = selectedOption.dataset.telephone || '';
+                        });
+                    }
+                })
+                .catch(error => console.error('Erreur lors de la récupération des intervenants :', error));
+        }
 
         // Fonction pour récupérer et afficher les cours
         function fetchAndDisplayCourses(semester) {
@@ -273,10 +317,11 @@ $verrouille = ($fiche && $fiche['statut'] === 'valide');
                             courseData = data; // cours récupérés
                             data.forEach(course => {
                                 const optionName = document.createElement('option');
-                                optionName.value = course.nom_cours;
-                                optionName.textContent = course.code_cours + " : "+ course.nom_cours;
+                                optionName.value = course.code_cours; // ✅ c’est ce que tu veux en PHP
+                                optionName.textContent = `${course.code_cours} : ${course.nom_cours}`;
                                 resourceNameSelect.appendChild(optionName);
                             });
+
                         }
                     })
                     .catch(error => console.error('Erreur lors de la récupération des cours :', error));
@@ -374,18 +419,18 @@ $verrouille = ($fiche && $fiche['statut'] === 'valide');
     });
 
 </script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        document.querySelector('form').addEventListener("submit", function(event) {
-            event.preventDefault();
-
-            if (confirm("Les vœux ont été enregistrés avec succès.\nVoulez-vous télécharger le PDF ?")) {
-                this.action = "src/User/ressourcePdf.php";
-            } else {
-                this.action = "index.php?action=enseignantFicheRessource";
-            }
-
-            this.submit();
-        });
-    });
-</script>
+<!--<script>-->
+<!--    document.addEventListener("DOMContentLoaded", function () {-->
+<!--        document.querySelector('form').addEventListener("submit", function(event) {-->
+<!--            event.preventDefault();-->
+<!---->
+<!--            if (confirm("Les vœux ont été enregistrés avec succès.\nVoulez-vous télécharger le PDF ?")) {-->
+<!--                this.action = "src/User/ressourcePdf.php";-->
+<!--            } else {-->
+<!--                this.action = "index.php?action=enseignantFicheRessource";-->
+<!--            }-->
+<!---->
+<!--            this.submit();-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->

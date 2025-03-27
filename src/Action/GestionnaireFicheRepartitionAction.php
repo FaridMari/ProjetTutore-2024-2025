@@ -24,7 +24,7 @@ class GestionnaireFicheRepartitionAction extends Action {
 
         <?php
         // Inclure la nav bar top
-        include 'src/Gestionnaire/Navbar_Generique.html';
+        include 'src/Gestionnaire/Navbar_Top.html';
 
         // Inclure le contenu de la page
         include 'src/Gestionnaire/Page_FicheRepartition.php';

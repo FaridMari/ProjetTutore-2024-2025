@@ -310,7 +310,7 @@
                     description: item.description,
                     weeks: [eventWeekStart, eventWeekEnd],
                     couleur: item.couleur,
-                    checkbox: item.checkbox,
+                    checkbox: item.modifiable,
                 });
                 break;
         }
@@ -920,13 +920,13 @@
             });
     }
 
+    let eventTexts = evenements.map(event => event.checkbox === 0 ? event.eventType : "");
     container.addEventListener('wheel', (event) => {
-        event.preventDefault(); // Empêche le défilement de la page
 
+        event.preventDefault(); // Empêche le défilement de la page
         const selectedRanges = planning.getSelected();
         if (!selectedRanges) return;
         //Texts des evenements si checkbox = 0
-        let eventTexts = evenements.map(event => event.checkbox === 0 ? event.eventType : "");
         console.log(eventTexts);
         console.log(evenements);
         // Utiliser batch pour regrouper les modifications
@@ -934,8 +934,7 @@
             selectedRanges.forEach(([startRow, startCol, endRow, endCol]) => {
                 for (let row = startRow; row <= endRow; row++) {
                     for (let col = startCol; col <= endCol; col++) {
-
-                        if (dataT[row] && (dataT[row][3] !== "Vacances" && eventTexts.includes(dataT[row][3])) && col >= 4 && col < totalColIndex && row < totalRowIndex) {
+                        if (dataT[row] && (dataT[row][3] !== "Vacances" ) && !eventTexts.includes(dataT[row][3]) && col >= 4 && col < totalColIndex && row < totalRowIndex) {
                             let currentValue = parseInt(planning.getDataAtCell(row, col) || '0', 10);
                             const delta = event.deltaY > 0 ? -1 : 1; // -1 pour scroll bas, +1 pour scroll haut
                             currentValue = Math.max(0, currentValue + delta); // Ajuster la valeur sans descendre en dessous de 0

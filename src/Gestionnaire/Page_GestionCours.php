@@ -132,33 +132,6 @@
 
 
     document.addEventListener('DOMContentLoaded', function() {
-        const formationSelect = document.getElementById('formation');
-        const semestreSelect = document.getElementById('semestre');
-
-        const formationSemestreMap = {
-            "BUT S1": "1",
-            "BUT S2": "2",
-            "BUT S3": "3",
-            "BUT S4 DACS": "4",
-            "BUT S4 RA-DWM": "4",
-            "BUT S4 RA-IL": "4",
-            "BUT S5 DACS": "5",
-            "BUT S5 RA-DWM": "5",
-            "BUT S5 RA-IL": "5",
-            "BUT S6 DACS": "6",
-            "BUT S6 RA": "6",
-            "BUT S6 RA-DWM": "6",
-            "BUT S6 RA-IL": "6"
-        };
-
-        formationSelect.addEventListener('change', function() {
-            const selectedFormation = formationSelect.value;
-            const correspondingSemestre = formationSemestreMap[selectedFormation] || "";
-            semestreSelect.value = correspondingSemestre;
-        });
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
         let allCours = [];
 
         async function loadCours() {
@@ -179,25 +152,40 @@
                 const row = document.createElement('tr');
                 row.setAttribute('data-id', cours.id_cours);
                 row.innerHTML = `
-                <td>${cours.id_cours}</td>
-                <td contenteditable="true" class="editable">${cours.formation}</td>
-                <td contenteditable="true" class="editable">${cours.semestre}</td>
-                <td contenteditable="true" class="editable">${cours.nom_cours}</td>
-                <td contenteditable="true" class="editable">${cours.code_cours}</td>
-                <td contenteditable="true" class="editable">${cours.nb_heures_total}</td>
-                <td contenteditable="true" class="editable">${cours.nb_heures_cm}</td>
-                <td contenteditable="true" class="editable">${cours.nb_heures_td}</td>
-                <td contenteditable="true" class="editable">${cours.nb_heures_tp}</td>
-                <td contenteditable="true" class="editable">${cours.nb_heures_ei}</td>
-                <td>
-                    <div class="btn-group" role="group">
-                        <button class="btn btn-primary btn-sm saveButton">Enregistrer</button>
-                        <button class="btn btn-danger btn-sm deleteButton">Supprimer</button>
-                    </div>
-                </td>
-            `;
+            <td>${cours.id_cours}</td>
+            <td contenteditable="true" class="editable">${cours.formation}</td>
+            <td contenteditable="true" class="editable">${cours.semestre}</td>
+            <td contenteditable="true" class="editable">${cours.nom_cours}</td>
+            <td contenteditable="true" class="editable">${cours.code_cours}</td>
+            <td class="total-heures">${cours.nb_heures_total}</td>
+            <td contenteditable="true" class="editable heures">${cours.nb_heures_cm}</td>
+            <td contenteditable="true" class="editable heures">${cours.nb_heures_td}</td>
+            <td contenteditable="true" class="editable heures">${cours.nb_heures_tp}</td>
+            <td contenteditable="true" class="editable heures">${cours.nb_heures_ei}</td>
+            <td>
+                <div class="btn-group" role="group">
+                    <button class="btn btn-primary btn-sm saveButton">Enregistrer</button>
+                    <button class="btn btn-danger btn-sm deleteButton">Supprimer</button>
+                </div>
+            </td>
+        `;
                 tableBody.appendChild(row);
             });
+
+            // Ajouter un écouteur pour recalculer le total des heures
+            document.querySelectorAll('.heures').forEach(cell => {
+                cell.addEventListener('input', updateTotalHeures);
+            });
+        }
+
+        function updateTotalHeures(event) {
+            const row = event.target.closest('tr');
+            const heuresCM = parseFloat(row.children[6].textContent) || 0;
+            const heuresTD = parseFloat(row.children[7].textContent) || 0;
+            const heuresTP = parseFloat(row.children[8].textContent) || 0;
+            const heuresEI = parseFloat(row.children[9].textContent) || 0;
+            const totalHeures = heuresCM + heuresTD + heuresTP + heuresEI;
+            row.children[5].textContent = totalHeures;
         }
 
         document.getElementById('searchInput').addEventListener('input', function() {

@@ -18,7 +18,7 @@ class GestionnaireValidationFicheAction extends Action
             $id_column = ($table === "voeux") ? "id_voeu" : (($table === "details_cours") ? "id_ressource" : "id_contrainte");
 
             $stmt = $conn->prepare("UPDATE $table SET statut = ? WHERE $id_column = ?");
-            $stmt->execute([$actionType === "valider" ? "valide" : "en attente", $ficheId]);
+            $stmt->execute([$actionType === "valider" ? "validée" : "en attente", $ficheId]);
 
             $_SESSION['success_message'] = $actionType === "valider" ? "La fiche a été validée avec succès." : "La fiche a été dévalidée.";
             header("Location: index.php?action=ficheEnseignant");
@@ -197,7 +197,7 @@ class GestionnaireValidationFicheAction extends Action
                             </button>
                         </td>
                         <td>
-                            <span class="badge <?= $fiche['statut'] === 'valide' ? 'bg-success' : ($fiche['statut'] === 'refuse' ? 'bg-danger' : 'bg-warning') ?>">
+                            <span class="badge <?= $fiche['statut'] === 'validée' ? 'bg-success' : ($fiche['statut'] === 'refuse' ? 'bg-danger' : 'bg-warning') ?>">
                                 <?= htmlspecialchars(ucfirst($fiche['statut'])) ?>
                             </span>
                         </td>
@@ -205,7 +205,7 @@ class GestionnaireValidationFicheAction extends Action
                             <form method="post">
                                 <input type="hidden" name="fiche_id" value="<?= $fiche['grouped_fiches'][0]['id_contrainte'] ?? $fiche['grouped_fiches'][0]['id_ressource'] ?? $fiche['grouped_fiches'][0]['id_voeu'] ?>">
                                 <input type="hidden" name="table" value="<?= $fiche['table'] ?>">
-                                <?php if ($fiche['statut'] === 'valide'): ?>
+                                <?php if ($fiche['statut'] === 'validée'): ?>
                                     <button type="submit" name="action_type" value="devalider" class="btn btn-warning">Dévalider</button>
                                 <?php elseif ($fiche['statut'] === 'en attente'): ?>
                                     <button type="submit" name="action_type" value="valider" class="btn btn-success">Valider</button>

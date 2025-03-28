@@ -11,14 +11,13 @@ class SigninAction extends Action {
 
             try {
                 $pdo = connexionFactory::makeConnection();
-
-                $stmt = $pdo->prepare("SELECT id_utilisateur, email, mot_de_passe, role, supprimer FROM utilisateurs WHERE email = :email");
+                $stmt = $pdo->prepare("SELECT id_utilisateur, email, mot_de_passe, role, supprimer, nom, prenom FROM utilisateurs WHERE email = :email");
                 $stmt->bindParam(':email', $email);
                 $stmt->execute();
 
                 $user = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-                if ( ($password === $user['mot_de_passe'] || password_verify($password, $user['mot_de_passe'])) && !$user['supprimer']) {
+                if ($user && (password_verify($password, $user['mot_de_passe']) && !$user['supprimer'])) {
                     // Authentification réussie
                     if (session_status() !== PHP_SESSION_ACTIVE) {
                         session_start(); // Vérifie que la session est active
@@ -35,22 +34,21 @@ class SigninAction extends Action {
 
                     // Redirection en fonction du rôle de l'utilisateur
                     if ($user['role'] === 'gestionnaire') {
-                        header('Location: index.php?action=gestionnairePagePrincipal');
+                        echo json_encode(['success' => true, 'redirect' => 'index.php?action=gestionnairePagePrincipal']);
                     } else {
-                        header('Location: index.php?action=accueilEnseignant');
+                        echo json_encode(['success' => true, 'redirect' => 'index.php?action=accueilEnseignant']);
                     }
                     exit();
                 } else {
-                    echo "L'authentification a échoué. Veuillez vérifier vos identifiants.";
+                    // Renvoie error si l'authentification a échoué
+                    echo json_encode(['success' => false, 'message' => 'Email ou mot de passe incorrect.']);
                 }
             } catch (\PDOException $e) {
-                echo "Erreur d'authentification: " . $e->getMessage();
+                echo json_encode(['success' => false, 'message' => 'Erreur de connexion à la base de données.']);
             }
         } else {
-            // Afficher le formulaire de connexion si c'est un GET
             ob_start();
             include 'src/User/login.php';
-            return returnHTML();
         }
 
         return '';

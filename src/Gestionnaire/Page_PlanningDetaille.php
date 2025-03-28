@@ -65,6 +65,78 @@
         background-color: #ffcccc !important;
     }
 
+    .export-buttons {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 20px;
+        gap: 15px;
+        width: 100%;
+    }
+
+    .export-btn {
+        padding: 10px 18px;
+        background-color: #3a86ff;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4em;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 10%;
+    }
+
+    .export-btn:hover {
+        background-color: #2563eb;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .export-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Style spécifique pour chaque bouton */
+    #exportCSV {
+        background-color: #4caf50;
+    }
+
+    #exportCSV:hover {
+        background-color: #388e3c;
+    }
+
+    #exportXLSX {
+        background-color: #2196f3;
+    }
+
+    #exportXLSX:hover {
+        background-color: #1565c0;
+    }
+
+    /* Ajouter des icônes avec pseudo-éléments */
+    .export-btn::before {
+        content: '';
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+
+    #exportCSV::before {
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM9 17H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V7h2v2zm6 8h-4v-2h4v2zm0-4h-4v-2h4v2zm-1-5V4l5 5h-5z"/></svg>');
+    }
+
+    #exportXLSX::before {
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM9 17H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V7h2v2zm6 8h-4v-2h4v2zm0-4h-4v-2h4v2zm-1-5V4l5 5h-5z"/></svg>');
+    }
 
 </style>
 
@@ -135,6 +207,10 @@
         </div>
 
 
+    </div>
+    <div class="export-buttons">
+        <button id="exportCSV" class="export-btn">Export CSV</button>
+        <button id="exportXLSX" class="export-btn">Export XLSX</button>
     </div>
     <div  id="example1" class="hot ht-theme-main disable-auto-theme"></div>
 </div>
@@ -557,6 +633,9 @@
         columns: columnsDefs,
         wordWrap: true,
         licenseKey: 'non-commercial-and-evaluation',
+        plugins: [
+            'exportFile',
+        ],
         afterChange: (changes, source) => {
             if (source === 'loadData' || !changes) return;
 
@@ -905,6 +984,212 @@
 
     const toast = new Toast();
 
+    document.getElementById('exportXLSX').addEventListener('click', () => {
+        const data = [];
+
+        // Ajouter les en-têtes imbriqués
+        // Pour chaque ligne d'en-tête
+        for (let i = 0; i < trueNH.length; i++) {
+            const headerRow = [];
+            for (let j = 0; j < trueNH[i].length; j++) {
+                const cell = trueNH[i][j];
+                if (typeof cell === 'object' && cell.hasOwnProperty('label')) {
+                    // Si c'est un objet avec une propriété label (cellule avec colspan)
+                    headerRow.push(cell.label);
+                    // Ajouter des cellules vides pour respecter le colspan
+                    for (let k = 1; k < cell.colspan; k++) {
+                        headerRow.push('');
+                    }
+                } else {
+                    headerRow.push(cell);
+                }
+            }
+            data.push(headerRow);
+        }
+
+        // Ajouter les données
+        for (let i = 0; i < dataT.length; i++) {
+            const row = dataT[i].map(cell => {
+                // Remplacer les formules par leur valeur calculée
+                if (typeof cell === 'string' && cell.startsWith('=')) {
+                    const cellAddress = { sheet: 0, row: i, col: dataT[i].indexOf(cell) };
+                    return hyperformulaInstance.getCellValue(cellAddress) || '';
+                }
+                return cell;
+            });
+            data.push(row);
+        }
+
+        // Créer le workbook
+        const ws = XLSX.utils.aoa_to_sheet(data);
+
+        // Appliquer des styles (fusion de cellules pour les en-têtes)
+        if (!ws['!merges']) ws['!merges'] = [];
+
+        // Traiter chaque ligne d'en-tête pour les fusions
+        let rowIndex = 0;
+        for (let i = 0; i < trueNH.length; i++) {
+            let colIndex = 0;
+            for (let j = 0; j < trueNH[i].length; j++) {
+                const cell = trueNH[i][j];
+                if (typeof cell === 'object' && cell.hasOwnProperty('colspan')) {
+                    // Ajouter une fusion pour cette cellule
+                    ws['!merges'].push({
+                        s: { r: rowIndex, c: colIndex },
+                        e: { r: rowIndex, c: colIndex + cell.colspan - 1 }
+                    });
+                    colIndex += cell.colspan;
+                } else {
+                    colIndex++;
+                }
+            }
+            rowIndex++;
+        }
+
+        // Créer le workbook et le télécharger
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, `Planning ${semester}`);
+        XLSX.writeFile(wb, `planning_${semester}_export.xlsx`);
+    });
+
+    document.getElementById('exportXLSX').addEventListener('click', () => {
+        exportToExcel();
+    });
+
+    document.getElementById('exportCSV').addEventListener('click', () => {
+        exportToCSV();
+    });
+
+    function exportToExcel() {
+        const data = [];
+
+        // Ajouter les en-têtes imbriqués
+        for (let i = 0; i < trueNH.length; i++) {
+            const headerRow = [];
+            for (let j = 0; j < trueNH[i].length; j++) {
+                const cell = trueNH[i][j];
+                if (typeof cell === 'object' && cell.hasOwnProperty('label')) {
+                    headerRow.push(cell.label);
+                    // Ajouter des cellules vides pour respecter le colspan
+                    for (let k = 1; k < cell.colspan; k++) {
+                        headerRow.push('');
+                    }
+                } else {
+                    headerRow.push(cell);
+                }
+            }
+            data.push(headerRow);
+        }
+
+        // Ajouter les données du tableau
+        for (let i = 0; i < dataT.length; i++) {
+            const row = dataT[i].map(cell => {
+                // Remplacer les formules par leur valeur calculée
+                if (typeof cell === 'string' && cell.startsWith('=')) {
+                    const cellAddress = { sheet: 0, row: i, col: dataT[i].indexOf(cell) };
+                    return hyperformulaInstance.getCellValue(cellAddress) || 0;
+                }
+                return cell;
+            });
+            data.push(row);
+        }
+
+        // Créer le workbook
+        const ws = XLSX.utils.aoa_to_sheet(data);
+
+        // Appliquer des styles (fusion de cellules pour les en-têtes)
+        if (!ws['!merges']) ws['!merges'] = [];
+
+        // Traiter chaque ligne d'en-tête pour les fusions
+        let rowIndex = 0;
+        for (let i = 0; i < trueNH.length; i++) {
+            let colIndex = 0;
+            for (let j = 0; j < trueNH[i].length; j++) {
+                const cell = trueNH[i][j];
+                if (typeof cell === 'object' && cell.hasOwnProperty('colspan')) {
+                    // Ajouter une fusion pour cette cellule
+                    ws['!merges'].push({
+                        s: { r: rowIndex, c: colIndex },
+                        e: { r: rowIndex, c: colIndex + cell.colspan - 1 }
+                    });
+                    colIndex += cell.colspan;
+                } else {
+                    colIndex++;
+                }
+            }
+            rowIndex++;
+        }
+
+        // Définir quelques styles pour les en-têtes
+        const headerStyle = {
+            fill: { fgColor: { rgb: "4F81BD" } },
+            font: { color: { rgb: "FFFFFF" }, bold: true },
+            alignment: { horizontal: "center", vertical: "center" }
+        };
+
+        // Créer le workbook et le télécharger
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, `Planning ${semester}`);
+        XLSX.writeFile(wb, `planning_${semester}_export.xlsx`);
+
+        toast.show('Export Excel réalisé avec succès', 'success');
+    }
+
+    function exportToCSV() {
+        const data = [];
+
+        // Même traitement pour les en-têtes et données que pour Excel
+        for (let i = 0; i < trueNH.length; i++) {
+            const headerRow = [];
+            for (let j = 0; j < trueNH[i].length; j++) {
+                const cell = trueNH[i][j];
+                if (typeof cell === 'object' && cell.hasOwnProperty('label')) {
+                    headerRow.push(cell.label);
+                    for (let k = 1; k < cell.colspan; k++) {
+                        headerRow.push('');
+                    }
+                } else {
+                    headerRow.push(cell);
+                }
+            }
+            data.push(headerRow);
+        }
+
+        for (let i = 0; i < dataT.length; i++) {
+            const row = dataT[i].map(cell => {
+                if (typeof cell === 'string' && cell.startsWith('=')) {
+                    const cellAddress = { sheet: 0, row: i, col: dataT[i].indexOf(cell) };
+                    return hyperformulaInstance.getCellValue(cellAddress) || 0;
+                }
+                return cell;
+            });
+            data.push(row);
+        }
+
+        // Convertir en CSV
+        let csvContent = data.map(row =>
+            row.map(cell =>
+                // Échapper les guillemets et entourer de guillemets si contient des virgules
+                typeof cell === 'string' && (cell.includes(',') || cell.includes('"'))
+                    ? `"${cell.replace(/"/g, '""')}"`
+                    : cell
+            ).join(',')
+        ).join('\n');
+
+        // Créer un blob et télécharger
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", `planning_${semester}_export.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        toast.show('Export CSV réalisé avec succès', 'success');
+    }
+
 
 </script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </html>

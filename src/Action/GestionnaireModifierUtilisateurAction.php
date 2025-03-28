@@ -12,34 +12,48 @@ class GestionnaireModifierUtilisateurAction {
             $nom = trim($_POST['nom']);
             $prenom = trim($_POST['prenom']);
             $email = trim($_POST['email']);
+            $telephone = trim($_POST['telephone']);
+            $role = trim($_POST['role']);
             $statut = trim($_POST['statut']);
+            $nombre_heures = trim($_POST['nombre_heures']);
+            $nb_contrainte = trim($_POST['nb_contrainte']);
+            $responsable = isset($_POST['responsable']) ? 'oui' : 'non';
 
             if (empty($nom) || empty($prenom) || empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                return "<script>alert('Veuillez remplir tous les champs obligatoires.');</script>";
+                // Retourner une erreur
+                echo json_encode(['success' => false]);
             }
 
             try {
                 $conn = connexionFactory::makeConnection();
-                $stmt = $conn->prepare("UPDATE utilisateurs 
-                                        SET nom = :nom, prenom = :prenom, email = :email, statut = :statut 
+                $stmt = $conn->prepare("UPDATE utilisateurs
+                                        SET nom = :nom, prenom = :prenom, email = :email, telephone = :telephone,
+                                            role = :role, statut = :statut, nombre_heures = :nombre_heures, responsable = :responsable
                                         WHERE id_utilisateur = :id");
                 $stmt->bindParam(':nom', $nom, PDO::PARAM_STR);
                 $stmt->bindParam(':prenom', $prenom, PDO::PARAM_STR);
                 $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+                $stmt->bindParam(':telephone', $telephone, PDO::PARAM_STR);
+                $stmt->bindParam(':role', $role, PDO::PARAM_STR);
                 $stmt->bindParam(':statut', $statut, PDO::PARAM_STR);
+                $stmt->bindParam(':nombre_heures', $nombre_heures, PDO::PARAM_INT);
+                $stmt->bindParam(':responsable', $responsable, PDO::PARAM_STR);
                 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
                 $stmt->execute();
 
-                if ($stmt->rowCount() > 0) {
-                    return "<script>
-                                alert('Utilisateur modifié avec succès.');
-                                window.location.href = 'index.php?action=gestionCompteUtilisateur';
-                            </script>";
-                } else {
-                    return "<script>alert('Aucune modification détectée.');</script>";
+                // Si c'est un enseignant, mettre à jour le nombre de contraintes
+                if ($role === 'enseignant') {
+                    $stmt = $conn->prepare("UPDATE enseignants
+                                            SET nb_contrainte = :nb_contrainte
+                                            WHERE id_utilisateur = :id");
+                    $stmt->bindParam(':nb_contrainte', $nb_contrainte, PDO::PARAM_INT);
+                    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+                    $stmt->execute();
                 }
+
+                echo json_encode(['success' => true]);
             } catch (\PDOException $e) {
-                return "<script>alert('Une erreur est survenue : " . addslashes($e->getMessage()) . "');</script>";
+                echo json_encode(['success' => false]);
             }
         }
 
@@ -52,12 +66,19 @@ class GestionnaireModifierUtilisateurAction {
 
             $selectedUser = null;
             if (isset($_GET['id'])) {
-                // Charger les détails de l'utilisateur sélectionné
                 $id = $_GET['id'];
                 $stmt = $conn->prepare("SELECT * FROM utilisateurs WHERE id_utilisateur = :id");
                 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
                 $stmt->execute();
                 $selectedUser = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                // Si c'est un enseignant, récupérer le nombre de contraintes
+                if ($selectedUser['role'] === 'enseignant') {
+                    $stmt = $conn->prepare("SELECT nb_contrainte FROM enseignants WHERE id_utilisateur = :id");
+                    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+                    $stmt->execute();
+                    $selectedUser['nb_contrainte'] = $stmt->fetchColumn();
+                }
             }
 
             // Inclure le fichier HTML
@@ -65,7 +86,7 @@ class GestionnaireModifierUtilisateurAction {
             include __DIR__ . '/../Gestionnaire/Page_EditUtilisateur.php';
             return ob_get_clean();
         } catch (\PDOException $e) {
-            return "<script>alert('Une erreur est survenue : " . addslashes($e->getMessage()) . "');</script>";
+            echo "Erreur : " . $e->getMessage();
         }
     }
 }

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mer. 26 mars 2025 à 16:51
+-- Généré le : ven. 28 mars 2025 à 02:27
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -68,7 +68,9 @@ CREATE TABLE `contraintes` (
   `heure_fin` int(11) NOT NULL,
   `creneau_preference` varchar(20) DEFAULT NULL,
   `cours_samedi` varchar(20) DEFAULT NULL,
-  `statut` varchar(20) DEFAULT 'en attente'
+  `statut` varchar(20) DEFAULT 'en attente',
+  `commentaire` text DEFAULT NULL,
+  `date_validation` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
@@ -174,7 +176,6 @@ CREATE TABLE `utilisateurs` (
   `nom` varchar(255) NOT NULL,
   `prenom` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `telephone` varchar(20) NOT NULL,
   `mot_de_passe` varchar(255) NOT NULL,
   `role` varchar(255) NOT NULL,
   `statut` varchar(255) DEFAULT NULL,
@@ -182,7 +183,8 @@ CREATE TABLE `utilisateurs` (
   `reset_token` varchar(255) DEFAULT NULL,
   `reset_token_expiration` datetime DEFAULT NULL,
   `supprimer` tinyint(1) NOT NULL DEFAULT 0,
-  `responsable` varchar(255) NOT NULL
+  `responsable` varchar(20) DEFAULT 'oui',
+  `telephone` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------

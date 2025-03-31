@@ -40,11 +40,7 @@ try {
     $choix_contraintes = $_POST['contraintes'] ?? [];
     $commentaire = $_POST['commentaire'] ?? "";
 
-    if (count($choix_contraintes) > 4) {
-        $_SESSION['error_message'] = "Vous ne pouvez sélectionner que 4 contraintes au maximum.";
-        header("Location: ../../index.php?action=enseignantFicheContrainte");
-        exit();
-    }
+
 
     if (!$ficheValidee) {
         $conn->beginTransaction();

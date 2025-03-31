@@ -145,6 +145,31 @@
             }
         }
 
+        const formationSelect = document.getElementById('formation');
+        const semestreSelect = document.getElementById('semestre');
+
+        const formationSemestreMap = {
+            "BUT S1": "1",
+            "BUT S2": "2",
+            "BUT S3": "3",
+            "BUT S4 DACS": "4",
+            "BUT S4 RA-DWM": "4",
+            "BUT S4 RA-IL": "4",
+            "BUT S5 DACS": "5",
+            "BUT S5 RA-DWM": "5",
+            "BUT S5 RA-IL": "5",
+            "BUT S6 DACS": "6",
+            "BUT S6 RA": "6",
+            "BUT S6 RA-DWM": "6",
+            "BUT S6 RA-IL": "6"
+        };
+
+        formationSelect.addEventListener('change', function() {
+            const selectedFormation = formationSelect.value;
+            const correspondingSemestre = formationSemestreMap[selectedFormation] || "";
+            semestreSelect.value = correspondingSemestre;
+        });
+
         function displayCours(cours) {
             const tableBody = document.getElementById('coursTableBody');
             tableBody.innerHTML = '';

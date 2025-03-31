@@ -28,9 +28,12 @@ $formationsDisponibles = [
     'S4 DACS',
     'S4 RA-DWM',
     'S4 RA-IL',
-    'S5-S6 DACS',
-    'S5-S6 RA-DWM',
-    'S5-S6 RA-IL'
+    'S5 DACS',
+    'S5 RA-DWM',
+    'S5 RA-IL',
+    'S6 DACS',
+    'S6 RA-DWM',
+    'S6 RA-IL'
 ];
 
 // Récupération de la formation (ou semestre) sélectionnée via GET (valeur par défaut 'S1')
@@ -88,7 +91,7 @@ $rowMapping = [
 // Chaque ligne correspond à un groupe et commence par 2 colonnes fixes : [cellule vide, nom du groupe]
 $tableData = [];
 foreach ($fixedGroups as $i => $groupeName) {
-    $tableData[$i] = ['', $groupeName];
+    $tableData[$i] = [$groupeName];
 }
 
 // Pour chaque cours, ajoute 4 colonnes (CM, TD, TP, EI) à chaque ligne
@@ -126,7 +129,7 @@ foreach ($filteredAffectations as $affectation) {
         continue;
     }
     $colOffset = $offsetMapping[$typeHeure];
-    $colIndex = 2 + $courseIndex * 4 + $colOffset;
+    $colIndex = 1 + $courseIndex * 4 + $colOffset;
     
     $idGroupe = $affectation->getIdGroupe();
     if (!isset($groupNameMapping[$idGroupe])) {
@@ -160,6 +163,15 @@ $prepopulatedData = json_encode($tableData);
 
 $coursArray = [];
 foreach ($listeCours as $cours) {
+    $responsable = '';
+    $details = $detailsCoursDTO->findByCours($cours->getIdCours());
+    if ($details) {
+        $responsableId = $details->getIdResponsableModule();
+        if (isset($enseignantsMap[$responsableId])) {
+            $responsable = $enseignantsMap[$responsableId];
+        }
+    }
+    
     $coursArray[] = [
         'idCours'       => $cours->getIdCours(),
         'formation'     => $cours->getFormation(),
@@ -170,7 +182,8 @@ foreach ($listeCours as $cours) {
         'nbHeuresCM'    => $cours->getNbHeuresCM(),
         'nbHeuresTD'    => $cours->getNbHeuresTD(),
         'nbHeuresTP'    => $cours->getNbHeuresTP(),
-        'nbHeuresEI'    => $cours->getNbHeuresEI()
+        'nbHeuresEI'    => $cours->getNbHeuresEI(),
+        'responsable'   => $responsable
     ];
 }
 
@@ -226,7 +239,10 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
         margin-right: 10px;
     }
     .row.mb-3 {
+        display: flex;
         margin-bottom: 1rem;
+        justify-content: center;
+        align-items: center;
     }
     .form-select.w-25 {
         width: 25%;
@@ -252,7 +268,6 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
 </head>
 <body>
 <div id="main-content">
-  <h1>Fiche Répartition</h1>
   <form method="GET" action="">
     <div class="row mb-3">
       <label for="semester" class="form-label text-white">Choisir le semestre :</label>
@@ -268,8 +283,6 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
       </select>
     </div>
   </form>
-  <h2>Semestre <?php echo htmlspecialchars($formationCode); ?></h2>
-  <!-- Conteneur principal dans lequel seront ajoutés plusieurs tableaux -->
   <div id="hot"></div>
   <div id="voeuRemark"></div>
   <button id="saveButton" class="btn btn-primary mt-3">Enregistrer les Affectations</button>
@@ -298,6 +311,7 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
     const semester = '<?php echo htmlspecialchars($formationCode); ?>';
     const enseignantsParCours = <?php echo $enseignantsParCoursJson; ?>;
     const voeuMapping = <?php echo $voeuMappingJson; ?>;
+    console.log(listeCours);
 
     // Paramètre : nombre de cours par tableau (chunk)
     const coursesPerChunk = 3;
@@ -317,31 +331,32 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
       const tableDataChunk = data.map(row => {
         const startIndex = 2 + chunkStart * 4;
         const endIndex = startIndex + (coursesChunk.length * 4);
-        return row.slice(0, 2).concat(row.slice(startIndex, endIndex));
+        return row.slice(0, 1).concat(row.slice(1 + chunkStart * 4, 1 + chunkStart * 4 + coursesChunk.length * 4));
+
       });
 
-      const premLigne = [ 'Semestre ' + semester, 'Ressource + SAE' ];
+      const premLigne = ['Ressource + SAE' ];
       coursesChunk.forEach(cours => {
         premLigne.push({ label: cours.nomCours, colspan: 4 });
       });
       const responsable = [];
-      for (let i = 0; i < coursesChunk.length; i++) {
-        responsable.push({ label: '', colspan: 4 });
-      }
-      const deuxLigne = ['2024-2025', 'Responsable', ...responsable];
-      const deuxDemiLigne = ['', 'Code Cours'];
+      coursesChunk.forEach(cours => {
+      responsable.push({ label: cours.responsable || '', colspan: 4 });
+      });
+      const deuxLigne = ['Responsable', ...responsable];
+      const deuxDemiLigne = ['Code Cours'];
       coursesChunk.forEach(cours => {
         deuxDemiLigne.push({ label: cours.codeCours, colspan: 4 });
       });
-      const troisLigne = ['', 'Heures'];
+      const troisLigne = ['Heures'];
       coursesChunk.forEach(() => {
         troisLigne.push({ label: 'CM', colspan: 1 });
         troisLigne.push({ label: 'TD', colspan: 1 });
         troisLigne.push({ label: 'TP', colspan: 1 });
         troisLigne.push({ label: 'EI', colspan: 1 });
       });
-      const cinqLigne = ['', 'Heures totales Etudiants'];
-      const sixLigne = ['', 'Heures totales Enseignants'];
+      const cinqLigne = ['Heures totales Etudiants'];
+      const sixLigne = ['Heures totales Enseignants'];
       coursesChunk.forEach(cours => {
         const totalEtud = cours.nbHeuresCM + cours.nbHeuresTD + cours.nbHeuresTP + cours.nbHeuresEI;
         cinqLigne.push({ label: totalEtud, colspan: 4 });
@@ -353,7 +368,7 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
       // Définition des colonnes pour ce chunk
       const columnsDefs = [
         { type: 'text', readOnly: true },
-        { type: 'text', readOnly: true },
+
       ];
       coursesChunk.forEach(cours => {
         for (let i = 0; i < 4; i++) {

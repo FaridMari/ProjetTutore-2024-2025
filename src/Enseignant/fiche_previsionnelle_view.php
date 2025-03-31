@@ -148,6 +148,9 @@
         font-size: 14px;
     }
     
+    #repartition-content {
+      margin-left: 20px;
+    }
   </style>
 </head>
 <body>
@@ -781,7 +784,7 @@
       // Exécuter à la fin du chargement de la page
       initRepartition();
 
-      // --- Ajout du déclenchement des 'change' sur les selects pré-remplis ---
+      // Ajout du déclenchement des 'change' sur les selects pré-remplis ---
       document.querySelectorAll('select[name="septembre[ressource][]"], select[name="janvier[ressource][]"]').forEach(function(selectElem) {
         if (selectElem.value !== "") {
           var coursInfo = window.coursData.find(function(c) {
@@ -793,9 +796,8 @@
           selectElem.dispatchEvent(new Event('change'));
         }
       });
-      // ------------------------------------------------------------------------
 
-      // --- Ajout d'un écouteur d'événement global pour supprimer les lignes ---
+      // Ajout d'un écouteur d'événement global pour supprimer les lignes ---
       document.addEventListener('click', function(e) {
         if (e.target.classList.contains('remove-line')) {
           var row = e.target.closest('tr');
@@ -807,7 +809,7 @@
           updateDeptInfoTotals();
         }
       });
-      // ------------------------------------------------------------------------
+  
 
       // Réexécuter après chaque modification majeure du DOM
       const bodyObserver = new MutationObserver(mutations => {

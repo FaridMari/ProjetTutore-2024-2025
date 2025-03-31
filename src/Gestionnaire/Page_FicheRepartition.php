@@ -258,6 +258,85 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
         font-size: 16px;
     }
     
+    .export-buttons {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 20px;
+        gap: 15px;
+        width: 100%;
+    }
+
+    .export-btn {
+        padding: 10px 18px;
+        background-color: #3a86ff;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4em;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 10%;
+    }
+
+    .export-btn:hover {
+        background-color: #2563eb;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .export-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Style spécifique pour chaque bouton */
+    #exportCSV {
+        background-color: #4caf50;
+    }
+
+    #exportCSV:hover {
+        background-color: #388e3c;
+    }
+
+    #exportXLSX {
+        background-color: #2196f3;
+    }
+
+    #exportXLSX:hover {
+        background-color: #1565c0;
+    }
+
+    /* Ajouter des icônes avec pseudo-éléments */
+    .export-btn {
+        padding: 8px 16px;        /
+        background-color: #3a86ff;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2em;          
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: auto;               
+    }
+
+    #exportCSV::before {
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM9 17H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V7h2v2zm6 8h-4v-2h4v2zm0-4h-4v-2h4v2zm-1-5V4l5 5h-5z"/></svg>');
+    }
+
+    #exportXLSX::before {
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM9 17H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V7h2v2zm6 8h-4v-2h4v2zm0-4h-4v-2h4v2zm-1-5V4l5 5h-5z"/></svg>');
+    }
+
   
 
 </style>
@@ -281,6 +360,10 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
           }
         ?>
       </select>
+    </div>
+    <div class="export-buttons">
+        <button id="exportCSV" class="export-btn">Export CSV</button>
+        <button id="exportXLSX" class="export-btn">Export XLSX</button>
     </div>
   </form>
   <div id="hot"></div>

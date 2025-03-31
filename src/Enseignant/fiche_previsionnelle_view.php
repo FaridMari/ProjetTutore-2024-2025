@@ -681,7 +681,7 @@
                 html += "<h3>Cours sélectionnés</h3>";
                 html += "<ul>";
                 Object.values(allCourses).forEach(course => {
-                    html += `<li>${course.nom} (${course.heuresSemaine}h/semaine - Semestre ${course.semestre})</li>`;
+                    html += `<li>${course.nom} - Semestre ${course.semestre}</li>`;
                 });
                 html += "</ul></div>";
                 

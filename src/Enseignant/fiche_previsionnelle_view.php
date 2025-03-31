@@ -450,15 +450,14 @@
             var table = row ? row.closest('table') : null;
             if (row) row.remove();
             if (table && table.id) {
-            updateTotals(table.id);
+              updateTotals(table.id);
             }
             updateDeptInfoTotals();
         });
         var tbody = document.getElementById('table-' + type).querySelector('tbody');
         var totalRow = tbody.querySelector('tr.total-row');
         tbody.insertBefore(newRow, totalRow);
-    }
-
+      }
       
       // Calcul des totaux pour les voeux (septembre/janvier)
       function updateTotals(tableId) {
@@ -597,7 +596,7 @@
       }
       
       // Pour les selects déjà présents au chargement du DOM
-    document.querySelectorAll('table select').forEach(function(selectElem) {
+      document.querySelectorAll('table select').forEach(function(selectElem) {
         selectElem.addEventListener('change', function() {
             updateLine(this);
             fetchRepartition();
@@ -605,21 +604,8 @@
         if (selectElem.value !== "") {
             updateLine(selectElem);
         }
-    });
-
-      
-      document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('remove-line')) {
-          var row = e.target.closest('tr');
-          var table = row ? row.closest('table') : null;
-          if (row) row.remove();
-          if (table && table.id) {
-            updateTotals(table.id);
-          }
-          updateDeptInfoTotals();
-        }
       });
-      
+
       // Fonction pour récupérer la répartition des heures via AJAX
       function fetchRepartition() {
         var selectedCourseIds = [];
@@ -721,10 +707,10 @@
             console.error('Erreur :', error);
             document.getElementById('repartition-content').innerHTML = "<p>Une erreur s'est produite lors de la récupération des répartitions.</p>";
         });
-    }
+      }
 
-    // Observer pour surveiller la suppression de lignes du tableau
-    function setupTableRowObserver() {
+      // Observer pour surveiller la suppression de lignes du tableau
+      function setupTableRowObserver() {
         // Trouver tous les tableaux qui contiennent nos selects
         const tables = Array.from(document.querySelectorAll('table')).filter(table => {
             return table.querySelectorAll('select[name="septembre[ressource][]"], select[name="janvier[ressource][]"]').length > 0;
@@ -753,32 +739,32 @@
             const tbody = table.querySelector('tbody') || table;
             observer.observe(tbody, { childList: true, subtree: true });
         });
-    }
+      }
 
-    // Fonction pour ajouter les écouteurs aux boutons de suppression de ligne
-    function attachRowDeleteButtons() {
+      // Fonction pour ajouter les écouteurs aux boutons de suppression de ligne
+      function attachRowDeleteButtons() {
         // Trouver tous les boutons qui pourraient supprimer une ligne
         document.querySelectorAll('button.delete-row, button.remove-row, button.btn-danger, .delete-btn, [data-action="delete"], [data-action="remove"]').forEach(button => {
             button.removeEventListener('click', onRowDeleted);
             button.addEventListener('click', onRowDeleted);
         });
-    }
+      }
 
-    // Fonction appelée lorsqu'une ligne est supprimée
-    function onRowDeleted() {
+      // Fonction appelée lorsqu'une ligne est supprimée
+      function onRowDeleted() {
         setTimeout(fetchRepartition, 50);  // Petit délai pour laisser le DOM se mettre à jour
-    }
+      }
 
-    // Attacher aux événements de changement de select
-    function attachSelectEvents() {
+      // Attacher aux événements de changement de select
+      function attachSelectEvents() {
         document.querySelectorAll('select[name="septembre[ressource][]"], select[name="janvier[ressource][]"]').forEach(selectElem => {
             selectElem.removeEventListener('change', fetchRepartition);
             selectElem.addEventListener('change', fetchRepartition);
         });
-    }
+      }
 
-    // Fonction d'initialisation générale
-    function initRepartition() {
+      // Fonction d'initialisation générale
+      function initRepartition() {
         attachSelectEvents();
         attachRowDeleteButtons();
         setupTableRowObserver();
@@ -790,13 +776,41 @@
         
         // Exécuter fetchRepartition une première fois
         fetchRepartition();
-    }
+      }
 
-    // Exécuter à la fin du chargement de la page
-    document.addEventListener('DOMContentLoaded', initRepartition);
+      // Exécuter à la fin du chargement de la page
+      initRepartition();
 
-    // Réexécuter après chaque modification majeure du DOM
-    const bodyObserver = new MutationObserver(mutations => {
+      // --- Ajout du déclenchement des 'change' sur les selects pré-remplis ---
+      document.querySelectorAll('select[name="septembre[ressource][]"], select[name="janvier[ressource][]"]').forEach(function(selectElem) {
+        if (selectElem.value !== "") {
+          var coursInfo = window.coursData.find(function(c) {
+            return c.nomCours === selectElem.value;
+          });
+          if (coursInfo) {
+            selectElem.options[selectElem.selectedIndex].setAttribute('data-id', coursInfo.idCours);
+          }
+          selectElem.dispatchEvent(new Event('change'));
+        }
+      });
+      // ------------------------------------------------------------------------
+
+      // --- Ajout d'un écouteur d'événement global pour supprimer les lignes ---
+      document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-line')) {
+          var row = e.target.closest('tr');
+          var table = row ? row.closest('table') : null;
+          if (row) row.remove();
+          if (table && table.id) {
+            updateTotals(table.id);
+          }
+          updateDeptInfoTotals();
+        }
+      });
+      // ------------------------------------------------------------------------
+
+      // Réexécuter après chaque modification majeure du DOM
+      const bodyObserver = new MutationObserver(mutations => {
         let significantChange = false;
         
         mutations.forEach(mutation => {
@@ -827,10 +841,10 @@
             attachSelectEvents();
             attachRowDeleteButtons();
         }
-    });
+      });
 
-    // Observer le corps entier du document pour les changements majeurs
-    bodyObserver.observe(document.body, { childList: true, subtree: true });
+      // Observer le corps entier du document pour les changements majeurs
+      bodyObserver.observe(document.body, { childList: true, subtree: true });
   
     });
   </script>

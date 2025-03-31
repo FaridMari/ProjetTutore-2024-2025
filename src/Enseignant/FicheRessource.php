@@ -191,7 +191,14 @@ $verrouille = ($fiche && $fiche['statut'] === 'valide');
             <div class="mb-3">
                 <label for="dsDetails" class="form-label">Détail des réservations :</label>
                 <textarea class="form-control" id="dsDetails" name="dsDetails" rows="3"
-                          placeholder="Indiquez les semaines et la durée pour chaque DS" required></textarea>
+                          placeholder="Indiquez les semaines et la durée pour chaque DS"></textarea>
+            </div>
+
+
+            <div class="mb-3">
+                <label for="scheduleDetails" class="form-label">Commentaire libre :</label>
+                <textarea  class="form-control" id="scheduleDetails" name="scheduleDetails"
+                       placeholder=""></textarea>
             </div>
 
             <!-- 3. Salles 016 -->
@@ -200,7 +207,7 @@ $verrouille = ($fiche && $fiche['statut'] === 'valide');
                 <label class="form-label">Souhaitez-vous intervenir dans la salle 016 ?</label>
                 <div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="salle016" id="prefOui" value="Oui" required>
+                        <input class="form-check-input" type="radio" name="salle016" id="prefOui" value="Oui">
                         <label class="form-check-label" for="prefOui">Oui, de préférence</label>
                     </div>
                     <div class="form-check">
@@ -208,7 +215,7 @@ $verrouille = ($fiche && $fiche['statut'] === 'valide');
                         <label class="form-check-label" for="prefIndiff">Indifférent</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="salle016" id="prefNon" value="Non" required>
+                        <input class="form-check-input" type="radio" name="salle016" id="prefNon" value="Non" >
                         <label class="form-check-label" for="prefNon">Non, salle non adaptée</label>
                     </div>
                 </div>
@@ -220,25 +227,21 @@ $verrouille = ($fiche && $fiche['statut'] === 'valide');
                 <label class="form-label">Système souhaité :</label>
                 <div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="system" id="windows" value="Windows" required>
+                        <input class="form-check-input" type="radio" name="system" id="windows" value="Windows" >
                         <label class="form-check-label" for="windows">Windows</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="system" id="linux" value="Linux" required>
+                        <input class="form-check-input" type="radio" name="system" id="linux" value="Linux" >
                         <label class="form-check-label" for="linux">Linux</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="system" id="indiff" value="Indifférent" required>
+                        <input class="form-check-input" type="radio" name="system" id="indiff" value="Indifférent" >
                         <label class="form-check-label" for="indiff">Indifférent</label>
                     </div>
                 </div>
             </div>
 
-            <div class="mb-3">
-                <label for="scheduleDetails" class="form-label">Période et nombre d'heures par semaine :</label>
-                <input type="text" class="form-control" id="scheduleDetails" name="scheduleDetails"
-                       placeholder="Exemple : S36 à S39 : 2h">
-            </div>
+
 
             <!-- Bouton d’envoi global -->
             <button type="submit" class="btn btn-primary">Enregistrer et valider</button>
@@ -338,7 +341,6 @@ $verrouille = ($fiche && $fiche['statut'] === 'valide');
                 updateRepartitionFields([]);
                 return;
             }
-
             fetch(`src/Enseignant/get_repartitions.php?nom_cours=${encodeURIComponent(nomCours)}`)
                 .then(response => {
                     if (!response.ok) throw new Error(`Erreur HTTP ! statut : ${response.status}`);
@@ -349,6 +351,7 @@ $verrouille = ($fiche && $fiche['statut'] === 'valide');
                         console.error('Erreur :', data.error);
                         updateRepartitionFields([]);
                     } else {
+
                         updateRepartitionFields(data);
                         console.log(data); // donnees dans la console
                     }
@@ -358,15 +361,17 @@ $verrouille = ($fiche && $fiche['statut'] === 'valide');
 
         // met à jour les champs de répartition
         function updateRepartitionFields(repartitions) {
+            // Trier les répartitions par semaine de début
+            repartitions.sort((a, b) => (a.semaine_debut || 0) - (b.semaine_debut || 0));
+
             // Récupère le nom et le code de la ressource depuis le DOM
             const resourceNameElement = document.getElementById('resourceName');
             const resourceName = resourceNameElement.options[resourceNameElement.selectedIndex]?.text || 'N/A';
 
             const hoursDistribution = document.getElementById('hours-distribution');
-
             const parent = hoursDistribution.parentElement;
 
-            // efface ce qu'il y a avant
+            // Efface ce qu'il y a avant
             hoursDistribution.innerHTML = '';
 
             const existingCourseInfo = document.getElementById('course-overview');
@@ -391,10 +396,18 @@ $verrouille = ($fiche && $fiche['statut'] === 'valide');
                 const repartitionDiv = document.createElement('div');
                 repartitionDiv.classList.add('repartition-entry', 'fade-in');
                 repartitionDiv.innerHTML = `
-            <p><strong>Semaine de début :</strong> <span>${repartition.semaine_debut || ''}</span></p>
-            <p><strong>Semaine de fin :</strong> <span>${repartition.semaine_fin || ''}</span></p>
-            <p><strong>Type d'heure :</strong> <span>${repartition.type_heure || ''}</span></p>
-            <p><strong>Heures par semaine :</strong> <span>${repartition.nb_heures_par_semaine || ''}</span></p>
+            <table class="table table-striped">
+                <tr>
+                    <th>Semaine de début</th>
+                    <td>${repartition.semaine_debut || ''}</td>
+                    <th>Semaine de fin</th>
+                    <td>${repartition.semaine_fin || ''}</td>
+                    <th>Type d'heure</th>
+                    <td>${repartition.type_heure || ''}</td>
+                    <th>Heures par semaine</th>
+                    <td>${repartition.nb_heures_par_semaine || ''}</td>
+                </tr>
+            </table>
         `;
                 hoursDistribution.appendChild(repartitionDiv);
             });
@@ -403,10 +416,13 @@ $verrouille = ($fiche && $fiche['statut'] === 'valide');
         // Synchronise le code ressource lorsque le nom est sélectionné
         resourceNameSelect.addEventListener('change', function () {
             const selectedName = this.value;
-            const matchedCourse = courseData.find(course => course.nom_cours === selectedName);
+            console.log(selectedName);
+            console.log(courseData)
+            const matchedCourse = courseData.find(course => course.code_cours === selectedName);
             if (matchedCourse) {
                 fetchAndDisplayRepartitions(matchedCourse.nom_cours);
             } else {
+                console.log("bonjour");
                 if (courseNameCode) {
                     courseNameCode.textContent = noDataMessage;
                 }

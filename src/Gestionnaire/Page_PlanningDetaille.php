@@ -694,6 +694,25 @@
                 cellProperties.className = 'total-row';
             }
 
+            if (row === dataT.length - 1) { // Dernière ligne (Total)
+                const cellAddress = { sheet: 0, row, col };
+                const totalValue = hyperformulaInstance.getCellValue(cellAddress); // Obtenir la valeur calculée
+
+                // Obtenir la valeur de la ligne "Heures totales Etudiants"
+                let heuresEtudiants = trueNH[6][col]
+
+                if (typeof heuresEtudiants === 'object') {
+                    heuresEtudiants = heuresEtudiants.label;
+                }
+
+                if (totalValue > heuresEtudiants) {
+                    cellProperties.className = (cellProperties.className || '') + ' total-exceeded';
+                }
+                else {
+                    cellProperties.className = ' ';
+                }
+            }
+
             return cellProperties;
         },
         afterGetColHeader: function() {

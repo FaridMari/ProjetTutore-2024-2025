@@ -93,6 +93,64 @@
       outline: none;
       border: none;
     }
+    
+    .weeks-grid {
+        font-family: Arial, sans-serif;
+        margin: 20px 0;
+    }
+
+    .selected-courses {
+        margin-bottom: 20px;
+    }
+
+    .selected-courses h3 {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    .selected-courses ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .selected-courses li {
+        padding: 5px 0;
+    }
+
+    .week-boxes {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 10px;
+    }
+
+    .week-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 80px;
+    border-radius: 6px;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+    }
+
+    .week-number {
+        font-weight: bold;
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+
+    .week-hours {
+        font-size: 14px;
+    }
+    
+    #repartition-content {
+      margin-left: 20px;
+    }
   </style>
 </head>
 <body>
@@ -395,15 +453,14 @@
             var table = row ? row.closest('table') : null;
             if (row) row.remove();
             if (table && table.id) {
-            updateTotals(table.id);
+              updateTotals(table.id);
             }
             updateDeptInfoTotals();
         });
         var tbody = document.getElementById('table-' + type).querySelector('tbody');
         var totalRow = tbody.querySelector('tr.total-row');
         tbody.insertBefore(newRow, totalRow);
-    }
-
+      }
       
       // Calcul des totaux pour les voeux (septembre/janvier)
       function updateTotals(tableId) {
@@ -542,7 +599,7 @@
       }
       
       // Pour les selects déjà présents au chargement du DOM
-    document.querySelectorAll('table select').forEach(function(selectElem) {
+      document.querySelectorAll('table select').forEach(function(selectElem) {
         selectElem.addEventListener('change', function() {
             updateLine(this);
             fetchRepartition();
@@ -550,9 +607,197 @@
         if (selectElem.value !== "") {
             updateLine(selectElem);
         }
-    });
+      });
 
-      
+      // Fonction pour récupérer la répartition des heures via AJAX
+      function fetchRepartition() {
+        var selectedCourseIds = [];
+        // Parcourir les selects de la fiche prévisionnelle (septembre et janvier)
+        document.querySelectorAll('select[name="septembre[ressource][]"], select[name="janvier[ressource][]"]').forEach(function(selectElem) {
+            if (selectElem.value !== "") {
+                // On récupère l'attribut data-id
+                var courseId = selectElem.options[selectElem.selectedIndex].getAttribute('data-id');
+                if (courseId && !selectedCourseIds.includes(courseId)) {
+                    selectedCourseIds.push(courseId);
+                }
+            }
+        });
+        
+        if(selectedCourseIds.length === 0) {
+            document.getElementById('repartition-content').innerHTML = "<p>Aucun cours sélectionné.</p>";
+            return;
+        }
+        
+        fetch('src/Enseignant/get_repartitions_service.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ course_ids: selectedCourseIds })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Création d'un tableau pour stocker les heures par semaine
+            const weeklyHours = {};
+            const allCourses = {};
+            
+            // Trouver les semaines min et max pour créer toutes les cases
+            let minWeek = 52;
+            let maxWeek = 1;
+            
+            // Parcourir les données pour calculer les heures par semaine
+            data.forEach(item => {
+                // Stocker les informations de cours
+                if (!allCourses[item.nomCours]) {
+                    allCourses[item.nomCours] = {
+                        nom: item.nomCours,
+                        semestre: item.semestre,
+                        heuresSemaine: item.nbHeuresSemaine
+                    };
+                }
+                
+                // Calculer les heures pour chaque semaine du cours
+                const startWeek = parseInt(item.semaineDebut);
+                const endWeek = parseInt(item.semaineFin);
+                
+                // Mettre à jour les semaines min et max
+                if (startWeek < minWeek) minWeek = startWeek;
+                if (endWeek > maxWeek) maxWeek = endWeek;
+                
+                // Attribuer les heures à chaque semaine
+                for (let week = startWeek; week <= endWeek; week++) {
+                    if (!weeklyHours[week]) {
+                        weeklyHours[week] = 0;
+                    }
+                    weeklyHours[week] += parseFloat(item.nbHeuresSemaine);
+                }
+            });
+            
+            let html = "";
+            
+            if (Object.keys(weeklyHours).length > 0) {
+                html += "<div class='weeks-grid'>";
+                
+                // Liste des cours sélectionnés en haut
+                html += "<div class='selected-courses'>";
+                html += "<h3>Cours sélectionnés</h3>";
+                html += "<ul>";
+                Object.values(allCourses).forEach(course => {
+                    html += `<li>${course.nom} - Semestre ${course.semestre}</li>`;
+                });
+                html += "</ul></div>";
+                
+                // Grille des semaines
+                html += "<div class='week-boxes'>";
+                
+                // Créer une case pour chaque semaine
+                for (let week = minWeek; week <= maxWeek; week++) {
+                    const hours = weeklyHours[week] || 0;
+                    
+                    // Utiliser une couleur fixe pour chaque case
+                    html += `<div class='week-box'>
+                        <div class='week-number'>S${week}</div>
+                        <div class='week-hours'>${hours.toFixed(1)}h</div>
+                    </div>`;
+                }
+                
+                html += "</div></div>";
+            } else {
+                html = "<p>Aucune répartition trouvée pour les cours sélectionnés.</p>";
+            }
+            
+            document.getElementById('repartition-content').innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Erreur :', error);
+            document.getElementById('repartition-content').innerHTML = "<p>Une erreur s'est produite lors de la récupération des répartitions.</p>";
+        });
+      }
+
+      // Observer pour surveiller la suppression de lignes du tableau
+      function setupTableRowObserver() {
+        // Trouver tous les tableaux qui contiennent nos selects
+        const tables = Array.from(document.querySelectorAll('table')).filter(table => {
+            return table.querySelectorAll('select[name="septembre[ressource][]"], select[name="janvier[ressource][]"]').length > 0;
+        });
+        
+        if (tables.length === 0) return;
+        
+        // Pour chaque tableau, surveiller les modifications
+        tables.forEach(table => {
+            const observer = new MutationObserver(mutations => {
+                let shouldUpdate = false;
+                
+                mutations.forEach(mutation => {
+                    // Vérifier si des nœuds ont été supprimés (lignes de tableau)
+                    if (mutation.type === 'childList' && mutation.removedNodes.length > 0) {
+                        shouldUpdate = true;
+                    }
+                });
+                
+                if (shouldUpdate) {
+                    fetchRepartition();
+                }
+            });
+            
+            // Observer le corps du tableau pour les suppressions de lignes
+            const tbody = table.querySelector('tbody') || table;
+            observer.observe(tbody, { childList: true, subtree: true });
+        });
+      }
+
+      // Fonction pour ajouter les écouteurs aux boutons de suppression de ligne
+      function attachRowDeleteButtons() {
+        // Trouver tous les boutons qui pourraient supprimer une ligne
+        document.querySelectorAll('button.delete-row, button.remove-row, button.btn-danger, .delete-btn, [data-action="delete"], [data-action="remove"]').forEach(button => {
+            button.removeEventListener('click', onRowDeleted);
+            button.addEventListener('click', onRowDeleted);
+        });
+      }
+
+      // Fonction appelée lorsqu'une ligne est supprimée
+      function onRowDeleted() {
+        setTimeout(fetchRepartition, 50);  // Petit délai pour laisser le DOM se mettre à jour
+      }
+
+      // Attacher aux événements de changement de select
+      function attachSelectEvents() {
+        document.querySelectorAll('select[name="septembre[ressource][]"], select[name="janvier[ressource][]"]').forEach(selectElem => {
+            selectElem.removeEventListener('change', fetchRepartition);
+            selectElem.addEventListener('change', fetchRepartition);
+        });
+      }
+
+      // Fonction d'initialisation générale
+      function initRepartition() {
+        attachSelectEvents();
+        attachRowDeleteButtons();
+        setupTableRowObserver();
+        
+        // Capture les événements spécifiques aux frameworks JS courants
+        document.addEventListener('rowDeleted', fetchRepartition);
+        document.addEventListener('tableUpdated', fetchRepartition);
+        document.addEventListener('courseRemoved', fetchRepartition);
+        
+        // Exécuter fetchRepartition une première fois
+        fetchRepartition();
+      }
+
+      // Exécuter à la fin du chargement de la page
+      initRepartition();
+
+      // Ajout du déclenchement des 'change' sur les selects pré-remplis ---
+      document.querySelectorAll('select[name="septembre[ressource][]"], select[name="janvier[ressource][]"]').forEach(function(selectElem) {
+        if (selectElem.value !== "") {
+          var coursInfo = window.coursData.find(function(c) {
+            return c.nomCours === selectElem.value;
+          });
+          if (coursInfo) {
+            selectElem.options[selectElem.selectedIndex].setAttribute('data-id', coursInfo.idCours);
+          }
+          selectElem.dispatchEvent(new Event('change'));
+        }
+      });
+
+      // Ajout d'un écouteur d'événement global pour supprimer les lignes ---
       document.addEventListener('click', function(e) {
         if (e.target.classList.contains('remove-line')) {
           var row = e.target.closest('tr');
@@ -564,61 +809,44 @@
           updateDeptInfoTotals();
         }
       });
-      
-      // Fonction pour récupérer la répartition des heures via AJAX
-      function fetchRepartition() {
-        var selectedCourseIds = [];
-        // Parcourir les selects de la fiche prévisionnelle (septembre et janvier)
-        document.querySelectorAll('select[name="septembre[ressource][]"], select[name="janvier[ressource][]"]').forEach(function(selectElem) {
-          if (selectElem.value !== "") {
-            // On récupère l'attribut data-id
-            var courseId = selectElem.options[selectElem.selectedIndex].getAttribute('data-id');
-            if (courseId && !selectedCourseIds.includes(courseId)) {
-              selectedCourseIds.push(courseId);
+  
+
+      // Réexécuter après chaque modification majeure du DOM
+      const bodyObserver = new MutationObserver(mutations => {
+        let significantChange = false;
+        
+        mutations.forEach(mutation => {
+            if (mutation.type === 'childList' && 
+                (mutation.addedNodes.length > 0 || mutation.removedNodes.length > 0)) {
+                // Vérifier s'il y a eu des changements importants (comme l'ajout/suppression de selects ou boutons)
+                const addedSelects = Array.from(mutation.addedNodes).some(node => 
+                    node.nodeType === 1 && (
+                        node.tagName === 'SELECT' || 
+                        node.querySelectorAll('select').length > 0
+                    )
+                );
+                
+                const addedButtons = Array.from(mutation.addedNodes).some(node => 
+                    node.nodeType === 1 && (
+                        node.tagName === 'BUTTON' || 
+                        node.querySelectorAll('button').length > 0
+                    )
+                );
+                
+                if (addedSelects || addedButtons) {
+                    significantChange = true;
+                }
             }
-          }
         });
         
-        if(selectedCourseIds.length === 0) {
-          document.getElementById('repartition-content').innerHTML = "<p>Aucun cours sélectionné.</p>";
-          return;
+        if (significantChange) {
+            attachSelectEvents();
+            attachRowDeleteButtons();
         }
-        
-        fetch('src/Enseignant/get_repartitions_service.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ course_ids: selectedCourseIds })
-        })
-        .then(response => response.json())
-        .then(data => {
-          var html = "";
-          if(data.length > 0) {
-            html += "<table class='table table-bordered'>";
-            html += "<thead><tr><th>Cours</th><th>Semaine Début</th><th>Semaine Fin</th><th>Heures/Semaine</th><th>Semestre</th></tr></thead><tbody>";
-            data.forEach(function(item) {
-              html += "<tr>";
-              html += "<td>" + item.nomCours + "</td>";
-              html += "<td>" + item.semaineDebut + "</td>";
-              html += "<td>" + item.semaineFin + "</td>";
-              html += "<td>" + item.nbHeuresSemaine + "</td>";
-              html += "<td>" + item.semestre + "</td>";
-              html += "</tr>";
-            });
-            html += "</tbody></table>";
-          } else {
-            html = "<p>Aucune répartition trouvée pour les cours sélectionnés.</p>";
-          }
-          document.getElementById('repartition-content').innerHTML = html;
-        })
-        .catch(error => {
-          console.error('Erreur :', error);
-        });
-      }
-      
-      // Attacher l'événement "change" sur les selects de cours pour mettre à jour la répartition
-      document.querySelectorAll('select[name="septembre[ressource][]"], select[name="janvier[ressource][]"]').forEach(function(selectElem) {
-        selectElem.addEventListener('change', fetchRepartition);
       });
+
+      // Observer le corps entier du document pour les changements majeurs
+      bodyObserver.observe(document.body, { childList: true, subtree: true });
   
     });
   </script>

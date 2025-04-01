@@ -9,28 +9,30 @@
 <div class="container" id="main-content">
     <div class="card mt-4">
         <div class="card-header">
-            <h5 class="card-title">Enregistrer les données actuelles</h5>
+            <h5 class="card-title">Recommencer une nouvelle année</h5>
         </div>
         <div class="card-body">
             <form id="saveCurrentDataForm">
                 <div class="form-group row">
+                    <label>Les données seront archivées pour l'année que vous renseignerez. Elles seront remises à leur état initial, et les fiches seront pré-remplies mais dévalidées.</label>
                     <label for="currentYear" class="col-sm-2 col-form-label">Année Actuelle</label>
                     <div class="col-sm-10">
                         <input type="number" class="form-control" id="currentYear" placeholder="Entrez l'année actuelle">
                     </div>
                 </div>
-                <button type="button" class="btn btn-primary" id="saveCurrentData">Enregistrer</button>
+                <button type="button" class="btn btn-primary" id="saveCurrentData">Recommencer l'année</button>
             </form>
         </div>
     </div>
 
     <div class="card mt-4">
         <div class="card-header">
-            <h5 class="card-title">Vider et abonder la base de données</h5>
+            <h5 class="card-title">Recommencer une nouvelle année à partir d'une année antérieure</h5>
         </div>
         <div class="card-body">
             <form id="importOldDataForm">
                 <div class="form-group row">
+                    <label>Les données actuelles ne seront pas archivées. Si vous souhaitez les conserver, vous devez utiliser l'autre bouton. Les données seront remises à l'état de l'année que vous avez choisie, et les fiches seront pré-remplies mais invalidées.</label>
                     <label for="oldYear" class="col-sm-2 col-form-label">Année Ancienne</label>
                     <div class="col-sm-10">
                         <input type="number" class="form-control" id="oldYear" placeholder="Entrez l'année ancienne à importer">
@@ -69,25 +71,27 @@
                 return;
             }
 
-            fetch('src/gestionnaire/RequeteBD_SaveAllData.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ year: currentYear })
-            })
-                .then(response => response.json())
-                .then(result => {
-                    if (result.success) {
-                        toast.show('Données actuelles enregistrées avec succès!');
-                    } else {
-                        toast.show('Erreur lors de l\'enregistrement des données actuelles.', 'error');
-                    }
+            if (confirm('Êtes-vous sûr de vouloir continuer cette action ? Cette action est irréversible.')) {
+                fetch('src/gestionnaire/RequeteBD_SaveAllData.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ year: currentYear })
                 })
-                .catch(error => {
-                    console.error('Erreur:', error);
-                    toast.show('Une erreur s\'est produite.', 'error');
-                });
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.success) {
+                            toast.show('Données actuelles enregistrées avec succès!');
+                        } else {
+                            toast.show('Erreur lors de l\'enregistrement des données actuelles.', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur:', error);
+                        toast.show('Une erreur s\'est produite.', 'error');
+                    });
+            }
         });
 
         document.getElementById('clearAndImportData').addEventListener('click', function() {
@@ -98,25 +102,27 @@
                 return;
             }
 
-            fetch('src/gestionnaire/RequeteBD_ReprendreHistorique.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ year: oldYear })
-            })
-                .then(response => response.json())
-                .then(result => {
-                    if (result.success) {
-                        toast.show('Base de données vidée et abondée avec succès!');
-                    } else {
-                        toast.show('Erreur lors du vidage et de l\'importation des données.', 'error');
-                    }
+            if (confirm('Êtes-vous sûr de vouloir continuer cette action ? Cette action est irréversible.')) {
+                fetch('src/gestionnaire/RequeteBD_ReprendreHistorique.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ year: oldYear })
                 })
-                .catch(error => {
-                    console.error('Erreur:', error);
-                    toast.show('Une erreur s\'est produite.', 'error');
-                });
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.success) {
+                            toast.show('Base de données vidée et abondée avec succès!');
+                        } else {
+                            toast.show('Erreur lors du vidage et de l\'importation des données.', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur:', error);
+                        toast.show('Une erreur s\'est produite.', 'error');
+                    });
+            }
         });
     });
 </script>

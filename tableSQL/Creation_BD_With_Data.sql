@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : ven. 28 mars 2025 à 04:27
+-- Généré le : mar. 01 avr. 2025 à 17:14
 -- Version du serveur : 10.4.32-MariaDB
--- Version de PHP : 8.2.12
+-- Version de PHP : 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -41,16 +41,16 @@ CREATE TABLE `affectations` (
 --
 
 INSERT INTO `affectations` (`id_affectation`, `id_enseignant`, `id_cours`, `id_groupe`, `heures_affectees`, `type_heure`) VALUES
-(25, 79, 186, 1, 0, 'TD'),
-(26, 72, 192, 1, 0, 'TP'),
-(27, 79, 186, 2, 0, 'CM'),
-(28, 83, 186, 2, 32, 'TD'),
-(29, 72, 192, 2, 0, 'TP'),
-(30, 79, 186, 3, 0, 'TP'),
-(31, 72, 192, 3, 0, 'TP'),
-(32, 79, 186, 4, 0, 'TP'),
-(33, 72, 192, 4, 0, 'TP'),
-(34, 72, 192, 5, 0, 'TP');
+(43, 79, 186, 1, 0, 'TD'),
+(44, 72, 192, 1, 0, 'TP'),
+(45, 79, 186, 2, 0, 'CM'),
+(46, 83, 186, 2, 32, 'TD'),
+(47, 72, 192, 2, 0, 'TP'),
+(48, 79, 186, 3, 0, 'TP'),
+(49, 72, 192, 3, 0, 'TP'),
+(50, 79, 186, 4, 0, 'TP'),
+(51, 72, 192, 4, 0, 'TP'),
+(52, 72, 192, 5, 0, 'TP');
 
 -- --------------------------------------------------------
 
@@ -102,7 +102,37 @@ INSERT INTO `affectations_historisees` (`id_affectation`, `id_enseignant`, `id_c
 (56, 72, 192, 3, 0, 'TP', 2022),
 (57, 79, 186, 4, 0, 'TP', 2022),
 (58, 72, 192, 4, 0, 'TP', 2022),
-(59, 72, 192, 5, 0, 'TP', 2022);
+(59, 72, 192, 5, 0, 'TP', 2022),
+(65, 79, 186, 1, 0, 'TD', 2000),
+(66, 72, 192, 1, 0, 'TP', 2000),
+(67, 79, 186, 2, 0, 'CM', 2000),
+(68, 83, 186, 2, 32, 'TD', 2000),
+(69, 72, 192, 2, 0, 'TP', 2000),
+(70, 79, 186, 3, 0, 'TP', 2000),
+(71, 72, 192, 3, 0, 'TP', 2000),
+(72, 79, 186, 4, 0, 'TP', 2000),
+(73, 72, 192, 4, 0, 'TP', 2000),
+(74, 72, 192, 5, 0, 'TP', 2000),
+(80, 79, 186, 1, 0, 'TD', 2000),
+(81, 72, 192, 1, 0, 'TP', 2000),
+(82, 79, 186, 2, 0, 'CM', 2000),
+(83, 83, 186, 2, 32, 'TD', 2000),
+(84, 72, 192, 2, 0, 'TP', 2000),
+(85, 79, 186, 3, 0, 'TP', 2000),
+(86, 72, 192, 3, 0, 'TP', 2000),
+(87, 79, 186, 4, 0, 'TP', 2000),
+(88, 72, 192, 4, 0, 'TP', 2000),
+(89, 72, 192, 5, 0, 'TP', 2000),
+(95, 79, 186, 1, 0, 'TD', 2001),
+(96, 72, 192, 1, 0, 'TP', 2001),
+(97, 79, 186, 2, 0, 'CM', 2001),
+(98, 83, 186, 2, 32, 'TD', 2001),
+(99, 72, 192, 2, 0, 'TP', 2001),
+(100, 79, 186, 3, 0, 'TP', 2001),
+(101, 72, 192, 3, 0, 'TP', 2001),
+(102, 79, 186, 4, 0, 'TP', 2001),
+(103, 72, 192, 4, 0, 'TP', 2001),
+(104, 72, 192, 5, 0, 'TP', 2001);
 
 -- --------------------------------------------------------
 
@@ -127,18 +157,23 @@ CREATE TABLE `configurationplanningdetaille` (
 --
 
 INSERT INTO `configurationplanningdetaille` (`id`, `semestre`, `type`, `dateDebut`, `dateFin`, `description`, `nbSemaines`, `couleur`, `modifiable`) VALUES
-(3614, NULL, 'Semestre1', '2025-02-03', '2025-06-27', '', 20, '', 0),
-(3615, NULL, 'Semestre2', '2024-09-02', '2025-01-31', '', 21, '', 0),
-(3616, NULL, 'VacancesToussaint', '2024-10-28', '2024-11-01', '', 0, '', 0),
-(3617, NULL, 'VacancesNoel', '2024-12-23', '2025-01-03', '', 0, '', 0),
-(3618, NULL, 'VacancesHiver', '2025-02-17', '2025-02-21', '', 0, '', 0),
-(3619, NULL, 'VacancesPrintemps', '2025-04-07', '2025-04-18', '', 0, '', 0),
-(3620, 'S1', 'Stages', '2025-03-10', '2025-03-21', '', 0, '#ff00d4', 0),
-(3621, 'S1', 'Stages', '2024-10-01', '2024-10-05', '', 0, '#88a0f7', 0),
-(3710, 'S1', 'Description', '2024-09-30', '2024-10-06', 'Stages', NULL, '#FFFFFF', NULL),
-(3711, 'S1', 'Description', '2024-10-28', '2024-11-03', 'Vacances', NULL, '#FFFFFF', NULL),
-(3712, 'S1', 'Description', '2024-12-23', '2024-12-29', 'Vacances', NULL, '#FFFFFF', NULL),
-(3713, 'S1', 'Description', '2024-12-30', '2025-01-05', 'Vacances', NULL, '#FFFFFF', NULL);
+(3921, NULL, 'Semestre1', '2025-02-03', '2025-06-27', '', 20, '', 0),
+(3922, NULL, 'Semestre2', '2024-09-02', '2025-01-31', '', 21, '', 0),
+(3923, NULL, 'VacancesToussaint', '2024-10-28', '2024-11-01', '', 0, '', 0),
+(3924, NULL, 'VacancesNoel', '2024-12-23', '2025-01-03', '', 0, '', 0),
+(3925, NULL, 'VacancesHiver', '2025-02-17', '2025-02-21', '', 0, '', 0),
+(3926, NULL, 'VacancesPrintemps', '2025-04-07', '2025-04-18', '', 0, '', 0),
+(3927, 'S1', 'Stages', '2025-03-10', '2025-03-21', '', 0, '#ff00d4', 0),
+(3928, 'S1', 'Stages', '2024-10-01', '2024-10-05', '', 0, '#88a0f7', 0),
+(3936, 'S1', 'Description', '2024-09-30', '2024-10-06', 'Stages', NULL, '#FFFFFF', NULL),
+(3937, 'S1', 'Description', '2024-10-28', '2024-11-03', 'Vacances', NULL, '#FFFFFF', NULL),
+(3938, 'S1', 'Description', '2024-12-23', '2024-12-29', 'Vacances', NULL, '#FFFFFF', NULL),
+(3939, 'S1', 'Description', '2024-12-30', '2025-01-05', 'Vacances', NULL, '#FFFFFF', NULL),
+(3940, 'S2', 'Description', '2025-02-17', '2025-02-23', 'Vacances', NULL, '#FFFFFF', NULL),
+(3941, 'S2', 'Description', '2025-03-10', '2025-03-16', 'Stages', NULL, '#FFFFFF', NULL),
+(3942, 'S2', 'Description', '2025-03-17', '2025-03-23', 'Stages', NULL, '#FFFFFF', NULL),
+(3943, 'S2', 'Description', '2025-04-07', '2025-04-13', 'Vacances', NULL, '#FFFFFF', NULL),
+(3944, 'S2', 'Description', '2025-04-14', '2025-04-20', 'Vacances', NULL, '#FFFFFF', NULL);
 
 -- --------------------------------------------------------
 
@@ -199,7 +234,36 @@ INSERT INTO `configurationplanningdetaille_historisees` (`id`, `semestre`, `type
 (3653, 'S1', 'Description', '2024-09-30', '2024-10-06', 'Stages', NULL, '#FFFFFF', NULL, 2022),
 (3654, 'S1', 'Description', '2024-10-28', '2024-11-03', 'Vacances', NULL, '#FFFFFF', NULL, 2022),
 (3655, 'S1', 'Description', '2024-12-23', '2024-12-29', 'Vacances', NULL, '#FFFFFF', NULL, 2022),
-(3656, 'S1', 'Description', '2024-12-30', '2025-01-05', 'Vacances', NULL, '#FFFFFF', NULL, 2022);
+(3656, 'S1', 'Description', '2024-12-30', '2025-01-05', 'Vacances', NULL, '#FFFFFF', NULL, 2022),
+(3660, NULL, 'Semestre1', '2025-02-03', '2025-06-27', '', 20, '', 0, 2000),
+(3661, NULL, 'Semestre2', '2024-09-02', '2025-01-31', '', 21, '', 0, 2000),
+(3662, NULL, 'VacancesToussaint', '2024-10-28', '2024-11-01', '', 0, '', 0, 2000),
+(3663, NULL, 'VacancesNoel', '2024-12-23', '2025-01-03', '', 0, '', 0, 2000),
+(3664, NULL, 'VacancesHiver', '2025-02-17', '2025-02-21', '', 0, '', 0, 2000),
+(3665, NULL, 'VacancesPrintemps', '2025-04-07', '2025-04-18', '', 0, '', 0, 2000),
+(3666, 'S1', 'Stages', '2025-03-10', '2025-03-21', '', 0, '#fd6868', 0, 2000),
+(3667, 'S1', 'Stages', '2024-10-01', '2024-10-05', '', 0, '#a3f5ad', 0, 2000),
+(3675, NULL, 'Semestre1', '2025-02-03', '2025-06-27', '', 20, '', 0, 2000),
+(3676, NULL, 'Semestre2', '2024-09-02', '2025-01-31', '', 21, '', 0, 2000),
+(3677, NULL, 'VacancesToussaint', '2024-10-28', '2024-11-01', '', 0, '', 0, 2000),
+(3678, NULL, 'VacancesNoel', '2024-12-23', '2025-01-03', '', 0, '', 0, 2000),
+(3679, NULL, 'VacancesHiver', '2025-02-17', '2025-02-21', '', 0, '', 0, 2000),
+(3680, NULL, 'VacancesPrintemps', '2025-04-07', '2025-04-18', '', 0, '', 0, 2000),
+(3681, 'S1', 'Stages', '2025-03-10', '2025-03-21', '', 0, '#fd6868', 0, 2000),
+(3682, 'S1', 'Stages', '2024-10-01', '2024-10-05', '', 0, '#a3f5ad', 0, 2000),
+(3690, NULL, 'Semestre1', '2025-02-03', '2025-06-27', '', 20, '', 0, 2001),
+(3691, NULL, 'Semestre2', '2024-09-02', '2025-01-31', '', 21, '', 0, 2001),
+(3692, NULL, 'VacancesToussaint', '2024-10-28', '2024-11-01', '', 0, '', 0, 2001),
+(3693, NULL, 'VacancesNoel', '2024-12-23', '2025-01-03', '', 0, '', 0, 2001),
+(3694, NULL, 'VacancesHiver', '2025-02-17', '2025-02-21', '', 0, '', 0, 2001),
+(3695, NULL, 'VacancesPrintemps', '2025-04-07', '2025-04-18', '', 0, '', 0, 2001),
+(3696, 'S1', 'Stages', '2025-03-10', '2025-03-21', '', 0, '#fd6868', 0, 2001),
+(3697, 'S1', 'Stages', '2024-10-01', '2024-10-05', '', 0, '#a3f5ad', 0, 2001),
+(3698, 'S2', 'Description', '2025-02-17', '2025-02-23', 'Vacances', NULL, '#FFFFFF', NULL, 2001),
+(3699, 'S2', 'Description', '2025-03-10', '2025-03-16', 'Stages', NULL, '#FFFFFF', NULL, 2001),
+(3700, 'S2', 'Description', '2025-03-17', '2025-03-23', 'Stages', NULL, '#FFFFFF', NULL, 2001),
+(3701, 'S2', 'Description', '2025-04-07', '2025-04-13', 'Vacances', NULL, '#FFFFFF', NULL, 2001),
+(3702, 'S2', 'Description', '2025-04-14', '2025-04-20', 'Vacances', NULL, '#FFFFFF', NULL, 2001);
 
 -- --------------------------------------------------------
 
@@ -225,13 +289,13 @@ CREATE TABLE `contraintes` (
 --
 
 INSERT INTO `contraintes` (`id_contrainte`, `id_utilisateur`, `jour`, `heure_debut`, `heure_fin`, `creneau_preference`, `cours_samedi`, `statut`, `commentaire`, `date_validation`) VALUES
-(100, 39, 'lundi', 8, 10, '8h-10h', 'oui', 'en attente', 'igh', NULL),
-(101, 39, 'mardi', 8, 10, '8h-10h', 'oui', 'en attente', 'igh', NULL),
-(102, 39, 'mercredi', 8, 10, '8h-10h', 'oui', 'en attente', 'igh', NULL),
-(103, 39, 'jeudi', 8, 10, '8h-10h', 'oui', 'en attente', 'igh', NULL),
-(104, 39, 'lundi', 10, 12, '8h-10h', 'oui', 'en attente', 'igh', NULL),
-(105, 39, 'mardi', 10, 12, '8h-10h', 'oui', 'en attente', 'igh', NULL),
-(106, 39, 'mercredi', 10, 12, '8h-10h', 'oui', 'en attente', 'igh', NULL);
+(115, 39, 'lundi', 8, 10, '8h-10h', 'oui', 'en attente', 'igh', NULL),
+(116, 39, 'mardi', 8, 10, '8h-10h', 'oui', 'en attente', 'igh', NULL),
+(117, 39, 'mercredi', 8, 10, '8h-10h', 'oui', 'en attente', 'igh', NULL),
+(118, 39, 'jeudi', 8, 10, '8h-10h', 'oui', 'en attente', 'igh', NULL),
+(119, 39, 'lundi', 10, 12, '8h-10h', 'oui', 'en attente', 'igh', NULL),
+(120, 39, 'mardi', 10, 12, '8h-10h', 'oui', 'en attente', 'igh', NULL),
+(121, 39, 'mercredi', 10, 12, '8h-10h', 'oui', 'en attente', 'igh', NULL);
 
 -- --------------------------------------------------------
 
@@ -278,7 +342,28 @@ INSERT INTO `contraintes_historisees` (`id_contrainte`, `id_utilisateur`, `jour`
 (117, 39, 'jeudi', 8, 10, '8h-10h', 'oui', 'en attente', 'igh', NULL, 2022),
 (118, 39, 'lundi', 10, 12, '8h-10h', 'oui', 'en attente', 'igh', NULL, 2022),
 (119, 39, 'mardi', 10, 12, '8h-10h', 'oui', 'en attente', 'igh', NULL, 2022),
-(120, 39, 'mercredi', 10, 12, '8h-10h', 'oui', 'en attente', 'igh', NULL, 2022);
+(120, 39, 'mercredi', 10, 12, '8h-10h', 'oui', 'en attente', 'igh', NULL, 2022),
+(121, 39, 'lundi', 8, 10, '8h-10h', 'oui', 'en attente', 'igh', NULL, 2000),
+(122, 39, 'mardi', 8, 10, '8h-10h', 'oui', 'en attente', 'igh', NULL, 2000),
+(123, 39, 'mercredi', 8, 10, '8h-10h', 'oui', 'en attente', 'igh', NULL, 2000),
+(124, 39, 'jeudi', 8, 10, '8h-10h', 'oui', 'en attente', 'igh', NULL, 2000),
+(125, 39, 'lundi', 10, 12, '8h-10h', 'oui', 'en attente', 'igh', NULL, 2000),
+(126, 39, 'mardi', 10, 12, '8h-10h', 'oui', 'en attente', 'igh', NULL, 2000),
+(127, 39, 'mercredi', 10, 12, '8h-10h', 'oui', 'en attente', 'igh', NULL, 2000),
+(128, 39, 'lundi', 8, 10, '8h-10h', 'oui', 'validée', 'igh', NULL, 2000),
+(129, 39, 'mardi', 8, 10, '8h-10h', 'oui', 'validée', 'igh', NULL, 2000),
+(130, 39, 'mercredi', 8, 10, '8h-10h', 'oui', 'en attente', 'igh', NULL, 2000),
+(131, 39, 'jeudi', 8, 10, '8h-10h', 'oui', 'en attente', 'igh', NULL, 2000),
+(132, 39, 'lundi', 10, 12, '8h-10h', 'oui', 'en attente', 'igh', NULL, 2000),
+(133, 39, 'mardi', 10, 12, '8h-10h', 'oui', 'en attente', 'igh', NULL, 2000),
+(134, 39, 'mercredi', 10, 12, '8h-10h', 'oui', 'en attente', 'igh', NULL, 2000),
+(135, 39, 'lundi', 8, 10, '8h-10h', 'oui', 'en attente', 'igh', NULL, 2001),
+(136, 39, 'mardi', 8, 10, '8h-10h', 'oui', 'en attente', 'igh', NULL, 2001),
+(137, 39, 'mercredi', 8, 10, '8h-10h', 'oui', 'en attente', 'igh', NULL, 2001),
+(138, 39, 'jeudi', 8, 10, '8h-10h', 'oui', 'en attente', 'igh', NULL, 2001),
+(139, 39, 'lundi', 10, 12, '8h-10h', 'oui', 'en attente', 'igh', NULL, 2001),
+(140, 39, 'mardi', 10, 12, '8h-10h', 'oui', 'en attente', 'igh', NULL, 2001),
+(141, 39, 'mercredi', 10, 12, '8h-10h', 'oui', 'en attente', 'igh', NULL, 2001);
 
 -- --------------------------------------------------------
 
@@ -490,578 +575,6 @@ INSERT INTO `cours` (`id_cours`, `formation`, `semestre`, `nom_cours`, `code_cou
 -- --------------------------------------------------------
 
 --
--- Structure de la table `cours_historisees`
---
-
-CREATE TABLE `cours_historisees` (
-  `id_cours` int(11) NOT NULL,
-  `formation` varchar(255) NOT NULL,
-  `semestre` varchar(255) NOT NULL,
-  `nom_cours` varchar(255) NOT NULL,
-  `code_cours` varchar(255) NOT NULL,
-  `nb_heures_total` double DEFAULT 0,
-  `nb_heures_cm` double DEFAULT 0,
-  `nb_heures_td` double DEFAULT 0,
-  `nb_heures_tp` double DEFAULT 0,
-  `nb_heures_ei` double DEFAULT 0,
-  `annee` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
---
--- Déchargement des données de la table `cours_historisees`
---
-
-INSERT INTO `cours_historisees` (`id_cours`, `formation`, `semestre`, `nom_cours`, `code_cours`, `nb_heures_total`, `nb_heures_cm`, `nb_heures_td`, `nb_heures_tp`, `nb_heures_ei`, `annee`) VALUES
-(183, 'Autre', '1', 'Autre (préciser dans les remarques)', '', 0, 0, 0, 0, 0, 2024),
-(184, 'Autre', '1', 'Forfait suivi de stage', '', 0, 0, 0, 0, 0, 2024),
-(185, 'Autre', '5', 'Portfolio', 'P5-RA-DWM-01', 0, 0, 0, 0, 0, 2024),
-(186, 'BUT S1', '1', 'Introduction à l\'algorithmique', 'R1-01A', 37, 5, 32, 0, 0, 2024),
-(187, 'BUT S1', '1', 'Bases de la programmation', 'R1-01B', 40, 0, 24, 16, 0, 2024),
-(188, 'BUT S1', '1', 'Structure de données et programmation', 'R1-01C', 32, 0, 24, 8, 0, 2024),
-(189, 'BUT S1', '1', 'Développement d\'interfaces web', 'R1-02', 24, 0, 24, 0, 0, 2024),
-(190, 'BUT S1', '1', 'Introduction à l\'architecture des ordinateurs', 'R1-03', 24, 0, 16, 8, 0, 2024),
-(191, 'BUT S1', '1', 'Introduction aux SE et à leur fonctionnement', 'R1-04', 24, 0, 8, 16, 0, 2024),
-(192, 'BUT S1', '1', 'Introduction aux BD et SQL', 'R1-05', 48, 0, 48, 0, 0, 2024),
-(193, 'BUT S1', '1', 'Maths discrètes', 'R1-06', 40, 16, 24, 0, 0, 2024),
-(194, 'BUT S1', '1', 'Outils mathématiques fondamentaux', 'R1-07', 24, 8, 16, 0, 0, 2024),
-(195, 'BUT S1', '1', 'Introduction à la gestion des organisations', 'R1-08', 36, 0, 36, 0, 0, 2024),
-(196, 'BUT S1', '1', 'Introduction à l\'économie durable et numérique', 'R1-09', 24, 0, 24, 0, 0, 2024),
-(197, 'BUT S1', '1', 'Anglais', 'R1-10', 32, 0, 32, 0, 0, 2024),
-(198, 'BUT S1', '1', 'Bases de la communication', 'R1-11', 28, 0, 28, 0, 0, 2024),
-(199, 'BUT S1', '1', 'Projet professionnel et personnel', 'R1-12', 16, 0, 13, 3, 0, 2024),
-(200, 'BUT S3', '3', 'Développement web', 'R3-01', 40, 0, 40, 0, 0, 2024),
-(201, 'BUT S3', '3', 'Développement efficace', 'R3-02', 28, 0, 28, 0, 0, 2024),
-(202, 'BUT S3', '3', 'Analyse', 'R3-03', 28, 0, 28, 0, 0, 2024),
-(203, 'BUT S3', '3', 'Qualité de développement', 'R3-04', 46, 0, 46, 0, 0, 2024),
-(204, 'BUT S3', '3', 'Programmation système', 'R3-05', 36, 0, 36, 0, 0, 2024),
-(205, 'BUT S3', '3', 'Architecture des réseaux', 'R3-06', 36, 0, 36, 0, 0, 2024),
-(206, 'BUT S3', '3', 'SQL dans un langage de programmation', 'R3-07', 32, 0, 32, 0, 0, 2024),
-(207, 'BUT S3', '3', 'Probabilités', 'R3-08', 24, 12, 12, 0, 0, 2024),
-(208, 'BUT S3', '3', 'Cryptographie et sécurité', 'R3-09', 28, 0, 12, 16, 0, 2024),
-(209, 'BUT S3', '3', 'Management des SI', 'R3-10', 38, 0, 38, 0, 0, 2024),
-(210, 'BUT S3', '3', 'Droit des contrats et du numérique', 'R3-11', 24, 0, 24, 0, 0, 2024),
-(211, 'BUT S3', '3', 'Anglais', 'R3-12', 28, 0, 28, 0, 0, 2024),
-(212, 'BUT S3', '3', 'Communication professionnelle', 'R3-13', 24, 0, 24, 0, 0, 2024),
-(213, 'BUT S3', '3', 'Projet Personnel et Professionnel', 'R3-14', 12, 0, 12, 0, 0, 2024),
-(214, 'BUT S5 DACS', '5', 'Initiation au management d\'une équipe', 'R5-DACS-01', 0, 0, 0, 0, 0, 2024),
-(215, 'BUT S5 DACS', '5', 'PPP', 'R5-DACS-02', 0, 0, 0, 0, 0, 2024),
-(216, 'BUT S5 DACS', '5', 'Politiques de communication', 'R5-DACS-03', 0, 0, 0, 0, 0, 2024),
-(217, 'BUT S5 DACS', '5', 'Programmation avancée en système', 'R5-DACS-04', 0, 0, 0, 0, 0, 2024),
-(218, 'BUT S5 DACS', '5', 'Automatisation de la chaîne de production', 'R5-DACS-05', 0, 0, 0, 0, 0, 2024),
-(219, 'BUT S5 DACS', '5', 'Installation et config. de services complexes', 'R5-DACS-06', 0, 0, 0, 0, 0, 2024),
-(220, 'BUT S5 DACS', '5', 'Virtualisation avancée', 'R5-DACS-07', 0, 0, 0, 0, 0, 2024),
-(221, 'BUT S5 DACS', '5', 'Continuité de service', 'R5-DACS-08', 0, 0, 0, 0, 0, 2024),
-(222, 'BUT S5 DACS', '5', 'Cybersécurité', 'R5-DACS-09', 0, 0, 0, 0, 0, 2024),
-(223, 'BUT S5 DACS', '5', 'Modélisation mathématiques', 'R5-DACS-10', 0, 0, 0, 0, 0, 2024),
-(224, 'BUT S5 DACS', '5', 'Économie durable et numérique', 'R5-DACS-11', 0, 0, 0, 0, 0, 2024),
-(225, 'BUT S5 DACS', '5', 'Anglais', 'R5-DACS-12', 0, 0, 0, 0, 0, 2024),
-(226, 'BUT S5 RA-DWM', '5', 'Initiation au management d\'une équipe', 'R5-RA-DWM-01', 37, 0, 37, 0, 0, 2024),
-(227, 'BUT S5 RA-DWM', '5', 'PPP', 'R5-RA-DWM-02', 24, 0, 24, 0, 0, 2024),
-(228, 'BUT S5 RA-DWM', '5', 'Politiques de communication', 'R5-RA-DWM-03', 24, 0, 24, 0, 0, 2024),
-(229, 'BUT S5 RA-DWM', '5', 'Qualité algorithmique', 'R5-RA-DWM-04', 60, 0, 60, 0, 0, 2024),
-(230, 'BUT S5 RA-DWM', '5', 'Programmation avancée', 'R5-RA-DWM-05', 46, 0, 46, 0, 0, 2024),
-(231, 'BUT S5 RA-DWM', '5', 'Programmation multimédia', 'R5-RA-DWM-06', 48, 0, 48, 0, 0, 2024),
-(232, 'BUT S5 RA-DWM', '5', 'Automatisation de la production', 'R5-RA-DWM-07', 28, 0, 28, 0, 0, 2024),
-(233, 'BUT S5 RA-DWM', '5', 'Qualité de développement', 'R5-RA-DWM-08', 60, 0, 60, 0, 0, 2024),
-(234, 'BUT S5 RA-DWM', '5', 'Virtualisation avancée', 'R5-RA-DWM-09', 34, 0, 34, 0, 0, 2024),
-(235, 'BUT S5 RA-DWM', '5', 'Nouveaux paradigmes BD', 'R5-RA-DWM-10', 28, 0, 28, 0, 0, 2024),
-(236, 'BUT S5 RA-DWM', '5', 'Optimisation pour l\'aide à la décision', 'R5-RA-DWM-11', 34, 0, 34, 0, 0, 2024),
-(237, 'BUT S5 RA-DWM', '5', 'Modélisations mathématiques', 'R5-RA-DWM-12', 34, 0, 34, 0, 0, 2024),
-(238, 'BUT S5 RA-DWM', '5', 'Économie numérique et durable', 'R5-RA-DWM-13', 20, 0, 20, 0, 0, 2024),
-(239, 'BUT S5 RA-DWM', '5', 'Anglais', 'R5-RA-DWM-14', 24, 0, 24, 0, 0, 2024),
-(240, 'BUT S5 RA-IL', '5', 'Initiation au management d\'une équipe', 'R5-RA-IL-01', 12, 0, 12, 0, 0, 2024),
-(241, 'BUT S5 RA-IL', '5', 'PPP', 'R5-RA-IL-02', 6, 0, 6, 0, 0, 2024),
-(242, 'BUT S5 RA-IL', '5', 'Politiques de communication', 'R5-RA-IL-03', 6, 0, 6, 0, 0, 2024),
-(243, 'BUT S5 RA-IL', '5', 'Qualité algorithmique', 'R5-RA-IL-04', 24, 0, 24, 0, 0, 2024),
-(244, 'BUT S5 RA-IL', '5', 'Programmation avancée', 'R5-RA-IL-05', 24, 0, 24, 0, 0, 2024),
-(245, 'BUT S5 RA-IL', '5', 'Programmation multimédia', 'R5-RA-IL-06', 18, 0, 18, 0, 0, 2024),
-(246, 'BUT S5 RA-IL', '5', 'Automatisation de la production', 'R5-RA-IL-07', 12, 0, 12, 0, 0, 2024),
-(247, 'BUT S5 RA-IL', '5', 'Qualité de développement', 'R5-RA-IL-08', 24, 0, 24, 0, 0, 2024),
-(248, 'BUT S5 RA-IL', '5', 'Virtualisation avancée', 'R5-RA-IL-09', 12, 0, 12, 0, 0, 2024),
-(249, 'BUT S5 RA-IL', '5', 'Nouveaux paradigmes BD', 'R5-RA-IL-10', 26, 0, 26, 0, 0, 2024),
-(250, 'BUT S5 RA-IL', '5', 'Optimisation pour l\'aide à la décision', 'R5-RA-IL-11', 12, 0, 12, 0, 0, 2024),
-(251, 'BUT S5 RA-IL', '5', 'Modélisations mathématiques', 'R5-RA-IL-12', 36, 0, 36, 0, 0, 2024),
-(252, 'BUT S5 RA-IL', '5', 'Économie numérique et durable', 'R5-RA-IL-13', 12, 0, 12, 0, 0, 2024),
-(253, 'BUT S5 RA-IL', '5', 'Anglais', 'R5-RA-IL-14', 24, 0, 24, 0, 0, 2024),
-(254, 'BUT S5 RA-IL', '5', 'Logique', 'R5-RA-IL-15', 32, 0, 32, 0, 0, 2024),
-(255, 'BUT S1', '1', 'Implémentation d\'un besoin client', 'S1-01', 12, 0, 12, 0, 0, 2024),
-(256, 'BUT S1', '', 'Comparaison d\'approches algorithmique', 'S1-02', 18, 6, 12, 0, 0, 2024),
-(257, 'BUT S1', '1', 'Installation d\'un poste développement', 'S1-03', 12, 0, 12, 0, 0, 2024),
-(258, 'BUT S1', '1', 'Création d\'une BD', 'S1-04', 12, 0, 12, 0, 0, 2024),
-(259, 'BUT S1', '1', 'Recueil de besoins', 'S1-05', 12, 0, 12, 0, 0, 2024),
-(260, 'BUT S1', '1', 'Découverte de l\'environnement éco et écolo', 'S1-06', 12, 0, 12, 0, 0, 2024),
-(261, 'BUT S3', '3', 'Développement d\'une application java', 'S3-01', 62, 0, 62, 0, 0, 2024),
-(262, 'BUT S3', '3', 'Développement d\'une appli web sécurisée', 'S3-02', 36, 0, 36, 0, 0, 2024),
-(263, 'BUT S3', '3', 'Réseau et application serveur', 'S3-03', 24, 0, 24, 0, 0, 2024),
-(264, 'BUT S5 DACS', '5', 'Projet tuteuré', 'S5-DACS-01-1', 0, 0, 0, 0, 0, 2024),
-(265, 'BUT S5 DACS', '5', 'Administrer un serveur Web', 'S5-DACS-01-2', 0, 0, 0, 0, 0, 2024),
-(266, 'BUT S5 RA-DWM', '5', 'Projet application web et mobile', 'S5-RA-DWM-01-1', 0, 0, 0, 0, 0, 2024),
-(267, 'BUT S5 RA-DWM', '5', 'Atelier-projet développement-intégration', 'S5-RA-DWM-01-2', 0, 0, 0, 0, 0, 2024),
-(268, 'BUT S5 RA-DWM', '5', 'Services Web et interopérabilité', 'S5-RA-DWM-01-3', 32, 0, 32, 0, 0, 2024),
-(269, 'BUT S5 RA-IL', '5', 'Projet tuteuré', 'S5-RA-IL-01-1', 160, 0, 160, 0, 0, 2024),
-(270, 'BUT S5 RA-IL', '5', 'Initiation à l\'intelligence artificielle', 'S5-RA-IL-01-2', 60, 0, 60, 0, 0, 2024),
-(271, 'BUT S5 RA-IL', '5', 'Compilation', 'S5-RA-IL-01-3', 32, 0, 32, 0, 0, 2024),
-(272, 'Autre', '5', 'Portfolio', 'P5-RA-DWM-01', 0, 0, 0, 0, 0, 2024),
-(273, 'BUT S2', '2', 'Portfolio', 'P2-01', 0, 0, 0, 0, 0, 2024),
-(274, 'BUT S6 DACS', '6', 'Portfolio', 'P6-DACS-01', 0, 0, 0, 0, 0, 2024),
-(275, 'BUT S6 RA-IL', '6', 'Portfolio', 'P6-RA-IL-01', 0, 0, 0, 0, 0, 2024),
-(276, 'BUT S2', '2', 'Initiation à la programmation objet', 'R2-01A', 32, 0, 32, 0, 0, 2024),
-(277, 'BUT S2', '2', 'Initiation à la conception objet', 'R2-01B', 28, 0, 20, 8, 0, 2024),
-(278, 'BUT S2', '2', 'Développement d\'applications avec IHM', 'R2-02', 44, 0, 36, 8, 0, 2024),
-(279, 'BUT S2', '2', 'Qualité de développement', 'R2-03', 24, 0, 16, 8, 0, 2024),
-(280, 'BUT S2', '2', 'Communication et fonctionnement bas niveau', 'R2-04', 28, 0, 20, 8, 0, 2024),
-(281, 'BUT S2', '2', 'Introduction aux services réseaux', 'R2-05', 20, 0, 12, 8, 0, 2024),
-(282, 'BUT S2', '2', 'Exploitation d\'une BD', 'R2-06', 40, 0, 40, 0, 0, 2024),
-(283, 'BUT S2', '2', 'Graphes', 'R2-07', 32, 8, 24, 0, 0, 2024),
-(284, 'BUT S2', '2', 'Outils numériques pour les statistiques descript', 'R2-08', 16, 0, 16, 0, 0, 2024),
-(285, 'BUT S2', '2', 'Méthodes numériques', 'R2-09', 16, 8, 8, 0, 0, 2024),
-(286, 'BUT S2', '2', 'Introduction à la gestion des systèmes d\'information', 'R2-10', 40, 0, 40, 0, 0, 2024),
-(287, 'BUT S2', '2', 'Introduction au droit', 'R2-11', 24, 0, 24, 0, 0, 2024),
-(288, 'BUT S2', '2', 'Anglais', 'R2-12', 28, 0, 28, 0, 0, 2024),
-(289, 'BUT S2', '2', 'Communication technique', 'R2-13', 32, 0, 32, 0, 0, 2024),
-(290, 'BUT S2', '2', 'Projet professionnel et personnel', 'R2-14', 20, 0, 20, 0, 0, 2024),
-(291, 'BUT S4 DACS', '4', 'Architecture logicielle', 'R4-DACS-01', 32, 0, 32, 0, 0, 2024),
-(292, 'BUT S4 DACS', '4', 'Qualité développement', 'R4-DACS-02', 16, 0, 16, 0, 0, 2024),
-(293, 'BUT S4 DACS', '4', 'Qualité et au delà du relationnel', 'R4-DACS-03', 16, 0, 16, 0, 0, 2024),
-(294, 'BUT S4 DACS', '4', 'Méthode d\'optimisation', 'R4-DACS-04', 12, 0, 12, 0, 0, 2024),
-(295, 'BUT S4 DACS', '4', 'Anglais', 'R4-DACS-05', 24, 0, 24, 0, 0, 2024),
-(296, 'BUT S4 DACS', '4', 'Communication interne', 'R4-DACS-06', 22, 0, 22, 0, 0, 2024),
-(297, 'BUT S4 DACS', '4', 'Projet personnel et professionnel', 'R4-DACS-07', 8, 0, 8, 0, 0, 2024),
-(298, 'BUT S4 DACS', '4', 'Virtualisation', 'R4-DACS-08', 24, 0, 24, 0, 0, 2024),
-(299, 'BUT S4 DACS', '4', 'Management avancé des SI', 'R4-DACS-09', 20, 0, 20, 0, 0, 2024),
-(300, 'BUT S4 DACS', '4', 'Cryptographie et sécurité', 'R4-DACS-10', 12, 0, 12, 0, 0, 2024),
-(301, 'BUT S4 DACS', '4', 'Réseau avancé', 'R4-DACS-11', 32, 0, 32, 0, 0, 2024),
-(302, 'BUT S4 DACS', '4', 'Sécurité système et réseaux', 'R4-DACS-12', 20, 0, 20, 0, 0, 2024),
-(303, 'BUT S4 DACS', '4', 'Administration Unix', 'R4-DACS-13', 24, 0, 24, 0, 0, 2024),
-(304, 'BUT S4 RA-DWM', '4', 'Architecture logicielle', 'R4-RA-DWM-01', 42, 0, 42, 0, 0, 2024),
-(305, 'BUT S4 RA-DWM', '4', 'Qualité développement', 'R4-RA-DWM-02', 16, 0, 16, 0, 0, 2024),
-(306, 'BUT S4 RA-DWM', '4', 'Qualité et au delà du relationnel', 'R4-RA-DWM-03', 24, 0, 240, 0, 0, 2024),
-(307, 'BUT S4 RA-DWM', '4', 'Méthode d\'optimisation', 'R4-RA-DWM-04', 12, 0, 12, 0, 0, 2024),
-(308, 'BUT S4 RA-DWM', '4', 'Anglais', 'R4-RA-DWM-05', 24, 0, 24, 0, 0, 2024),
-(309, 'BUT S4 RA-DWM', '4', 'Communication interne', 'R4-RA-DWM-06', 22, 0, 22, 0, 0, 2024),
-(310, 'BUT S4 RA-DWM', '4', 'Projet personnel et professionnel', 'R4-RA-DWM-07', 8, 0, 8, 0, 0, 2024),
-(311, 'BUT S4 RA-DWM', '4', 'Virtualisation', 'R4-RA-DWM-08', 18, 0, 18, 0, 0, 2024),
-(312, 'BUT S4 RA-DWM', '4', 'Management avancé des SI', 'R4-RA-DWM-09', 20, 0, 20, 0, 0, 2024),
-(313, 'BUT S4 RA-DWM', '4', 'Complément web', 'R4-RA-DWM-10', 32, 0, 32, 0, 0, 2024),
-(314, 'BUT S4 RA-DWM', '4', 'Développement pour les app. mobiles', 'R4-RA-DWM-11', 32, 0, 32, 0, 0, 2024),
-(315, 'BUT S4 RA-DWM', '4', 'Automates et langages', 'R4-RA-DWM-12', 12, 0, 12, 0, 0, 2024),
-(316, 'BUT S4 RA-IL', '4', 'Architecture logicielle', 'R4-RA-IL-01', 24, 0, 24, 0, 0, 2024),
-(317, 'BUT S4 RA-IL', '4', 'Qualité de développement', 'R4-RA-IL-02', 16, 0, 16, 0, 0, 2024),
-(318, 'BUT S4 RA-IL', '4', 'Qualité et au delà du relationnel', 'R4-RA-IL-03', 24, 0, 24, 0, 0, 2024),
-(319, 'BUT S4 RA-IL', '4', 'Méthode d\'optimisation', 'R4-RA-IL-04', 16, 0, 16, 0, 0, 2024),
-(320, 'BUT S4 RA-IL', '4', 'Anglais', 'R4-RA-IL-05', 24, 0, 24, 0, 0, 2024),
-(321, 'BUT S4 RA-IL', '4', 'Communication interne', 'R4-RA-IL-06', 20, 0, 20, 0, 0, 2024),
-(322, 'BUT S4 RA-IL', '4', 'Projet personnel et professionnel', 'R4-RA-IL-07', 8, 0, 8, 0, 0, 2024),
-(323, 'BUT S4 RA-IL', '4', 'Virtualisation', 'R4-RA-IL-08', 18, 0, 18, 0, 0, 2024),
-(324, 'BUT S4 RA-IL', '4', 'Management avancé des SI', 'R4-RA-IL-09', 20, 0, 20, 0, 0, 2024),
-(325, 'BUT S4 RA-IL', '4', 'Complément web', 'R4-RA-IL-10', 30, 0, 30, 0, 0, 2024),
-(326, 'BUT S4 RA-IL', '4', 'Développement pour les app. mobiles', 'R4-RA-IL-11', 30, 0, 30, 0, 0, 2024),
-(327, 'BUT S4 RA-IL', '4', 'Automates et langages', 'R4-RA-IL-12', 20, 0, 20, 0, 0, 2024),
-(328, 'BUT S6 DACS', '6', 'Initiation entrepreneuriat', 'R6-DACS-01', 0, 0, 0, 0, 0, 2024),
-(329, 'BUT S6 DACS', '6', 'Droit du numérique et de la prop. industrielle', 'R6-DACS-02', 0, 0, 0, 0, 0, 2024),
-(330, 'BUT S6 DACS', '6', 'Com. : organisation et diffusion de l\'info', 'R6-DACS-03', 0, 0, 0, 0, 0, 2024),
-(331, 'BUT S6 DACS', '6', 'PPP', 'R6-DACS-04', 0, 0, 0, 0, 0, 2024),
-(332, 'BUT S6 DACS', '6', 'Optimisation des services complexes', 'R6-DACS-05', 0, 0, 0, 0, 0, 2024),
-(333, 'BUT S6 DACS', '6', 'Cloud computing', 'R6-DACS-06', 0, 0, 0, 0, 0, 2024),
-(334, 'BUT S6 RA', '6', 'Approfondissement dév. mobile ', 'R6-RA-05-1', 0, 0, 0, 0, 0, 2024),
-(335, 'BUT S6 RA-DWM', '6', 'Initiation à l\'entrepreneuriat', 'R6-RA-DWM-01', 20, 0, 20, 0, 0, 2024),
-(336, 'BUT S6 RA-DWM', '6', 'Droit numérique et P.I.', 'R6-RA-DWM-02', 18, 0, 18, 0, 0, 2024),
-(337, 'BUT S6 RA-DWM', '6', 'Com : organisation et diff. de l\'info.', 'R6-RA-DWM-03', 16, 0, 16, 0, 0, 2024),
-(338, 'BUT S6 RA-DWM', '6', 'PPP', 'R6-RA-DWM-04', 16, 0, 16, 0, 0, 2024),
-(339, 'BUT S6 RA-DWM', '6', 'Initiation au développement mobile', 'R6-RA-DWM-05-2', 0, 0, 0, 0, 0, 2024),
-(340, 'BUT S6 RA-DWM', '6', 'Développement côté serveur en JS', 'R6-RA-DWM-05-3', 30, 0, 30, 0, 0, 2024),
-(341, 'BUT S6 RA-DWM', '6', 'Maintenance applicative', 'R6-RA-DWM-06', 28, 0, 28, 0, 0, 2024),
-(342, 'BUT S6 RA-IL', '6', 'Initiation à l\'entrepreneuriat', 'R6-RA-IL-01', 8, 0, 8, 0, 0, 2024),
-(343, 'BUT S6 RA-IL', '6', 'Droit numérique et P.I.', 'R6-RA-IL-02', 18, 0, 18, 0, 0, 2024),
-(344, 'BUT S6 RA-IL', '6', 'Com : organisation et diff. de l\'info.', 'R6-RA-IL-03', 6, 0, 6, 0, 0, 2024),
-(345, 'BUT S6 RA-IL', '6', 'PPP', 'R6-RA-IL-04', 6, 0, 6, 0, 0, 2024),
-(346, 'BUT S6 RA-IL', '6', 'Maintenance applicative', 'R6-RA-IL-06', 14, 0, 14, 0, 0, 2024),
-(347, 'BUT S2', '2', 'Développement d\'une application', 'S2-01', 16, 0, 16, 0, 0, 2024),
-(348, 'BUT S2', '2', 'Exploration algorithmique d\'un problème', 'S2-02', 16, 0, 16, 0, 0, 2024),
-(349, 'BUT S2', '2', 'Installation de services réseaux', 'S2-03', 16, 0, 16, 0, 0, 2024),
-(350, 'BUT S2', '2', 'Exploitation d\'une BD', 'S2-04', 16, 0, 16, 0, 0, 2024),
-(351, 'BUT S2', '2', 'Gestion d\'un projet', 'S2-05', 16, 0, 16, 0, 0, 2024),
-(352, 'BUT S2', '2', 'Organisation d\'un travail d\'équipe', 'S2-06', 16, 0, 16, 0, 0, 2024),
-(353, 'BUT S4 DACS', '4', 'Déploiement de solution', 'S4-DACS-01', 10, 0, 10, 0, 0, 2024),
-(354, 'BUT S4 DACS', '4', 'Déploiement avancé', 'S4-DACS-02', 22, 0, 22, 0, 0, 2024),
-(355, 'BUT S4 DACS', '4', 'Jeu entreprise / Anglais', 'S4-DACS-03', 15, 0, 15, 0, 0, 2024),
-(356, 'BUT S4 RA-DWM', '4', 'Ateliers projet dvpt web', 'S4-RA-DWM-01', 32, 0, 32, 0, 0, 2024),
-(357, 'BUT S4 RA-DWM', '4', 'Jeu d\'entreprise / Anglais', 'S4-RA-DWM-02', 15, 0, 15, 0, 0, 2024),
-(358, 'BUT S4 RA-IL', '4', 'Projet IA', 'S4-RA-IL-01', 10, 0, 10, 0, 0, 2024),
-(359, 'BUT S4 RA-IL', '4', 'Projet application répartie', 'S4-RA-IL-02', 22, 0, 22, 0, 0, 2024),
-(360, 'BUT S4 RA-IL', '4', 'Jeu d\'entreprise / Anglais', 'S4-RA-IL-03', 15, 0, 15, 0, 0, 2024),
-(361, 'BUT S6 DACS', '6', 'Optimisation des services', 'S6-DACS-01', 0, 0, 0, 0, 0, 2024),
-(362, 'BUT S6 RA-DWM', '6', 'Projet application web et mobile', 'S6-RA-DWM-01-1', 110, 0, 110, 0, 0, 2024),
-(363, 'BUT S6 RA-DWM', '6', 'Atelier-projet développement-intégration', 'S6-RA-DWM-01-2', 140, 0, 140, 0, 0, 2024),
-(364, 'BUT S6 RA-IL', '6', 'Projet tuteuré', 'S6-RA-IL-01-1', 50, 0, 0, 0, 0, 2024),
-(365, 'Autre', '1', 'Autre (préciser dans les remarques)', '', 0, 0, 0, 0, 0, 2023),
-(366, 'Autre', '1', 'Forfait suivi de stage', '', 0, 0, 0, 0, 0, 2023),
-(367, 'Autre', '5', 'Portfolio', 'P5-RA-DWM-01', 0, 0, 0, 0, 0, 2023),
-(368, 'BUT S1', '1', 'Introduction à l\'algorithmique', 'R1-01A', 37, 5, 32, 0, 0, 2023),
-(369, 'BUT S1', '1', 'Bases de la programmation', 'R1-01B', 40, 0, 24, 16, 0, 2023),
-(370, 'BUT S1', '1', 'Structure de données et programmation', 'R1-01C', 32, 0, 24, 8, 0, 2023),
-(371, 'BUT S1', '1', 'Développement d\'interfaces web', 'R1-02', 24, 0, 24, 0, 0, 2023),
-(372, 'BUT S1', '1', 'Introduction à l\'architecture des ordinateurs', 'R1-03', 24, 0, 16, 8, 0, 2023),
-(373, 'BUT S1', '1', 'Introduction aux SE et à leur fonctionnement', 'R1-04', 24, 0, 8, 16, 0, 2023),
-(374, 'BUT S1', '1', 'Introduction aux BD et SQL', 'R1-05', 48, 0, 48, 0, 0, 2023),
-(375, 'BUT S1', '1', 'Maths discrètes', 'R1-06', 40, 16, 24, 0, 0, 2023),
-(376, 'BUT S1', '1', 'Outils mathématiques fondamentaux', 'R1-07', 24, 8, 16, 0, 0, 2023),
-(377, 'BUT S1', '1', 'Introduction à la gestion des organisations', 'R1-08', 36, 0, 36, 0, 0, 2023),
-(378, 'BUT S1', '1', 'Introduction à l\'économie durable et numérique', 'R1-09', 24, 0, 24, 0, 0, 2023),
-(379, 'BUT S1', '1', 'Anglais', 'R1-10', 32, 0, 32, 0, 0, 2023),
-(380, 'BUT S1', '1', 'Bases de la communication', 'R1-11', 28, 0, 28, 0, 0, 2023),
-(381, 'BUT S1', '1', 'Projet professionnel et personnel', 'R1-12', 16, 0, 13, 3, 0, 2023),
-(382, 'BUT S3', '3', 'Développement web', 'R3-01', 40, 0, 40, 0, 0, 2023),
-(383, 'BUT S3', '3', 'Développement efficace', 'R3-02', 28, 0, 28, 0, 0, 2023),
-(384, 'BUT S3', '3', 'Analyse', 'R3-03', 28, 0, 28, 0, 0, 2023),
-(385, 'BUT S3', '3', 'Qualité de développement', 'R3-04', 46, 0, 46, 0, 0, 2023),
-(386, 'BUT S3', '3', 'Programmation système', 'R3-05', 36, 0, 36, 0, 0, 2023),
-(387, 'BUT S3', '3', 'Architecture des réseaux', 'R3-06', 36, 0, 36, 0, 0, 2023),
-(388, 'BUT S3', '3', 'SQL dans un langage de programmation', 'R3-07', 32, 0, 32, 0, 0, 2023),
-(389, 'BUT S3', '3', 'Probabilités', 'R3-08', 24, 12, 12, 0, 0, 2023),
-(390, 'BUT S3', '3', 'Cryptographie et sécurité', 'R3-09', 28, 0, 12, 16, 0, 2023),
-(391, 'BUT S3', '3', 'Management des SI', 'R3-10', 38, 0, 38, 0, 0, 2023),
-(392, 'BUT S3', '3', 'Droit des contrats et du numérique', 'R3-11', 24, 0, 24, 0, 0, 2023),
-(393, 'BUT S3', '3', 'Anglais', 'R3-12', 28, 0, 28, 0, 0, 2023),
-(394, 'BUT S3', '3', 'Communication professionnelle', 'R3-13', 24, 0, 24, 0, 0, 2023),
-(395, 'BUT S3', '3', 'Projet Personnel et Professionnel', 'R3-14', 12, 0, 12, 0, 0, 2023),
-(396, 'BUT S5 DACS', '5', 'Initiation au management d\'une équipe', 'R5-DACS-01', 0, 0, 0, 0, 0, 2023),
-(397, 'BUT S5 DACS', '5', 'PPP', 'R5-DACS-02', 0, 0, 0, 0, 0, 2023),
-(398, 'BUT S5 DACS', '5', 'Politiques de communication', 'R5-DACS-03', 0, 0, 0, 0, 0, 2023),
-(399, 'BUT S5 DACS', '5', 'Programmation avancée en système', 'R5-DACS-04', 0, 0, 0, 0, 0, 2023),
-(400, 'BUT S5 DACS', '5', 'Automatisation de la chaîne de production', 'R5-DACS-05', 0, 0, 0, 0, 0, 2023),
-(401, 'BUT S5 DACS', '5', 'Installation et config. de services complexes', 'R5-DACS-06', 0, 0, 0, 0, 0, 2023),
-(402, 'BUT S5 DACS', '5', 'Virtualisation avancée', 'R5-DACS-07', 0, 0, 0, 0, 0, 2023),
-(403, 'BUT S5 DACS', '5', 'Continuité de service', 'R5-DACS-08', 0, 0, 0, 0, 0, 2023),
-(404, 'BUT S5 DACS', '5', 'Cybersécurité', 'R5-DACS-09', 0, 0, 0, 0, 0, 2023),
-(405, 'BUT S5 DACS', '5', 'Modélisation mathématiques', 'R5-DACS-10', 0, 0, 0, 0, 0, 2023),
-(406, 'BUT S5 DACS', '5', 'Économie durable et numérique', 'R5-DACS-11', 0, 0, 0, 0, 0, 2023),
-(407, 'BUT S5 DACS', '5', 'Anglais', 'R5-DACS-12', 0, 0, 0, 0, 0, 2023),
-(408, 'BUT S5 RA-DWM', '5', 'Initiation au management d\'une équipe', 'R5-RA-DWM-01', 37, 0, 37, 0, 0, 2023),
-(409, 'BUT S5 RA-DWM', '5', 'PPP', 'R5-RA-DWM-02', 24, 0, 24, 0, 0, 2023),
-(410, 'BUT S5 RA-DWM', '5', 'Politiques de communication', 'R5-RA-DWM-03', 24, 0, 24, 0, 0, 2023),
-(411, 'BUT S5 RA-DWM', '5', 'Qualité algorithmique', 'R5-RA-DWM-04', 60, 0, 60, 0, 0, 2023),
-(412, 'BUT S5 RA-DWM', '5', 'Programmation avancée', 'R5-RA-DWM-05', 46, 0, 46, 0, 0, 2023),
-(413, 'BUT S5 RA-DWM', '5', 'Programmation multimédia', 'R5-RA-DWM-06', 48, 0, 48, 0, 0, 2023),
-(414, 'BUT S5 RA-DWM', '5', 'Automatisation de la production', 'R5-RA-DWM-07', 28, 0, 28, 0, 0, 2023),
-(415, 'BUT S5 RA-DWM', '5', 'Qualité de développement', 'R5-RA-DWM-08', 60, 0, 60, 0, 0, 2023),
-(416, 'BUT S5 RA-DWM', '5', 'Virtualisation avancée', 'R5-RA-DWM-09', 34, 0, 34, 0, 0, 2023),
-(417, 'BUT S5 RA-DWM', '5', 'Nouveaux paradigmes BD', 'R5-RA-DWM-10', 28, 0, 28, 0, 0, 2023),
-(418, 'BUT S5 RA-DWM', '5', 'Optimisation pour l\'aide à la décision', 'R5-RA-DWM-11', 34, 0, 34, 0, 0, 2023),
-(419, 'BUT S5 RA-DWM', '5', 'Modélisations mathématiques', 'R5-RA-DWM-12', 34, 0, 34, 0, 0, 2023),
-(420, 'BUT S5 RA-DWM', '5', 'Économie numérique et durable', 'R5-RA-DWM-13', 20, 0, 20, 0, 0, 2023),
-(421, 'BUT S5 RA-DWM', '5', 'Anglais', 'R5-RA-DWM-14', 24, 0, 24, 0, 0, 2023),
-(422, 'BUT S5 RA-IL', '5', 'Initiation au management d\'une équipe', 'R5-RA-IL-01', 12, 0, 12, 0, 0, 2023),
-(423, 'BUT S5 RA-IL', '5', 'PPP', 'R5-RA-IL-02', 6, 0, 6, 0, 0, 2023),
-(424, 'BUT S5 RA-IL', '5', 'Politiques de communication', 'R5-RA-IL-03', 6, 0, 6, 0, 0, 2023),
-(425, 'BUT S5 RA-IL', '5', 'Qualité algorithmique', 'R5-RA-IL-04', 24, 0, 24, 0, 0, 2023),
-(426, 'BUT S5 RA-IL', '5', 'Programmation avancée', 'R5-RA-IL-05', 24, 0, 24, 0, 0, 2023),
-(427, 'BUT S5 RA-IL', '5', 'Programmation multimédia', 'R5-RA-IL-06', 18, 0, 18, 0, 0, 2023),
-(428, 'BUT S5 RA-IL', '5', 'Automatisation de la production', 'R5-RA-IL-07', 12, 0, 12, 0, 0, 2023),
-(429, 'BUT S5 RA-IL', '5', 'Qualité de développement', 'R5-RA-IL-08', 24, 0, 24, 0, 0, 2023),
-(430, 'BUT S5 RA-IL', '5', 'Virtualisation avancée', 'R5-RA-IL-09', 12, 0, 12, 0, 0, 2023),
-(431, 'BUT S5 RA-IL', '5', 'Nouveaux paradigmes BD', 'R5-RA-IL-10', 26, 0, 26, 0, 0, 2023),
-(432, 'BUT S5 RA-IL', '5', 'Optimisation pour l\'aide à la décision', 'R5-RA-IL-11', 12, 0, 12, 0, 0, 2023),
-(433, 'BUT S5 RA-IL', '5', 'Modélisations mathématiques', 'R5-RA-IL-12', 36, 0, 36, 0, 0, 2023),
-(434, 'BUT S5 RA-IL', '5', 'Économie numérique et durable', 'R5-RA-IL-13', 12, 0, 12, 0, 0, 2023),
-(435, 'BUT S5 RA-IL', '5', 'Anglais', 'R5-RA-IL-14', 24, 0, 24, 0, 0, 2023),
-(436, 'BUT S5 RA-IL', '5', 'Logique', 'R5-RA-IL-15', 32, 0, 32, 0, 0, 2023),
-(437, 'BUT S1', '1', 'Implémentation d\'un besoin client', 'S1-01', 12, 0, 12, 0, 0, 2023),
-(438, 'BUT S1', '', 'Comparaison d\'approches algorithmique', 'S1-02', 18, 6, 12, 0, 0, 2023),
-(439, 'BUT S1', '1', 'Installation d\'un poste développement', 'S1-03', 12, 0, 12, 0, 0, 2023),
-(440, 'BUT S1', '1', 'Création d\'une BD', 'S1-04', 12, 0, 12, 0, 0, 2023),
-(441, 'BUT S1', '1', 'Recueil de besoins', 'S1-05', 12, 0, 12, 0, 0, 2023),
-(442, 'BUT S1', '1', 'Découverte de l\'environnement éco et écolo', 'S1-06', 12, 0, 12, 0, 0, 2023),
-(443, 'BUT S3', '3', 'Développement d\'une application java', 'S3-01', 62, 0, 62, 0, 0, 2023),
-(444, 'BUT S3', '3', 'Développement d\'une appli web sécurisée', 'S3-02', 36, 0, 36, 0, 0, 2023),
-(445, 'BUT S3', '3', 'Réseau et application serveur', 'S3-03', 24, 0, 24, 0, 0, 2023),
-(446, 'BUT S5 DACS', '5', 'Projet tuteuré', 'S5-DACS-01-1', 0, 0, 0, 0, 0, 2023),
-(447, 'BUT S5 DACS', '5', 'Administrer un serveur Web', 'S5-DACS-01-2', 0, 0, 0, 0, 0, 2023),
-(448, 'BUT S5 RA-DWM', '5', 'Projet application web et mobile', 'S5-RA-DWM-01-1', 0, 0, 0, 0, 0, 2023),
-(449, 'BUT S5 RA-DWM', '5', 'Atelier-projet développement-intégration', 'S5-RA-DWM-01-2', 0, 0, 0, 0, 0, 2023),
-(450, 'BUT S5 RA-DWM', '5', 'Services Web et interopérabilité', 'S5-RA-DWM-01-3', 32, 0, 32, 0, 0, 2023),
-(451, 'BUT S5 RA-IL', '5', 'Projet tuteuré', 'S5-RA-IL-01-1', 160, 0, 160, 0, 0, 2023),
-(452, 'BUT S5 RA-IL', '5', 'Initiation à l\'intelligence artificielle', 'S5-RA-IL-01-2', 60, 0, 60, 0, 0, 2023),
-(453, 'BUT S5 RA-IL', '5', 'Compilation', 'S5-RA-IL-01-3', 32, 0, 32, 0, 0, 2023),
-(454, 'Autre', '5', 'Portfolio', 'P5-RA-DWM-01', 0, 0, 0, 0, 0, 2023),
-(455, 'BUT S2', '2', 'Portfolio', 'P2-01', 0, 0, 0, 0, 0, 2023),
-(456, 'BUT S6 DACS', '6', 'Portfolio', 'P6-DACS-01', 0, 0, 0, 0, 0, 2023),
-(457, 'BUT S6 RA-IL', '6', 'Portfolio', 'P6-RA-IL-01', 0, 0, 0, 0, 0, 2023),
-(458, 'BUT S2', '2', 'Initiation à la programmation objet', 'R2-01A', 32, 0, 32, 0, 0, 2023),
-(459, 'BUT S2', '2', 'Initiation à la conception objet', 'R2-01B', 28, 0, 20, 8, 0, 2023),
-(460, 'BUT S2', '2', 'Développement d\'applications avec IHM', 'R2-02', 44, 0, 36, 8, 0, 2023),
-(461, 'BUT S2', '2', 'Qualité de développement', 'R2-03', 24, 0, 16, 8, 0, 2023),
-(462, 'BUT S2', '2', 'Communication et fonctionnement bas niveau', 'R2-04', 28, 0, 20, 8, 0, 2023),
-(463, 'BUT S2', '2', 'Introduction aux services réseaux', 'R2-05', 20, 0, 12, 8, 0, 2023),
-(464, 'BUT S2', '2', 'Exploitation d\'une BD', 'R2-06', 40, 0, 40, 0, 0, 2023),
-(465, 'BUT S2', '2', 'Graphes', 'R2-07', 32, 8, 24, 0, 0, 2023),
-(466, 'BUT S2', '2', 'Outils numériques pour les statistiques descript', 'R2-08', 16, 0, 16, 0, 0, 2023),
-(467, 'BUT S2', '2', 'Méthodes numériques', 'R2-09', 16, 8, 8, 0, 0, 2023),
-(468, 'BUT S2', '2', 'Introduction à la gestion des systèmes d\'information', 'R2-10', 40, 0, 40, 0, 0, 2023),
-(469, 'BUT S2', '2', 'Introduction au droit', 'R2-11', 24, 0, 24, 0, 0, 2023),
-(470, 'BUT S2', '2', 'Anglais', 'R2-12', 28, 0, 28, 0, 0, 2023),
-(471, 'BUT S2', '2', 'Communication technique', 'R2-13', 32, 0, 32, 0, 0, 2023),
-(472, 'BUT S2', '2', 'Projet professionnel et personnel', 'R2-14', 20, 0, 20, 0, 0, 2023),
-(473, 'BUT S4 DACS', '4', 'Architecture logicielle', 'R4-DACS-01', 32, 0, 32, 0, 0, 2023),
-(474, 'BUT S4 DACS', '4', 'Qualité développement', 'R4-DACS-02', 16, 0, 16, 0, 0, 2023),
-(475, 'BUT S4 DACS', '4', 'Qualité et au delà du relationnel', 'R4-DACS-03', 16, 0, 16, 0, 0, 2023),
-(476, 'BUT S4 DACS', '4', 'Méthode d\'optimisation', 'R4-DACS-04', 12, 0, 12, 0, 0, 2023),
-(477, 'BUT S4 DACS', '4', 'Anglais', 'R4-DACS-05', 24, 0, 24, 0, 0, 2023),
-(478, 'BUT S4 DACS', '4', 'Communication interne', 'R4-DACS-06', 22, 0, 22, 0, 0, 2023),
-(479, 'BUT S4 DACS', '4', 'Projet personnel et professionnel', 'R4-DACS-07', 8, 0, 8, 0, 0, 2023),
-(480, 'BUT S4 DACS', '4', 'Virtualisation', 'R4-DACS-08', 24, 0, 24, 0, 0, 2023),
-(481, 'BUT S4 DACS', '4', 'Management avancé des SI', 'R4-DACS-09', 20, 0, 20, 0, 0, 2023),
-(482, 'BUT S4 DACS', '4', 'Cryptographie et sécurité', 'R4-DACS-10', 12, 0, 12, 0, 0, 2023),
-(483, 'BUT S4 DACS', '4', 'Réseau avancé', 'R4-DACS-11', 32, 0, 32, 0, 0, 2023),
-(484, 'BUT S4 DACS', '4', 'Sécurité système et réseaux', 'R4-DACS-12', 20, 0, 20, 0, 0, 2023),
-(485, 'BUT S4 DACS', '4', 'Administration Unix', 'R4-DACS-13', 24, 0, 24, 0, 0, 2023),
-(486, 'BUT S4 RA-DWM', '4', 'Architecture logicielle', 'R4-RA-DWM-01', 42, 0, 42, 0, 0, 2023),
-(487, 'BUT S4 RA-DWM', '4', 'Qualité développement', 'R4-RA-DWM-02', 16, 0, 16, 0, 0, 2023),
-(488, 'BUT S4 RA-DWM', '4', 'Qualité et au delà du relationnel', 'R4-RA-DWM-03', 24, 0, 240, 0, 0, 2023),
-(489, 'BUT S4 RA-DWM', '4', 'Méthode d\'optimisation', 'R4-RA-DWM-04', 12, 0, 12, 0, 0, 2023),
-(490, 'BUT S4 RA-DWM', '4', 'Anglais', 'R4-RA-DWM-05', 24, 0, 24, 0, 0, 2023),
-(491, 'BUT S4 RA-DWM', '4', 'Communication interne', 'R4-RA-DWM-06', 22, 0, 22, 0, 0, 2023),
-(492, 'BUT S4 RA-DWM', '4', 'Projet personnel et professionnel', 'R4-RA-DWM-07', 8, 0, 8, 0, 0, 2023),
-(493, 'BUT S4 RA-DWM', '4', 'Virtualisation', 'R4-RA-DWM-08', 18, 0, 18, 0, 0, 2023),
-(494, 'BUT S4 RA-DWM', '4', 'Management avancé des SI', 'R4-RA-DWM-09', 20, 0, 20, 0, 0, 2023),
-(495, 'BUT S4 RA-DWM', '4', 'Complément web', 'R4-RA-DWM-10', 32, 0, 32, 0, 0, 2023),
-(496, 'BUT S4 RA-DWM', '4', 'Développement pour les app. mobiles', 'R4-RA-DWM-11', 32, 0, 32, 0, 0, 2023),
-(497, 'BUT S4 RA-DWM', '4', 'Automates et langages', 'R4-RA-DWM-12', 12, 0, 12, 0, 0, 2023),
-(498, 'BUT S4 RA-IL', '4', 'Architecture logicielle', 'R4-RA-IL-01', 24, 0, 24, 0, 0, 2023),
-(499, 'BUT S4 RA-IL', '4', 'Qualité de développement', 'R4-RA-IL-02', 16, 0, 16, 0, 0, 2023),
-(500, 'BUT S4 RA-IL', '4', 'Qualité et au delà du relationnel', 'R4-RA-IL-03', 24, 0, 24, 0, 0, 2023),
-(501, 'BUT S4 RA-IL', '4', 'Méthode d\'optimisation', 'R4-RA-IL-04', 16, 0, 16, 0, 0, 2023),
-(502, 'BUT S4 RA-IL', '4', 'Anglais', 'R4-RA-IL-05', 24, 0, 24, 0, 0, 2023),
-(503, 'BUT S4 RA-IL', '4', 'Communication interne', 'R4-RA-IL-06', 20, 0, 20, 0, 0, 2023),
-(504, 'BUT S4 RA-IL', '4', 'Projet personnel et professionnel', 'R4-RA-IL-07', 8, 0, 8, 0, 0, 2023),
-(505, 'BUT S4 RA-IL', '4', 'Virtualisation', 'R4-RA-IL-08', 18, 0, 18, 0, 0, 2023),
-(506, 'BUT S4 RA-IL', '4', 'Management avancé des SI', 'R4-RA-IL-09', 20, 0, 20, 0, 0, 2023),
-(507, 'BUT S4 RA-IL', '4', 'Complément web', 'R4-RA-IL-10', 30, 0, 30, 0, 0, 2023),
-(508, 'BUT S4 RA-IL', '4', 'Développement pour les app. mobiles', 'R4-RA-IL-11', 30, 0, 30, 0, 0, 2023),
-(509, 'BUT S4 RA-IL', '4', 'Automates et langages', 'R4-RA-IL-12', 20, 0, 20, 0, 0, 2023),
-(510, 'BUT S6 DACS', '6', 'Initiation entrepreneuriat', 'R6-DACS-01', 0, 0, 0, 0, 0, 2023),
-(511, 'BUT S6 DACS', '6', 'Droit du numérique et de la prop. industrielle', 'R6-DACS-02', 0, 0, 0, 0, 0, 2023),
-(512, 'BUT S6 DACS', '6', 'Com. : organisation et diffusion de l\'info', 'R6-DACS-03', 0, 0, 0, 0, 0, 2023),
-(513, 'BUT S6 DACS', '6', 'PPP', 'R6-DACS-04', 0, 0, 0, 0, 0, 2023),
-(514, 'BUT S6 DACS', '6', 'Optimisation des services complexes', 'R6-DACS-05', 0, 0, 0, 0, 0, 2023),
-(515, 'BUT S6 DACS', '6', 'Cloud computing', 'R6-DACS-06', 0, 0, 0, 0, 0, 2023),
-(516, 'BUT S6 RA', '6', 'Approfondissement dév. mobile ', 'R6-RA-05-1', 0, 0, 0, 0, 0, 2023),
-(517, 'BUT S6 RA-DWM', '6', 'Initiation à l\'entrepreneuriat', 'R6-RA-DWM-01', 20, 0, 20, 0, 0, 2023),
-(518, 'BUT S6 RA-DWM', '6', 'Droit numérique et P.I.', 'R6-RA-DWM-02', 18, 0, 18, 0, 0, 2023),
-(519, 'BUT S6 RA-DWM', '6', 'Com : organisation et diff. de l\'info.', 'R6-RA-DWM-03', 16, 0, 16, 0, 0, 2023),
-(520, 'BUT S6 RA-DWM', '6', 'PPP', 'R6-RA-DWM-04', 16, 0, 16, 0, 0, 2023),
-(521, 'BUT S6 RA-DWM', '6', 'Initiation au développement mobile', 'R6-RA-DWM-05-2', 0, 0, 0, 0, 0, 2023),
-(522, 'BUT S6 RA-DWM', '6', 'Développement côté serveur en JS', 'R6-RA-DWM-05-3', 30, 0, 30, 0, 0, 2023),
-(523, 'BUT S6 RA-DWM', '6', 'Maintenance applicative', 'R6-RA-DWM-06', 28, 0, 28, 0, 0, 2023),
-(524, 'BUT S6 RA-IL', '6', 'Initiation à l\'entrepreneuriat', 'R6-RA-IL-01', 8, 0, 8, 0, 0, 2023),
-(525, 'BUT S6 RA-IL', '6', 'Droit numérique et P.I.', 'R6-RA-IL-02', 18, 0, 18, 0, 0, 2023),
-(526, 'BUT S6 RA-IL', '6', 'Com : organisation et diff. de l\'info.', 'R6-RA-IL-03', 6, 0, 6, 0, 0, 2023),
-(527, 'BUT S6 RA-IL', '6', 'PPP', 'R6-RA-IL-04', 6, 0, 6, 0, 0, 2023),
-(528, 'BUT S6 RA-IL', '6', 'Maintenance applicative', 'R6-RA-IL-06', 14, 0, 14, 0, 0, 2023),
-(529, 'BUT S2', '2', 'Développement d\'une application', 'S2-01', 16, 0, 16, 0, 0, 2023),
-(530, 'BUT S2', '2', 'Exploration algorithmique d\'un problème', 'S2-02', 16, 0, 16, 0, 0, 2023),
-(531, 'BUT S2', '2', 'Installation de services réseaux', 'S2-03', 16, 0, 16, 0, 0, 2023),
-(532, 'BUT S2', '2', 'Exploitation d\'une BD', 'S2-04', 16, 0, 16, 0, 0, 2023),
-(533, 'BUT S2', '2', 'Gestion d\'un projet', 'S2-05', 16, 0, 16, 0, 0, 2023),
-(534, 'BUT S2', '2', 'Organisation d\'un travail d\'équipe', 'S2-06', 16, 0, 16, 0, 0, 2023),
-(535, 'BUT S4 DACS', '4', 'Déploiement de solution', 'S4-DACS-01', 10, 0, 10, 0, 0, 2023),
-(536, 'BUT S4 DACS', '4', 'Déploiement avancé', 'S4-DACS-02', 22, 0, 22, 0, 0, 2023),
-(537, 'BUT S4 DACS', '4', 'Jeu entreprise / Anglais', 'S4-DACS-03', 15, 0, 15, 0, 0, 2023),
-(538, 'BUT S4 RA-DWM', '4', 'Ateliers projet dvpt web', 'S4-RA-DWM-01', 32, 0, 32, 0, 0, 2023),
-(539, 'BUT S4 RA-DWM', '4', 'Jeu d\'entreprise / Anglais', 'S4-RA-DWM-02', 15, 0, 15, 0, 0, 2023),
-(540, 'BUT S4 RA-IL', '4', 'Projet IA', 'S4-RA-IL-01', 10, 0, 10, 0, 0, 2023),
-(541, 'BUT S4 RA-IL', '4', 'Projet application répartie', 'S4-RA-IL-02', 22, 0, 22, 0, 0, 2023),
-(542, 'BUT S4 RA-IL', '4', 'Jeu d\'entreprise / Anglais', 'S4-RA-IL-03', 15, 0, 15, 0, 0, 2023),
-(543, 'BUT S6 DACS', '6', 'Optimisation des services', 'S6-DACS-01', 0, 0, 0, 0, 0, 2023),
-(544, 'BUT S6 RA-DWM', '6', 'Projet application web et mobile', 'S6-RA-DWM-01-1', 110, 0, 110, 0, 0, 2023),
-(545, 'BUT S6 RA-DWM', '6', 'Atelier-projet développement-intégration', 'S6-RA-DWM-01-2', 140, 0, 140, 0, 0, 2023),
-(546, 'BUT S6 RA-IL', '6', 'Projet tuteuré', 'S6-RA-IL-01-1', 50, 0, 0, 0, 0, 2023),
-(620, 'Autre', '1', 'Autre (préciser dans les remarques)', '', 0, 0, 0, 0, 0, 2022),
-(621, 'Autre', '1', 'Forfait suivi de stage', '', 0, 0, 0, 0, 0, 2022),
-(622, 'Autre', '5', 'Portfolio', 'P5-RA-DWM-01', 0, 0, 0, 0, 0, 2022),
-(623, 'BUT S1', '1', 'Introduction à l\'algorithmique', 'R1-01A', 37, 5, 32, 0, 0, 2022),
-(624, 'BUT S1', '1', 'Bases de la programmation', 'R1-01B', 40, 0, 24, 16, 0, 2022),
-(625, 'BUT S1', '1', 'Structure de données et programmation', 'R1-01C', 32, 0, 24, 8, 0, 2022),
-(626, 'BUT S1', '1', 'Développement d\'interfaces web', 'R1-02', 24, 0, 24, 0, 0, 2022),
-(627, 'BUT S1', '1', 'Introduction à l\'architecture des ordinateurs', 'R1-03', 24, 0, 16, 8, 0, 2022),
-(628, 'BUT S1', '1', 'Introduction aux SE et à leur fonctionnement', 'R1-04', 24, 0, 8, 16, 0, 2022),
-(629, 'BUT S1', '1', 'Introduction aux BD et SQL', 'R1-05', 48, 0, 48, 0, 0, 2022),
-(630, 'BUT S1', '1', 'Maths discrètes', 'R1-06', 40, 16, 24, 0, 0, 2022),
-(631, 'BUT S1', '1', 'Outils mathématiques fondamentaux', 'R1-07', 24, 8, 16, 0, 0, 2022),
-(632, 'BUT S1', '1', 'Introduction à la gestion des organisations', 'R1-08', 36, 0, 36, 0, 0, 2022),
-(633, 'BUT S1', '1', 'Introduction à l\'économie durable et numérique', 'R1-09', 24, 0, 24, 0, 0, 2022),
-(634, 'BUT S1', '1', 'Anglais', 'R1-10', 32, 0, 32, 0, 0, 2022),
-(635, 'BUT S1', '1', 'Bases de la communication', 'R1-11', 28, 0, 28, 0, 0, 2022),
-(636, 'BUT S1', '1', 'Projet professionnel et personnel', 'R1-12', 16, 0, 13, 3, 0, 2022),
-(637, 'BUT S3', '3', 'Développement web', 'R3-01', 40, 0, 40, 0, 0, 2022),
-(638, 'BUT S3', '3', 'Développement efficace', 'R3-02', 28, 0, 28, 0, 0, 2022),
-(639, 'BUT S3', '3', 'Analyse', 'R3-03', 28, 0, 28, 0, 0, 2022),
-(640, 'BUT S3', '3', 'Qualité de développement', 'R3-04', 46, 0, 46, 0, 0, 2022),
-(641, 'BUT S3', '3', 'Programmation système', 'R3-05', 36, 0, 36, 0, 0, 2022),
-(642, 'BUT S3', '3', 'Architecture des réseaux', 'R3-06', 36, 0, 36, 0, 0, 2022),
-(643, 'BUT S3', '3', 'SQL dans un langage de programmation', 'R3-07', 32, 0, 32, 0, 0, 2022),
-(644, 'BUT S3', '3', 'Probabilités', 'R3-08', 24, 12, 12, 0, 0, 2022),
-(645, 'BUT S3', '3', 'Cryptographie et sécurité', 'R3-09', 28, 0, 12, 16, 0, 2022),
-(646, 'BUT S3', '3', 'Management des SI', 'R3-10', 38, 0, 38, 0, 0, 2022),
-(647, 'BUT S3', '3', 'Droit des contrats et du numérique', 'R3-11', 24, 0, 24, 0, 0, 2022),
-(648, 'BUT S3', '3', 'Anglais', 'R3-12', 28, 0, 28, 0, 0, 2022),
-(649, 'BUT S3', '3', 'Communication professionnelle', 'R3-13', 24, 0, 24, 0, 0, 2022),
-(650, 'BUT S3', '3', 'Projet Personnel et Professionnel', 'R3-14', 12, 0, 12, 0, 0, 2022),
-(651, 'BUT S5 DACS', '5', 'Initiation au management d\'une équipe', 'R5-DACS-01', 0, 0, 0, 0, 0, 2022),
-(652, 'BUT S5 DACS', '5', 'PPP', 'R5-DACS-02', 0, 0, 0, 0, 0, 2022),
-(653, 'BUT S5 DACS', '5', 'Politiques de communication', 'R5-DACS-03', 0, 0, 0, 0, 0, 2022),
-(654, 'BUT S5 DACS', '5', 'Programmation avancée en système', 'R5-DACS-04', 0, 0, 0, 0, 0, 2022),
-(655, 'BUT S5 DACS', '5', 'Automatisation de la chaîne de production', 'R5-DACS-05', 0, 0, 0, 0, 0, 2022),
-(656, 'BUT S5 DACS', '5', 'Installation et config. de services complexes', 'R5-DACS-06', 0, 0, 0, 0, 0, 2022),
-(657, 'BUT S5 DACS', '5', 'Virtualisation avancée', 'R5-DACS-07', 0, 0, 0, 0, 0, 2022),
-(658, 'BUT S5 DACS', '5', 'Continuité de service', 'R5-DACS-08', 0, 0, 0, 0, 0, 2022),
-(659, 'BUT S5 DACS', '5', 'Cybersécurité', 'R5-DACS-09', 0, 0, 0, 0, 0, 2022),
-(660, 'BUT S5 DACS', '5', 'Modélisation mathématiques', 'R5-DACS-10', 0, 0, 0, 0, 0, 2022),
-(661, 'BUT S5 DACS', '5', 'Économie durable et numérique', 'R5-DACS-11', 0, 0, 0, 0, 0, 2022),
-(662, 'BUT S5 DACS', '5', 'Anglais', 'R5-DACS-12', 0, 0, 0, 0, 0, 2022),
-(663, 'BUT S5 RA-DWM', '5', 'Initiation au management d\'une équipe', 'R5-RA-DWM-01', 37, 0, 37, 0, 0, 2022),
-(664, 'BUT S5 RA-DWM', '5', 'PPP', 'R5-RA-DWM-02', 24, 0, 24, 0, 0, 2022),
-(665, 'BUT S5 RA-DWM', '5', 'Politiques de communication', 'R5-RA-DWM-03', 24, 0, 24, 0, 0, 2022),
-(666, 'BUT S5 RA-DWM', '5', 'Qualité algorithmique', 'R5-RA-DWM-04', 60, 0, 60, 0, 0, 2022),
-(667, 'BUT S5 RA-DWM', '5', 'Programmation avancée', 'R5-RA-DWM-05', 46, 0, 46, 0, 0, 2022),
-(668, 'BUT S5 RA-DWM', '5', 'Programmation multimédia', 'R5-RA-DWM-06', 48, 0, 48, 0, 0, 2022),
-(669, 'BUT S5 RA-DWM', '5', 'Automatisation de la production', 'R5-RA-DWM-07', 28, 0, 28, 0, 0, 2022),
-(670, 'BUT S5 RA-DWM', '5', 'Qualité de développement', 'R5-RA-DWM-08', 60, 0, 60, 0, 0, 2022),
-(671, 'BUT S5 RA-DWM', '5', 'Virtualisation avancée', 'R5-RA-DWM-09', 34, 0, 34, 0, 0, 2022),
-(672, 'BUT S5 RA-DWM', '5', 'Nouveaux paradigmes BD', 'R5-RA-DWM-10', 28, 0, 28, 0, 0, 2022),
-(673, 'BUT S5 RA-DWM', '5', 'Optimisation pour l\'aide à la décision', 'R5-RA-DWM-11', 34, 0, 34, 0, 0, 2022),
-(674, 'BUT S5 RA-DWM', '5', 'Modélisations mathématiques', 'R5-RA-DWM-12', 34, 0, 34, 0, 0, 2022),
-(675, 'BUT S5 RA-DWM', '5', 'Économie numérique et durable', 'R5-RA-DWM-13', 20, 0, 20, 0, 0, 2022),
-(676, 'BUT S5 RA-DWM', '5', 'Anglais', 'R5-RA-DWM-14', 24, 0, 24, 0, 0, 2022),
-(677, 'BUT S5 RA-IL', '5', 'Initiation au management d\'une équipe', 'R5-RA-IL-01', 12, 0, 12, 0, 0, 2022),
-(678, 'BUT S5 RA-IL', '5', 'PPP', 'R5-RA-IL-02', 6, 0, 6, 0, 0, 2022),
-(679, 'BUT S5 RA-IL', '5', 'Politiques de communication', 'R5-RA-IL-03', 6, 0, 6, 0, 0, 2022),
-(680, 'BUT S5 RA-IL', '5', 'Qualité algorithmique', 'R5-RA-IL-04', 24, 0, 24, 0, 0, 2022),
-(681, 'BUT S5 RA-IL', '5', 'Programmation avancée', 'R5-RA-IL-05', 24, 0, 24, 0, 0, 2022),
-(682, 'BUT S5 RA-IL', '5', 'Programmation multimédia', 'R5-RA-IL-06', 18, 0, 18, 0, 0, 2022),
-(683, 'BUT S5 RA-IL', '5', 'Automatisation de la production', 'R5-RA-IL-07', 12, 0, 12, 0, 0, 2022),
-(684, 'BUT S5 RA-IL', '5', 'Qualité de développement', 'R5-RA-IL-08', 24, 0, 24, 0, 0, 2022),
-(685, 'BUT S5 RA-IL', '5', 'Virtualisation avancée', 'R5-RA-IL-09', 12, 0, 12, 0, 0, 2022),
-(686, 'BUT S5 RA-IL', '5', 'Nouveaux paradigmes BD', 'R5-RA-IL-10', 26, 0, 26, 0, 0, 2022),
-(687, 'BUT S5 RA-IL', '5', 'Optimisation pour l\'aide à la décision', 'R5-RA-IL-11', 12, 0, 12, 0, 0, 2022),
-(688, 'BUT S5 RA-IL', '5', 'Modélisations mathématiques', 'R5-RA-IL-12', 36, 0, 36, 0, 0, 2022),
-(689, 'BUT S5 RA-IL', '5', 'Économie numérique et durable', 'R5-RA-IL-13', 12, 0, 12, 0, 0, 2022),
-(690, 'BUT S5 RA-IL', '5', 'Anglais', 'R5-RA-IL-14', 24, 0, 24, 0, 0, 2022),
-(691, 'BUT S5 RA-IL', '5', 'Logique', 'R5-RA-IL-15', 32, 0, 32, 0, 0, 2022),
-(692, 'BUT S1', '1', 'Implémentation d\'un besoin client', 'S1-01', 12, 0, 12, 0, 0, 2022),
-(693, 'BUT S1', '', 'Comparaison d\'approches algorithmique', 'S1-02', 18, 6, 12, 0, 0, 2022),
-(694, 'BUT S1', '1', 'Installation d\'un poste développement', 'S1-03', 12, 0, 12, 0, 0, 2022),
-(695, 'BUT S1', '1', 'Création d\'une BD', 'S1-04', 12, 0, 12, 0, 0, 2022),
-(696, 'BUT S1', '1', 'Recueil de besoins', 'S1-05', 12, 0, 12, 0, 0, 2022),
-(697, 'BUT S1', '1', 'Découverte de l\'environnement éco et écolo', 'S1-06', 12, 0, 12, 0, 0, 2022),
-(698, 'BUT S3', '3', 'Développement d\'une application java', 'S3-01', 62, 0, 62, 0, 0, 2022),
-(699, 'BUT S3', '3', 'Développement d\'une appli web sécurisée', 'S3-02', 36, 0, 36, 0, 0, 2022),
-(700, 'BUT S3', '3', 'Réseau et application serveur', 'S3-03', 24, 0, 24, 0, 0, 2022),
-(701, 'BUT S5 DACS', '5', 'Projet tuteuré', 'S5-DACS-01-1', 0, 0, 0, 0, 0, 2022),
-(702, 'BUT S5 DACS', '5', 'Administrer un serveur Web', 'S5-DACS-01-2', 0, 0, 0, 0, 0, 2022),
-(703, 'BUT S5 RA-DWM', '5', 'Projet application web et mobile', 'S5-RA-DWM-01-1', 0, 0, 0, 0, 0, 2022),
-(704, 'BUT S5 RA-DWM', '5', 'Atelier-projet développement-intégration', 'S5-RA-DWM-01-2', 0, 0, 0, 0, 0, 2022),
-(705, 'BUT S5 RA-DWM', '5', 'Services Web et interopérabilité', 'S5-RA-DWM-01-3', 32, 0, 32, 0, 0, 2022),
-(706, 'BUT S5 RA-IL', '5', 'Projet tuteuré', 'S5-RA-IL-01-1', 160, 0, 160, 0, 0, 2022),
-(707, 'BUT S5 RA-IL', '5', 'Initiation à l\'intelligence artificielle', 'S5-RA-IL-01-2', 60, 0, 60, 0, 0, 2022),
-(708, 'BUT S5 RA-IL', '5', 'Compilation', 'S5-RA-IL-01-3', 32, 0, 32, 0, 0, 2022),
-(709, 'Autre', '5', 'Portfolio', 'P5-RA-DWM-01', 0, 0, 0, 0, 0, 2022),
-(710, 'BUT S2', '2', 'Portfolio', 'P2-01', 0, 0, 0, 0, 0, 2022),
-(711, 'BUT S6 DACS', '6', 'Portfolio', 'P6-DACS-01', 0, 0, 0, 0, 0, 2022),
-(712, 'BUT S6 RA-IL', '6', 'Portfolio', 'P6-RA-IL-01', 0, 0, 0, 0, 0, 2022),
-(713, 'BUT S2', '2', 'Initiation à la programmation objet', 'R2-01A', 32, 0, 32, 0, 0, 2022),
-(714, 'BUT S2', '2', 'Initiation à la conception objet', 'R2-01B', 28, 0, 20, 8, 0, 2022),
-(715, 'BUT S2', '2', 'Développement d\'applications avec IHM', 'R2-02', 44, 0, 36, 8, 0, 2022),
-(716, 'BUT S2', '2', 'Qualité de développement', 'R2-03', 24, 0, 16, 8, 0, 2022),
-(717, 'BUT S2', '2', 'Communication et fonctionnement bas niveau', 'R2-04', 28, 0, 20, 8, 0, 2022),
-(718, 'BUT S2', '2', 'Introduction aux services réseaux', 'R2-05', 20, 0, 12, 8, 0, 2022),
-(719, 'BUT S2', '2', 'Exploitation d\'une BD', 'R2-06', 40, 0, 40, 0, 0, 2022),
-(720, 'BUT S2', '2', 'Graphes', 'R2-07', 32, 8, 24, 0, 0, 2022),
-(721, 'BUT S2', '2', 'Outils numériques pour les statistiques descript', 'R2-08', 16, 0, 16, 0, 0, 2022),
-(722, 'BUT S2', '2', 'Méthodes numériques', 'R2-09', 16, 8, 8, 0, 0, 2022),
-(723, 'BUT S2', '2', 'Introduction à la gestion des systèmes d\'information', 'R2-10', 40, 0, 40, 0, 0, 2022),
-(724, 'BUT S2', '2', 'Introduction au droit', 'R2-11', 24, 0, 24, 0, 0, 2022),
-(725, 'BUT S2', '2', 'Anglais', 'R2-12', 28, 0, 28, 0, 0, 2022),
-(726, 'BUT S2', '2', 'Communication technique', 'R2-13', 32, 0, 32, 0, 0, 2022),
-(727, 'BUT S2', '2', 'Projet professionnel et personnel', 'R2-14', 20, 0, 20, 0, 0, 2022),
-(728, 'BUT S4 DACS', '4', 'Architecture logicielle', 'R4-DACS-01', 32, 0, 32, 0, 0, 2022),
-(729, 'BUT S4 DACS', '4', 'Qualité développement', 'R4-DACS-02', 16, 0, 16, 0, 0, 2022),
-(730, 'BUT S4 DACS', '4', 'Qualité et au delà du relationnel', 'R4-DACS-03', 16, 0, 16, 0, 0, 2022),
-(731, 'BUT S4 DACS', '4', 'Méthode d\'optimisation', 'R4-DACS-04', 12, 0, 12, 0, 0, 2022),
-(732, 'BUT S4 DACS', '4', 'Anglais', 'R4-DACS-05', 24, 0, 24, 0, 0, 2022),
-(733, 'BUT S4 DACS', '4', 'Communication interne', 'R4-DACS-06', 22, 0, 22, 0, 0, 2022),
-(734, 'BUT S4 DACS', '4', 'Projet personnel et professionnel', 'R4-DACS-07', 8, 0, 8, 0, 0, 2022),
-(735, 'BUT S4 DACS', '4', 'Virtualisation', 'R4-DACS-08', 24, 0, 24, 0, 0, 2022),
-(736, 'BUT S4 DACS', '4', 'Management avancé des SI', 'R4-DACS-09', 20, 0, 20, 0, 0, 2022),
-(737, 'BUT S4 DACS', '4', 'Cryptographie et sécurité', 'R4-DACS-10', 12, 0, 12, 0, 0, 2022),
-(738, 'BUT S4 DACS', '4', 'Réseau avancé', 'R4-DACS-11', 32, 0, 32, 0, 0, 2022),
-(739, 'BUT S4 DACS', '4', 'Sécurité système et réseaux', 'R4-DACS-12', 20, 0, 20, 0, 0, 2022),
-(740, 'BUT S4 DACS', '4', 'Administration Unix', 'R4-DACS-13', 24, 0, 24, 0, 0, 2022),
-(741, 'BUT S4 RA-DWM', '4', 'Architecture logicielle', 'R4-RA-DWM-01', 42, 0, 42, 0, 0, 2022),
-(742, 'BUT S4 RA-DWM', '4', 'Qualité développement', 'R4-RA-DWM-02', 16, 0, 16, 0, 0, 2022),
-(743, 'BUT S4 RA-DWM', '4', 'Qualité et au delà du relationnel', 'R4-RA-DWM-03', 24, 0, 240, 0, 0, 2022),
-(744, 'BUT S4 RA-DWM', '4', 'Méthode d\'optimisation', 'R4-RA-DWM-04', 12, 0, 12, 0, 0, 2022),
-(745, 'BUT S4 RA-DWM', '4', 'Anglais', 'R4-RA-DWM-05', 24, 0, 24, 0, 0, 2022),
-(746, 'BUT S4 RA-DWM', '4', 'Communication interne', 'R4-RA-DWM-06', 22, 0, 22, 0, 0, 2022),
-(747, 'BUT S4 RA-DWM', '4', 'Projet personnel et professionnel', 'R4-RA-DWM-07', 8, 0, 8, 0, 0, 2022),
-(748, 'BUT S4 RA-DWM', '4', 'Virtualisation', 'R4-RA-DWM-08', 18, 0, 18, 0, 0, 2022),
-(749, 'BUT S4 RA-DWM', '4', 'Management avancé des SI', 'R4-RA-DWM-09', 20, 0, 20, 0, 0, 2022),
-(750, 'BUT S4 RA-DWM', '4', 'Complément web', 'R4-RA-DWM-10', 32, 0, 32, 0, 0, 2022),
-(751, 'BUT S4 RA-DWM', '4', 'Développement pour les app. mobiles', 'R4-RA-DWM-11', 32, 0, 32, 0, 0, 2022),
-(752, 'BUT S4 RA-DWM', '4', 'Automates et langages', 'R4-RA-DWM-12', 12, 0, 12, 0, 0, 2022),
-(753, 'BUT S4 RA-IL', '4', 'Architecture logicielle', 'R4-RA-IL-01', 24, 0, 24, 0, 0, 2022),
-(754, 'BUT S4 RA-IL', '4', 'Qualité de développement', 'R4-RA-IL-02', 16, 0, 16, 0, 0, 2022),
-(755, 'BUT S4 RA-IL', '4', 'Qualité et au delà du relationnel', 'R4-RA-IL-03', 24, 0, 24, 0, 0, 2022),
-(756, 'BUT S4 RA-IL', '4', 'Méthode d\'optimisation', 'R4-RA-IL-04', 16, 0, 16, 0, 0, 2022),
-(757, 'BUT S4 RA-IL', '4', 'Anglais', 'R4-RA-IL-05', 24, 0, 24, 0, 0, 2022),
-(758, 'BUT S4 RA-IL', '4', 'Communication interne', 'R4-RA-IL-06', 20, 0, 20, 0, 0, 2022),
-(759, 'BUT S4 RA-IL', '4', 'Projet personnel et professionnel', 'R4-RA-IL-07', 8, 0, 8, 0, 0, 2022),
-(760, 'BUT S4 RA-IL', '4', 'Virtualisation', 'R4-RA-IL-08', 18, 0, 18, 0, 0, 2022),
-(761, 'BUT S4 RA-IL', '4', 'Management avancé des SI', 'R4-RA-IL-09', 20, 0, 20, 0, 0, 2022),
-(762, 'BUT S4 RA-IL', '4', 'Complément web', 'R4-RA-IL-10', 30, 0, 30, 0, 0, 2022),
-(763, 'BUT S4 RA-IL', '4', 'Développement pour les app. mobiles', 'R4-RA-IL-11', 30, 0, 30, 0, 0, 2022),
-(764, 'BUT S4 RA-IL', '4', 'Automates et langages', 'R4-RA-IL-12', 20, 0, 20, 0, 0, 2022),
-(765, 'BUT S6 DACS', '6', 'Initiation entrepreneuriat', 'R6-DACS-01', 0, 0, 0, 0, 0, 2022),
-(766, 'BUT S6 DACS', '6', 'Droit du numérique et de la prop. industrielle', 'R6-DACS-02', 0, 0, 0, 0, 0, 2022),
-(767, 'BUT S6 DACS', '6', 'Com. : organisation et diffusion de l\'info', 'R6-DACS-03', 0, 0, 0, 0, 0, 2022),
-(768, 'BUT S6 DACS', '6', 'PPP', 'R6-DACS-04', 0, 0, 0, 0, 0, 2022),
-(769, 'BUT S6 DACS', '6', 'Optimisation des services complexes', 'R6-DACS-05', 0, 0, 0, 0, 0, 2022),
-(770, 'BUT S6 DACS', '6', 'Cloud computing', 'R6-DACS-06', 0, 0, 0, 0, 0, 2022),
-(771, 'BUT S6 RA', '6', 'Approfondissement dév. mobile ', 'R6-RA-05-1', 0, 0, 0, 0, 0, 2022),
-(772, 'BUT S6 RA-DWM', '6', 'Initiation à l\'entrepreneuriat', 'R6-RA-DWM-01', 20, 0, 20, 0, 0, 2022),
-(773, 'BUT S6 RA-DWM', '6', 'Droit numérique et P.I.', 'R6-RA-DWM-02', 18, 0, 18, 0, 0, 2022),
-(774, 'BUT S6 RA-DWM', '6', 'Com : organisation et diff. de l\'info.', 'R6-RA-DWM-03', 16, 0, 16, 0, 0, 2022),
-(775, 'BUT S6 RA-DWM', '6', 'PPP', 'R6-RA-DWM-04', 16, 0, 16, 0, 0, 2022),
-(776, 'BUT S6 RA-DWM', '6', 'Initiation au développement mobile', 'R6-RA-DWM-05-2', 0, 0, 0, 0, 0, 2022),
-(777, 'BUT S6 RA-DWM', '6', 'Développement côté serveur en JS', 'R6-RA-DWM-05-3', 30, 0, 30, 0, 0, 2022),
-(778, 'BUT S6 RA-DWM', '6', 'Maintenance applicative', 'R6-RA-DWM-06', 28, 0, 28, 0, 0, 2022),
-(779, 'BUT S6 RA-IL', '6', 'Initiation à l\'entrepreneuriat', 'R6-RA-IL-01', 8, 0, 8, 0, 0, 2022),
-(780, 'BUT S6 RA-IL', '6', 'Droit numérique et P.I.', 'R6-RA-IL-02', 18, 0, 18, 0, 0, 2022),
-(781, 'BUT S6 RA-IL', '6', 'Com : organisation et diff. de l\'info.', 'R6-RA-IL-03', 6, 0, 6, 0, 0, 2022),
-(782, 'BUT S6 RA-IL', '6', 'PPP', 'R6-RA-IL-04', 6, 0, 6, 0, 0, 2022),
-(783, 'BUT S6 RA-IL', '6', 'Maintenance applicative', 'R6-RA-IL-06', 14, 0, 14, 0, 0, 2022),
-(784, 'BUT S2', '2', 'Développement d\'une application', 'S2-01', 16, 0, 16, 0, 0, 2022),
-(785, 'BUT S2', '2', 'Exploration algorithmique d\'un problème', 'S2-02', 16, 0, 16, 0, 0, 2022),
-(786, 'BUT S2', '2', 'Installation de services réseaux', 'S2-03', 16, 0, 16, 0, 0, 2022),
-(787, 'BUT S2', '2', 'Exploitation d\'une BD', 'S2-04', 16, 0, 16, 0, 0, 2022),
-(788, 'BUT S2', '2', 'Gestion d\'un projet', 'S2-05', 16, 0, 16, 0, 0, 2022),
-(789, 'BUT S2', '2', 'Organisation d\'un travail d\'équipe', 'S2-06', 16, 0, 16, 0, 0, 2022),
-(790, 'BUT S4 DACS', '4', 'Déploiement de solution', 'S4-DACS-01', 10, 0, 10, 0, 0, 2022),
-(791, 'BUT S4 DACS', '4', 'Déploiement avancé', 'S4-DACS-02', 22, 0, 22, 0, 0, 2022),
-(792, 'BUT S4 DACS', '4', 'Jeu entreprise / Anglais', 'S4-DACS-03', 15, 0, 15, 0, 0, 2022),
-(793, 'BUT S4 RA-DWM', '4', 'Ateliers projet dvpt web', 'S4-RA-DWM-01', 32, 0, 32, 0, 0, 2022),
-(794, 'BUT S4 RA-DWM', '4', 'Jeu d\'entreprise / Anglais', 'S4-RA-DWM-02', 15, 0, 15, 0, 0, 2022),
-(795, 'BUT S4 RA-IL', '4', 'Projet IA', 'S4-RA-IL-01', 10, 0, 10, 0, 0, 2022),
-(796, 'BUT S4 RA-IL', '4', 'Projet application répartie', 'S4-RA-IL-02', 22, 0, 22, 0, 0, 2022),
-(797, 'BUT S4 RA-IL', '4', 'Jeu d\'entreprise / Anglais', 'S4-RA-IL-03', 15, 0, 15, 0, 0, 2022),
-(798, 'BUT S6 DACS', '6', 'Optimisation des services', 'S6-DACS-01', 0, 0, 0, 0, 0, 2022),
-(799, 'BUT S6 RA-DWM', '6', 'Projet application web et mobile', 'S6-RA-DWM-01-1', 110, 0, 110, 0, 0, 2022),
-(800, 'BUT S6 RA-DWM', '6', 'Atelier-projet développement-intégration', 'S6-RA-DWM-01-2', 140, 0, 140, 0, 0, 2022),
-(801, 'BUT S6 RA-IL', '6', 'Projet tuteuré', 'S6-RA-IL-01-1', 50, 0, 0, 0, 0, 2022);
-
--- --------------------------------------------------------
-
---
 -- Structure de la table `details_cours`
 --
 
@@ -1071,18 +584,19 @@ CREATE TABLE `details_cours` (
   `id_responsable_module` int(11) NOT NULL,
   `type_salle` varchar(255) NOT NULL,
   `equipements_specifiques` text NOT NULL,
-  `details` text NOT NULL,
-  `statut` varchar(20) DEFAULT 'en attente'
+  `ds` text NOT NULL,
+  `statut` varchar(20) DEFAULT 'en attente',
+  `commentaire` text NOT NULL,
+  `systeme` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Déchargement des données de la table `details_cours`
 --
 
-INSERT INTO `details_cours` (`id_ressource`, `id_cours`, `id_responsable_module`, `type_salle`, `equipements_specifiques`, `details`, `statut`) VALUES
-(15, 186, 73, 'Inconnu', 'Intervention en salle 016 : Indifférent\n', 'DS : Detail cours Resp', 'en attente'),
-(16, 192, 72, 'Inconnu', 'Intervention en salle 016 : Indifférent\n', 'DS : Detail cours', 'validée'),
-(19, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : Detail', 'validée');
+INSERT INTO `details_cours` (`id_ressource`, `id_cours`, `id_responsable_module`, `type_salle`, `equipements_specifiques`, `ds`, `statut`, `commentaire`, `systeme`) VALUES
+(38, 186, 73, 'Inconnu', 'Intervention en salle 016 : Indifférent\n', 'DS : Detail cours Resp', 'en attente', '', ''),
+(39, 192, 72, 'Inconnu', 'Intervention en salle 016 : Indifférent\n', 'DS : Detail cours', 'en attente', '', '');
 
 -- --------------------------------------------------------
 
@@ -1114,7 +628,61 @@ INSERT INTO `details_cours_historisees` (`id_ressource`, `id_cours`, `id_respons
 (22, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : Detail', 'validée', 2023),
 (23, 186, 73, 'Inconnu', 'Intervention en salle 016 : Indifférent\n', 'DS : Detail cours Resp', 'en attente', 2022),
 (24, 192, 72, 'Inconnu', 'Intervention en salle 016 : Indifférent\n', 'DS : Detail cours', 'validée', 2022),
-(25, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : Detail', 'validée', 2022);
+(25, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : Detail', 'validée', 2022),
+(26, 192, 72, 'Inconnu', 'Intervention en salle 016 : Indifférent\n', 'DS : Detail cours', 'validée', 2000),
+(27, 186, 73, 'Inconnu', 'Intervention en salle 016 : Indifférent\n', 'DS : Detail cours Resp', 'en attente', 2000),
+(28, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : Detail', 'validée', 2000),
+(29, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2000),
+(30, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2000),
+(31, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2000),
+(32, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2000),
+(33, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2000),
+(34, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2000),
+(35, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2000),
+(36, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2000),
+(37, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2000),
+(38, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2000),
+(39, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2000),
+(40, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2000),
+(41, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2000),
+(42, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2000),
+(43, 186, 83, 'Inconnu', 'Intervention en salle 016 : Non, salle non adaptée\n', 'DS : Test eza', 'en attente', 2000),
+(57, 192, 72, 'Inconnu', 'Intervention en salle 016 : Indifférent\n', 'DS : Detail cours', 'validée', 2000),
+(58, 186, 73, 'Inconnu', 'Intervention en salle 016 : Indifférent\n', 'DS : Detail cours Resp', 'validée', 2000),
+(59, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : Detail', 'validée', 2000),
+(60, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'validée', 2000),
+(61, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2000),
+(62, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2000),
+(63, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2000),
+(64, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2000),
+(65, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2000),
+(66, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2000),
+(67, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2000),
+(68, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2000),
+(69, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2000),
+(70, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2000),
+(71, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2000),
+(72, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2000),
+(73, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2000),
+(74, 186, 83, 'Inconnu', 'Intervention en salle 016 : Non, salle non adaptée\n', 'DS : Test eza', 'en attente', 2000),
+(88, 192, 72, 'Inconnu', 'Intervention en salle 016 : Indifférent\n', 'DS : Detail cours', 'en attente', 2001),
+(89, 186, 73, 'Inconnu', 'Intervention en salle 016 : Indifférent\n', 'DS : Detail cours Resp', 'en attente', 2001),
+(90, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : Detail', 'en attente', 2001),
+(91, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2001),
+(92, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2001),
+(93, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2001),
+(94, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2001),
+(95, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2001),
+(96, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2001),
+(97, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2001),
+(98, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2001),
+(99, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2001),
+(100, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2001),
+(101, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2001),
+(102, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2001),
+(103, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2001),
+(104, 186, 83, 'Inconnu', 'Intervention en salle 016 : Oui, de préférence\n', 'DS : ', 'en attente', 2001),
+(105, 186, 83, 'Inconnu', 'Intervention en salle 016 : Non, salle non adaptée\n', 'DS : Test eza', 'en attente', 2001);
 
 -- --------------------------------------------------------
 
@@ -1173,55 +741,6 @@ INSERT INTO `groupes` (`id_groupe`, `nom_groupe`, `niveau`) VALUES
 -- --------------------------------------------------------
 
 --
--- Structure de la table `groupes_historisees`
---
-
-CREATE TABLE `groupes_historisees` (
-  `id_groupe` int(11) NOT NULL,
-  `nom_groupe` varchar(255) NOT NULL,
-  `niveau` varchar(255) NOT NULL,
-  `annee` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
---
--- Déchargement des données de la table `groupes_historisees`
---
-
-INSERT INTO `groupes_historisees` (`id_groupe`, `nom_groupe`, `niveau`, `annee`) VALUES
-(1, 'GR A', 'BUT 1', 2024),
-(2, 'GR B', 'BUT 1', 2024),
-(3, 'GR C', 'BUT 1', 2024),
-(4, 'GR D', 'BUT 1', 2024),
-(5, 'GR E', 'BUT 1', 2024),
-(6, 'GR A', 'BUT 2', 2024),
-(7, 'GR B', 'BUT 2', 2024),
-(8, 'GR C', 'BUT 2', 2024),
-(9, 'GR D', 'BUT 2', 2024),
-(10, 'GR E', 'BUT 2', 2024),
-(11, 'GR A', 'BUT 1', 2023),
-(12, 'GR B', 'BUT 1', 2023),
-(13, 'GR C', 'BUT 1', 2023),
-(14, 'GR D', 'BUT 1', 2023),
-(15, 'GR E', 'BUT 1', 2023),
-(16, 'GR A', 'BUT 2', 2023),
-(17, 'GR B', 'BUT 2', 2023),
-(18, 'GR C', 'BUT 2', 2023),
-(19, 'GR D', 'BUT 2', 2023),
-(20, 'GR E', 'BUT 2', 2023),
-(26, 'GR A', 'BUT 1', 2022),
-(27, 'GR B', 'BUT 1', 2022),
-(28, 'GR C', 'BUT 1', 2022),
-(29, 'GR D', 'BUT 1', 2022),
-(30, 'GR E', 'BUT 1', 2022),
-(31, 'GR A', 'BUT 2', 2022),
-(32, 'GR B', 'BUT 2', 2022),
-(33, 'GR C', 'BUT 2', 2022),
-(34, 'GR D', 'BUT 2', 2022),
-(35, 'GR E', 'BUT 2', 2022);
-
--- --------------------------------------------------------
-
---
 -- Structure de la table `historisation`
 --
 
@@ -1254,47 +773,47 @@ CREATE TABLE `repartition_heures` (
 --
 
 INSERT INTO `repartition_heures` (`id_repartition`, `id_cours`, `semaine_debut`, `semaine_fin`, `type_heure`, `nb_heures_par_semaine`, `semestre`) VALUES
-(36248, 263, 41, 43, 'EI', 1, 'S3'),
-(39391, 276, 13, 14, 'CM', 1, 'S2'),
-(39392, 276, 13, 14, 'TD', 1, 'S2'),
-(40267, 186, 2, 2, 'CM', 2, 'S1'),
-(40268, 186, 36, 39, 'CM', 3, 'S1'),
-(40269, 186, 41, 43, 'CM', 3, 'S1'),
-(40270, 186, 3, 3, 'CM', 34, 'S1'),
-(40271, 186, 36, 39, 'TD', 3, 'S1'),
-(40272, 186, 41, 43, 'TD', 3, 'S1'),
-(40273, 186, 36, 39, 'TP', 3, 'S1'),
-(40274, 186, 41, 43, 'TP', 3, 'S1'),
-(40275, 187, 36, 39, 'CM', 3, 'S1'),
-(40276, 187, 41, 43, 'CM', 3, 'S1'),
-(40277, 187, 37, 39, 'TD', 3, 'S1'),
-(40278, 187, 42, 43, 'TD', 3, 'S1'),
-(40279, 187, 36, 36, 'TD', 5, 'S1'),
-(40280, 187, 41, 41, 'TD', 5, 'S1'),
-(40281, 187, 37, 39, 'TP', 3, 'S1'),
-(40282, 187, 42, 43, 'TP', 3, 'S1'),
-(40283, 187, 36, 36, 'TP', 5, 'S1'),
-(40284, 187, 41, 41, 'TP', 5, 'S1'),
-(40285, 188, 37, 39, 'CM', 3, 'S1'),
-(40286, 188, 42, 43, 'CM', 3, 'S1'),
-(40287, 188, 36, 36, 'CM', 5, 'S1'),
-(40288, 188, 41, 41, 'CM', 5, 'S1'),
-(40289, 188, 37, 39, 'TD', 3, 'S1'),
-(40290, 188, 42, 43, 'TD', 3, 'S1'),
-(40291, 188, 36, 36, 'TD', 5, 'S1'),
-(40292, 188, 41, 41, 'TD', 5, 'S1'),
-(40293, 188, 36, 39, 'TP', 3, 'S1'),
-(40294, 188, 41, 43, 'TP', 3, 'S1'),
-(40295, 189, 36, 39, 'CM', 3, 'S1'),
-(40296, 189, 41, 43, 'CM', 3, 'S1'),
-(40297, 189, 36, 39, 'TD', 3, 'S1'),
-(40298, 189, 41, 43, 'TD', 3, 'S1'),
-(40299, 190, 41, 42, 'CM', 3, 'S1'),
-(40300, 190, 41, 42, 'TD', 3, 'S1'),
-(40301, 191, 42, 42, 'CM', 2, 'S1'),
-(40302, 191, 41, 41, 'CM', 4, 'S1'),
-(40303, 191, 42, 42, 'TD', 2, 'S1'),
-(40304, 191, 41, 41, 'TD', 4, 'S1');
+(40873, 263, 41, 43, 'EI', 1, 'S3'),
+(40936, 186, 2, 2, 'CM', 2, 'S1'),
+(40937, 186, 36, 39, 'CM', 3, 'S1'),
+(40938, 186, 41, 43, 'CM', 3, 'S1'),
+(40939, 186, 3, 3, 'CM', 34, 'S1'),
+(40940, 186, 36, 39, 'TD', 3, 'S1'),
+(40941, 186, 41, 43, 'TD', 3, 'S1'),
+(40942, 186, 36, 39, 'TP', 3, 'S1'),
+(40943, 186, 41, 43, 'TP', 3, 'S1'),
+(40944, 187, 36, 39, 'CM', 3, 'S1'),
+(40945, 187, 41, 43, 'CM', 3, 'S1'),
+(40946, 187, 37, 39, 'TD', 3, 'S1'),
+(40947, 187, 42, 43, 'TD', 3, 'S1'),
+(40948, 187, 36, 36, 'TD', 5, 'S1'),
+(40949, 187, 41, 41, 'TD', 5, 'S1'),
+(40950, 187, 37, 39, 'TP', 3, 'S1'),
+(40951, 187, 42, 43, 'TP', 3, 'S1'),
+(40952, 187, 36, 36, 'TP', 5, 'S1'),
+(40953, 187, 41, 41, 'TP', 5, 'S1'),
+(40954, 188, 37, 39, 'CM', 3, 'S1'),
+(40955, 188, 42, 43, 'CM', 3, 'S1'),
+(40956, 188, 36, 36, 'CM', 5, 'S1'),
+(40957, 188, 41, 41, 'CM', 5, 'S1'),
+(40958, 188, 37, 39, 'TD', 3, 'S1'),
+(40959, 188, 42, 43, 'TD', 3, 'S1'),
+(40960, 188, 36, 36, 'TD', 5, 'S1'),
+(40961, 188, 41, 41, 'TD', 5, 'S1'),
+(40962, 188, 36, 39, 'TP', 3, 'S1'),
+(40963, 188, 41, 43, 'TP', 3, 'S1'),
+(40964, 189, 36, 39, 'CM', 3, 'S1'),
+(40965, 189, 41, 43, 'CM', 3, 'S1'),
+(40966, 189, 36, 39, 'TD', 3, 'S1'),
+(40967, 189, 41, 43, 'TD', 3, 'S1'),
+(40968, 190, 41, 42, 'CM', 3, 'S1'),
+(40969, 190, 41, 42, 'TD', 3, 'S1'),
+(40970, 191, 42, 42, 'CM', 2, 'S1'),
+(40971, 191, 41, 41, 'CM', 4, 'S1'),
+(40972, 191, 42, 42, 'TD', 2, 'S1'),
+(40973, 191, 41, 41, 'TD', 4, 'S1'),
+(40974, 276, 13, 14, 'CM', 1, 'S2'),
+(40975, 276, 13, 14, 'TD', 1, 'S2');
 
 -- --------------------------------------------------------
 
@@ -1440,7 +959,171 @@ INSERT INTO `repartition_heures_historisees` (`id_repartition`, `id_cours`, `sem
 (39607, 191, 42, 42, 'CM', 2, 'S1', 2022),
 (39608, 191, 41, 41, 'CM', 4, 'S1', 2022),
 (39609, 191, 42, 42, 'TD', 2, 'S1', 2022),
-(39610, 191, 41, 41, 'TD', 4, 'S1', 2022);
+(39610, 191, 41, 41, 'TD', 4, 'S1', 2022),
+(39633, 263, 41, 43, 'EI', 1, 'S3', 2000),
+(39634, 276, 13, 14, 'CM', 1, 'S2', 2000),
+(39635, 276, 13, 14, 'TD', 1, 'S2', 2000),
+(39636, 186, 2, 2, 'CM', 2, 'S1', 2000),
+(39637, 186, 36, 39, 'CM', 3, 'S1', 2000),
+(39638, 186, 41, 43, 'CM', 3, 'S1', 2000),
+(39639, 186, 45, 50, 'CM', 3, 'S1', 2000),
+(39640, 186, 3, 3, 'CM', 34, 'S1', 2000),
+(39641, 186, 36, 39, 'TD', 3, 'S1', 2000),
+(39642, 186, 41, 43, 'TD', 3, 'S1', 2000),
+(39643, 186, 45, 50, 'TD', 3, 'S1', 2000),
+(39644, 186, 36, 39, 'TP', 3, 'S1', 2000),
+(39645, 186, 41, 43, 'TP', 3, 'S1', 2000),
+(39646, 187, 36, 39, 'CM', 3, 'S1', 2000),
+(39647, 187, 41, 43, 'CM', 3, 'S1', 2000),
+(39648, 187, 37, 39, 'TD', 3, 'S1', 2000),
+(39649, 187, 42, 43, 'TD', 3, 'S1', 2000),
+(39650, 187, 36, 36, 'TD', 5, 'S1', 2000),
+(39651, 187, 41, 41, 'TD', 5, 'S1', 2000),
+(39652, 187, 37, 39, 'TP', 3, 'S1', 2000),
+(39653, 187, 42, 43, 'TP', 3, 'S1', 2000),
+(39654, 187, 36, 36, 'TP', 5, 'S1', 2000),
+(39655, 187, 41, 41, 'TP', 5, 'S1', 2000),
+(39656, 188, 37, 39, 'CM', 3, 'S1', 2000),
+(39657, 188, 42, 43, 'CM', 3, 'S1', 2000),
+(39658, 188, 36, 36, 'CM', 5, 'S1', 2000),
+(39659, 188, 41, 41, 'CM', 5, 'S1', 2000),
+(39660, 188, 37, 39, 'TD', 3, 'S1', 2000),
+(39661, 188, 42, 43, 'TD', 3, 'S1', 2000),
+(39662, 188, 36, 36, 'TD', 5, 'S1', 2000),
+(39663, 188, 41, 41, 'TD', 5, 'S1', 2000),
+(39664, 188, 36, 39, 'TP', 3, 'S1', 2000),
+(39665, 188, 41, 43, 'TP', 3, 'S1', 2000),
+(39666, 189, 36, 39, 'CM', 3, 'S1', 2000),
+(39667, 189, 41, 43, 'CM', 3, 'S1', 2000),
+(39668, 189, 36, 39, 'TD', 3, 'S1', 2000),
+(39669, 189, 41, 43, 'TD', 3, 'S1', 2000),
+(39670, 190, 41, 42, 'CM', 3, 'S1', 2000),
+(39671, 190, 41, 42, 'TD', 3, 'S1', 2000),
+(39672, 191, 42, 42, 'CM', 2, 'S1', 2000),
+(39673, 191, 41, 41, 'CM', 4, 'S1', 2000),
+(39674, 191, 42, 42, 'TD', 2, 'S1', 2000),
+(39675, 191, 41, 41, 'TD', 4, 'S1', 2000),
+(39676, 197, 45, 45, 'TD', 4, 'S1', 2000),
+(39677, 197, 45, 45, 'TP', 4, 'S1', 2000),
+(39678, 198, 45, 45, 'CM', 4, 'S1', 2000),
+(39679, 198, 45, 45, 'TD', 4, 'S1', 2000),
+(39680, 198, 45, 45, 'TP', 4, 'S1', 2000),
+(39696, 263, 41, 43, 'EI', 1, 'S3', 2000),
+(39697, 276, 13, 14, 'CM', 1, 'S2', 2000),
+(39698, 276, 13, 14, 'TD', 1, 'S2', 2000),
+(39699, 186, 2, 2, 'CM', 2, 'S1', 2000),
+(39700, 186, 36, 39, 'CM', 3, 'S1', 2000),
+(39701, 186, 41, 43, 'CM', 3, 'S1', 2000),
+(39702, 186, 45, 50, 'CM', 3, 'S1', 2000),
+(39703, 186, 3, 3, 'CM', 34, 'S1', 2000),
+(39704, 186, 36, 39, 'TD', 3, 'S1', 2000),
+(39705, 186, 41, 43, 'TD', 3, 'S1', 2000),
+(39706, 186, 45, 50, 'TD', 3, 'S1', 2000),
+(39707, 186, 36, 39, 'TP', 3, 'S1', 2000),
+(39708, 186, 41, 43, 'TP', 3, 'S1', 2000),
+(39709, 187, 36, 39, 'CM', 3, 'S1', 2000),
+(39710, 187, 41, 43, 'CM', 3, 'S1', 2000),
+(39711, 187, 37, 39, 'TD', 3, 'S1', 2000),
+(39712, 187, 42, 43, 'TD', 3, 'S1', 2000),
+(39713, 187, 36, 36, 'TD', 5, 'S1', 2000),
+(39714, 187, 41, 41, 'TD', 5, 'S1', 2000),
+(39715, 187, 37, 39, 'TP', 3, 'S1', 2000),
+(39716, 187, 42, 43, 'TP', 3, 'S1', 2000),
+(39717, 187, 36, 36, 'TP', 5, 'S1', 2000),
+(39718, 187, 41, 41, 'TP', 5, 'S1', 2000),
+(39719, 188, 37, 39, 'CM', 3, 'S1', 2000),
+(39720, 188, 42, 43, 'CM', 3, 'S1', 2000),
+(39721, 188, 36, 36, 'CM', 5, 'S1', 2000),
+(39722, 188, 41, 41, 'CM', 5, 'S1', 2000),
+(39723, 188, 37, 39, 'TD', 3, 'S1', 2000),
+(39724, 188, 42, 43, 'TD', 3, 'S1', 2000),
+(39725, 188, 36, 36, 'TD', 5, 'S1', 2000),
+(39726, 188, 41, 41, 'TD', 5, 'S1', 2000),
+(39727, 188, 36, 39, 'TP', 3, 'S1', 2000),
+(39728, 188, 41, 43, 'TP', 3, 'S1', 2000),
+(39729, 189, 36, 39, 'CM', 3, 'S1', 2000),
+(39730, 189, 41, 43, 'CM', 3, 'S1', 2000),
+(39731, 189, 36, 39, 'TD', 3, 'S1', 2000),
+(39732, 189, 41, 43, 'TD', 3, 'S1', 2000),
+(39733, 190, 41, 42, 'CM', 3, 'S1', 2000),
+(39734, 190, 41, 42, 'TD', 3, 'S1', 2000),
+(39735, 191, 42, 42, 'CM', 2, 'S1', 2000),
+(39736, 191, 41, 41, 'CM', 4, 'S1', 2000),
+(39737, 191, 42, 42, 'TD', 2, 'S1', 2000),
+(39738, 191, 41, 41, 'TD', 4, 'S1', 2000),
+(39739, 197, 45, 45, 'TD', 4, 'S1', 2000),
+(39740, 197, 45, 45, 'TP', 4, 'S1', 2000),
+(39741, 198, 45, 45, 'CM', 4, 'S1', 2000),
+(39742, 198, 45, 45, 'TD', 4, 'S1', 2000),
+(39743, 198, 45, 45, 'TP', 4, 'S1', 2000),
+(39759, 263, 41, 43, 'EI', 1, 'S3', 2001),
+(39760, 186, 2, 2, 'CM', 2, 'S1', 2001),
+(39761, 186, 36, 39, 'CM', 3, 'S1', 2001),
+(39762, 186, 41, 43, 'CM', 3, 'S1', 2001),
+(39763, 186, 45, 50, 'CM', 3, 'S1', 2001),
+(39764, 186, 3, 3, 'CM', 34, 'S1', 2001),
+(39765, 186, 36, 39, 'TD', 3, 'S1', 2001),
+(39766, 186, 41, 43, 'TD', 3, 'S1', 2001),
+(39767, 186, 45, 50, 'TD', 3, 'S1', 2001),
+(39768, 186, 36, 39, 'TP', 3, 'S1', 2001),
+(39769, 186, 41, 43, 'TP', 3, 'S1', 2001),
+(39770, 187, 36, 39, 'CM', 3, 'S1', 2001),
+(39771, 187, 41, 43, 'CM', 3, 'S1', 2001),
+(39772, 187, 37, 39, 'TD', 3, 'S1', 2001),
+(39773, 187, 42, 43, 'TD', 3, 'S1', 2001),
+(39774, 187, 36, 36, 'TD', 5, 'S1', 2001),
+(39775, 187, 41, 41, 'TD', 5, 'S1', 2001),
+(39776, 187, 37, 39, 'TP', 3, 'S1', 2001),
+(39777, 187, 42, 43, 'TP', 3, 'S1', 2001),
+(39778, 187, 36, 36, 'TP', 5, 'S1', 2001),
+(39779, 187, 41, 41, 'TP', 5, 'S1', 2001),
+(39780, 188, 37, 39, 'CM', 3, 'S1', 2001),
+(39781, 188, 42, 43, 'CM', 3, 'S1', 2001),
+(39782, 188, 36, 36, 'CM', 5, 'S1', 2001),
+(39783, 188, 41, 41, 'CM', 5, 'S1', 2001),
+(39784, 188, 37, 39, 'TD', 3, 'S1', 2001),
+(39785, 188, 42, 43, 'TD', 3, 'S1', 2001),
+(39786, 188, 36, 36, 'TD', 5, 'S1', 2001),
+(39787, 188, 41, 41, 'TD', 5, 'S1', 2001),
+(39788, 188, 36, 39, 'TP', 3, 'S1', 2001),
+(39789, 188, 41, 43, 'TP', 3, 'S1', 2001),
+(39790, 189, 36, 39, 'CM', 3, 'S1', 2001),
+(39791, 189, 41, 43, 'CM', 3, 'S1', 2001),
+(39792, 189, 36, 39, 'TD', 3, 'S1', 2001),
+(39793, 189, 41, 43, 'TD', 3, 'S1', 2001),
+(39794, 190, 41, 42, 'CM', 3, 'S1', 2001),
+(39795, 190, 41, 42, 'TD', 3, 'S1', 2001),
+(39796, 191, 42, 42, 'CM', 2, 'S1', 2001),
+(39797, 191, 41, 41, 'CM', 4, 'S1', 2001),
+(39798, 191, 42, 42, 'TD', 2, 'S1', 2001),
+(39799, 191, 41, 41, 'TD', 4, 'S1', 2001),
+(39800, 197, 45, 45, 'TD', 4, 'S1', 2001),
+(39801, 197, 45, 45, 'TP', 4, 'S1', 2001),
+(39802, 198, 45, 45, 'CM', 4, 'S1', 2001),
+(39803, 198, 45, 45, 'TD', 4, 'S1', 2001),
+(39804, 198, 45, 45, 'TP', 4, 'S1', 2001),
+(39805, 276, 13, 14, 'CM', 1, 'S2', 2001),
+(39806, 276, 9, 9, 'CM', 2, 'S2', 2001),
+(39807, 276, 13, 14, 'TD', 1, 'S2', 2001),
+(39808, 276, 9, 9, 'TD', 2, 'S2', 2001),
+(39809, 276, 9, 9, 'TP', 2, 'S2', 2001),
+(39810, 277, 9, 9, 'CM', 2, 'S2', 2001),
+(39811, 277, 9, 9, 'TD', 2, 'S2', 2001),
+(39812, 277, 9, 9, 'TP', 2, 'S2', 2001),
+(39813, 278, 9, 9, 'CM', 2, 'S2', 2001),
+(39814, 278, 9, 9, 'TD', 2, 'S2', 2001),
+(39815, 278, 9, 9, 'TP', 2, 'S2', 2001),
+(39816, 279, 9, 9, 'CM', 2, 'S2', 2001),
+(39817, 279, 9, 9, 'TD', 2, 'S2', 2001),
+(39818, 279, 9, 9, 'TP', 2, 'S2', 2001),
+(39819, 280, 9, 9, 'CM', 2, 'S2', 2001),
+(39820, 280, 9, 9, 'TD', 2, 'S2', 2001),
+(39821, 280, 9, 9, 'TP', 2, 'S2', 2001),
+(39822, 281, 9, 9, 'CM', 2, 'S2', 2001),
+(39823, 281, 9, 9, 'TD', 2, 'S2', 2001),
+(39824, 281, 9, 9, 'TP', 2, 'S2', 2001),
+(39825, 282, 9, 9, 'CM', 2, 'S2', 2001),
+(39826, 350, 9, 9, 'EI', 2, 'S2', 2001);
 
 -- --------------------------------------------------------
 
@@ -1473,7 +1156,7 @@ INSERT INTO `utilisateurs` (`id_utilisateur`, `nom`, `prenom`, `email`, `mot_de_
 (28, 'Dosch', 'Philippe', 'doschp@mail.com', '$2y$10$iVGNZ7nrQXF5HybW60wdi.fUo5do5fYdepX7cPeuEyvGYmQFgFzqS', 'enseignant', 'enseignant-chercheur', 192, NULL, NULL, 0, 'oui', NULL),
 (29, 'Ouni', 'Slim', 'ounis@mail.com', '$2y$10$QkKfb4rfvR98IZpg3lwjPeoWy3lEf6bthNCsh4eeCeTLDKxfTGq56', 'enseignant', 'enseignant-chercheur', 192, NULL, NULL, 0, 'oui', NULL),
 (35, 'Dosch', 'Philippe', 'gestionnairedosch@mail.com', '$2y$10$XrW9RQt0ai4x1SoNxTnEX.ezO9seQZWFyGeiO7qhU8C9kmSIE8lnq', 'gestionnaire', 'enseignant-chercheur', 192, NULL, NULL, 0, 'oui', NULL),
-(39, 'Ragot', 'Yogan', 'ragoty@mail.com', '$2y$10$R6iJZ1VwLGi7Bc9yQz/ape/kgMQViqJq8BZCjnSb0Y9XZtAyoIZPe', 'enseignant', 'enseignant-chercheur', 192, NULL, NULL, 0, 'oui', '');
+(39, 'Ragot', 'Yogan', 'ragoty@mail.com', '$2y$10$m6UHRtnlNxFV.FiJrhBdIupN2PrA6N2GLRV1se2VG535odCog./0G', 'enseignant', 'enseignant-chercheur', 192, 'dbc79fbb4ce727af2999761ea669fd3d', '2025-04-02 14:52:46', 0, 'oui', '');
 
 -- --------------------------------------------------------
 
@@ -1499,14 +1182,14 @@ CREATE TABLE `voeux` (
 --
 
 INSERT INTO `voeux` (`id_voeu`, `id_enseignant`, `id_cours`, `semestre`, `nb_CM`, `nb_TD`, `nb_TP`, `nb_EI`, `remarques`, `statut`) VALUES
-(55, 72, 192, '1', 0, 28, 0, 0, '', 'en attente'),
-(56, 72, 195, '1', 0, 36, 0, 0, '', 'en attente'),
-(57, 72, 282, '2', 0, 40, 0, 0, '', 'en attente'),
-(58, 72, 287, '2', 0, 24, 0, 0, '', 'en attente'),
-(59, 73, 186, '1', 0, 32, 0, 0, '', 'en attente'),
-(60, 73, 187, '1', 0, 24, 16, 0, '', 'en attente'),
-(61, 73, 283, '2', 0, 12, 8, 0, '', 'en attente'),
-(71, 83, 186, '1', 5, 32, 0, 0, '', 'en attente');
+(88, 72, 192, '1', 0, 28, 0, 0, '', 'en attente'),
+(89, 72, 195, '1', 0, 36, 0, 0, '', 'en attente'),
+(90, 72, 282, '2', 0, 40, 0, 0, '', 'en attente'),
+(91, 72, 287, '2', 0, 24, 0, 0, '', 'en attente'),
+(92, 73, 186, '1', 0, 32, 0, 0, '', 'en attente'),
+(93, 73, 187, '1', 0, 24, 16, 0, '', 'en attente'),
+(94, 73, 283, '2', 0, 12, 8, 0, '', 'en attente'),
+(95, 83, 186, '1', 5, 32, 0, 0, '', 'en attente');
 
 -- --------------------------------------------------------
 
@@ -1556,7 +1239,31 @@ INSERT INTO `voeux_historisees` (`id_voeu`, `id_enseignant`, `id_cours`, `semest
 (91, 73, 186, '1', 0, 32, 0, 0, '', 'en attente', 2022),
 (92, 73, 187, '1', 0, 24, 16, 0, '', 'en attente', 2022),
 (93, 73, 283, '2', 0, 12, 8, 0, '', 'en attente', 2022),
-(94, 83, 186, '1', 5, 32, 0, 0, '', 'en attente', 2022);
+(94, 83, 186, '1', 5, 32, 0, 0, '', 'en attente', 2022),
+(102, 72, 192, '1', 0, 28, 0, 0, '', 'en attente', 2000),
+(103, 72, 195, '1', 0, 36, 0, 0, '', 'en attente', 2000),
+(104, 72, 282, '2', 0, 40, 0, 0, '', 'en attente', 2000),
+(105, 72, 287, '2', 0, 24, 0, 0, '', 'en attente', 2000),
+(106, 73, 186, '1', 0, 32, 0, 0, '', 'en attente', 2000),
+(107, 73, 187, '1', 0, 24, 16, 0, '', 'en attente', 2000),
+(108, 73, 283, '2', 0, 12, 8, 0, '', 'en attente', 2000),
+(109, 83, 186, '1', 5, 32, 0, 0, '', 'en attente', 2000),
+(117, 72, 192, '1', 0, 28, 0, 0, '', 'validée', 2000),
+(118, 72, 195, '1', 0, 36, 0, 0, '', 'validée', 2000),
+(119, 72, 282, '2', 0, 40, 0, 0, '', 'en attente', 2000),
+(120, 72, 287, '2', 0, 24, 0, 0, '', 'en attente', 2000),
+(121, 73, 186, '1', 0, 32, 0, 0, '', 'en attente', 2000),
+(122, 73, 187, '1', 0, 24, 16, 0, '', 'en attente', 2000),
+(123, 73, 283, '2', 0, 12, 8, 0, '', 'en attente', 2000),
+(124, 83, 186, '1', 5, 32, 0, 0, '', 'en attente', 2000),
+(132, 72, 192, '1', 0, 28, 0, 0, '', 'en attente', 2001),
+(133, 72, 195, '1', 0, 36, 0, 0, '', 'en attente', 2001),
+(134, 72, 282, '2', 0, 40, 0, 0, '', 'en attente', 2001),
+(135, 72, 287, '2', 0, 24, 0, 0, '', 'en attente', 2001),
+(136, 73, 186, '1', 0, 32, 0, 0, '', 'en attente', 2001),
+(137, 73, 187, '1', 0, 24, 16, 0, '', 'en attente', 2001),
+(138, 73, 283, '2', 0, 12, 8, 0, '', 'en attente', 2001),
+(139, 83, 186, '1', 5, 32, 0, 0, '', 'en attente', 2001);
 
 -- --------------------------------------------------------
 
@@ -1582,7 +1289,7 @@ CREATE TABLE `voeux_hors_iut` (
 --
 
 INSERT INTO `voeux_hors_iut` (`id_voeu_hi`, `id_enseignant`, `composant`, `formation`, `module`, `nb_heures_cm`, `nb_heures_td`, `nb_heures_tp`, `nb_heures_ei`, `nb_total`) VALUES
-(8, 73, 'IDMC', 'MASTER 1', 'MATHS', 10, 20, 6, 0, 36);
+(17, 73, 'IDMC', 'MASTER 1', 'MATHS', 10, 20, 6, 0, 36);
 
 -- --------------------------------------------------------
 
@@ -1611,7 +1318,10 @@ CREATE TABLE `voeux_hors_iut_historisees` (
 INSERT INTO `voeux_hors_iut_historisees` (`id_voeu_hi`, `id_enseignant`, `composant`, `formation`, `module`, `nb_heures_cm`, `nb_heures_td`, `nb_heures_tp`, `nb_heures_ei`, `nb_total`, `annee`) VALUES
 (8, 73, 'IDMC', 'MASTER 1', 'MATHS', 10, 20, 6, 0, 36, 2024),
 (9, 73, 'IDMC', 'MASTER 1', 'MATHS', 10, 20, 6, 0, 36, 2023),
-(10, 73, 'IDMC', 'MASTER 1', 'MATHS', 10, 20, 6, 0, 36, 2022);
+(10, 73, 'IDMC', 'MASTER 1', 'MATHS', 10, 20, 6, 0, 36, 2022),
+(11, 73, 'IDMC', 'MASTER 1', 'MATHS', 10, 20, 6, 0, 36, 2000),
+(12, 73, 'IDMC', 'MASTER 1', 'MATHS', 10, 20, 6, 0, 36, 2000),
+(13, 73, 'IDMC', 'MASTER 1', 'MATHS', 10, 20, 6, 0, 36, 2001);
 
 --
 -- Index pour les tables déchargées
@@ -1630,10 +1340,7 @@ ALTER TABLE `affectations`
 -- Index pour la table `affectations_historisees`
 --
 ALTER TABLE `affectations_historisees`
-  ADD PRIMARY KEY (`id_affectation`),
-  ADD KEY `id_cours` (`id_cours`),
-  ADD KEY `id_enseignant` (`id_enseignant`),
-  ADD KEY `id_groupe` (`id_groupe`);
+  ADD PRIMARY KEY (`id_affectation`);
 
 --
 -- Index pour la table `configurationplanningdetaille`
@@ -1658,8 +1365,7 @@ ALTER TABLE `contraintes`
 -- Index pour la table `contraintes_historisees`
 --
 ALTER TABLE `contraintes_historisees`
-  ADD PRIMARY KEY (`id_contrainte`),
-  ADD KEY `id_enseignant` (`id_utilisateur`);
+  ADD PRIMARY KEY (`id_contrainte`);
 
 --
 -- Index pour la table `cours`
@@ -1668,16 +1374,11 @@ ALTER TABLE `cours`
   ADD PRIMARY KEY (`id_cours`);
 
 --
--- Index pour la table `cours_historisees`
---
-ALTER TABLE `cours_historisees`
-  ADD PRIMARY KEY (`id_cours`);
-
---
 -- Index pour la table `details_cours`
 --
 ALTER TABLE `details_cours`
   ADD PRIMARY KEY (`id_ressource`),
+  ADD UNIQUE KEY `id_cours_2` (`id_cours`),
   ADD KEY `id_cours` (`id_cours`),
   ADD KEY `id_responsable_module` (`id_responsable_module`);
 
@@ -1685,9 +1386,7 @@ ALTER TABLE `details_cours`
 -- Index pour la table `details_cours_historisees`
 --
 ALTER TABLE `details_cours_historisees`
-  ADD PRIMARY KEY (`id_ressource`),
-  ADD KEY `id_cours` (`id_cours`),
-  ADD KEY `id_responsable_module` (`id_responsable_module`);
+  ADD PRIMARY KEY (`id_ressource`);
 
 --
 -- Index pour la table `enseignants`
@@ -1700,12 +1399,6 @@ ALTER TABLE `enseignants`
 -- Index pour la table `groupes`
 --
 ALTER TABLE `groupes`
-  ADD PRIMARY KEY (`id_groupe`);
-
---
--- Index pour la table `groupes_historisees`
---
-ALTER TABLE `groupes_historisees`
   ADD PRIMARY KEY (`id_groupe`);
 
 --
@@ -1728,8 +1421,7 @@ ALTER TABLE `repartition_heures`
 -- Index pour la table `repartition_heures_historisees`
 --
 ALTER TABLE `repartition_heures_historisees`
-  ADD PRIMARY KEY (`id_repartition`),
-  ADD KEY `id_cours` (`id_cours`);
+  ADD PRIMARY KEY (`id_repartition`);
 
 --
 -- Index pour la table `utilisateurs`
@@ -1750,9 +1442,7 @@ ALTER TABLE `voeux`
 -- Index pour la table `voeux_historisees`
 --
 ALTER TABLE `voeux_historisees`
-  ADD PRIMARY KEY (`id_voeu`),
-  ADD KEY `id_cours` (`id_cours`),
-  ADD KEY `id_enseignant` (`id_enseignant`);
+  ADD PRIMARY KEY (`id_voeu`);
 
 --
 -- Index pour la table `voeux_hors_iut`
@@ -1765,8 +1455,7 @@ ALTER TABLE `voeux_hors_iut`
 -- Index pour la table `voeux_hors_iut_historisees`
 --
 ALTER TABLE `voeux_hors_iut_historisees`
-  ADD PRIMARY KEY (`id_voeu_hi`),
-  ADD KEY `id_enseignant` (`id_enseignant`);
+  ADD PRIMARY KEY (`id_voeu_hi`);
 
 --
 -- AUTO_INCREMENT pour les tables déchargées
@@ -1776,79 +1465,67 @@ ALTER TABLE `voeux_hors_iut_historisees`
 -- AUTO_INCREMENT pour la table `affectations`
 --
 ALTER TABLE `affectations`
-  MODIFY `id_affectation` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id_affectation` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- AUTO_INCREMENT pour la table `affectations_historisees`
 --
 ALTER TABLE `affectations_historisees`
-  MODIFY `id_affectation` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
+  MODIFY `id_affectation` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=110;
 
 --
 -- AUTO_INCREMENT pour la table `configurationplanningdetaille`
 --
 ALTER TABLE `configurationplanningdetaille`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3714;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3945;
 
 --
 -- AUTO_INCREMENT pour la table `configurationplanningdetaille_historisees`
 --
 ALTER TABLE `configurationplanningdetaille_historisees`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3660;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3705;
 
 --
 -- AUTO_INCREMENT pour la table `contraintes`
 --
 ALTER TABLE `contraintes`
-  MODIFY `id_contrainte` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=107;
+  MODIFY `id_contrainte` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=122;
 
 --
 -- AUTO_INCREMENT pour la table `contraintes_historisees`
 --
 ALTER TABLE `contraintes_historisees`
-  MODIFY `id_contrainte` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=121;
+  MODIFY `id_contrainte` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=142;
 
 --
 -- AUTO_INCREMENT pour la table `cours`
 --
 ALTER TABLE `cours`
-  MODIFY `id_cours` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=367;
-
---
--- AUTO_INCREMENT pour la table `cours_historisees`
---
-ALTER TABLE `cours_historisees`
-  MODIFY `id_cours` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=875;
+  MODIFY `id_cours` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1642;
 
 --
 -- AUTO_INCREMENT pour la table `details_cours`
 --
 ALTER TABLE `details_cours`
-  MODIFY `id_ressource` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id_ressource` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT pour la table `details_cours_historisees`
 --
 ALTER TABLE `details_cours_historisees`
-  MODIFY `id_ressource` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id_ressource` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=119;
 
 --
 -- AUTO_INCREMENT pour la table `enseignants`
 --
 ALTER TABLE `enseignants`
-  MODIFY `id_enseignant` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=84;
+  MODIFY `id_enseignant` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=85;
 
 --
 -- AUTO_INCREMENT pour la table `groupes`
 --
 ALTER TABLE `groupes`
-  MODIFY `id_groupe` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
---
--- AUTO_INCREMENT pour la table `groupes_historisees`
---
-ALTER TABLE `groupes_historisees`
-  MODIFY `id_groupe` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `id_groupe` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=116;
 
 --
 -- AUTO_INCREMENT pour la table `historisation`
@@ -1860,43 +1537,43 @@ ALTER TABLE `historisation`
 -- AUTO_INCREMENT pour la table `repartition_heures`
 --
 ALTER TABLE `repartition_heures`
-  MODIFY `id_repartition` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40305;
+  MODIFY `id_repartition` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40976;
 
 --
 -- AUTO_INCREMENT pour la table `repartition_heures_historisees`
 --
 ALTER TABLE `repartition_heures_historisees`
-  MODIFY `id_repartition` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39633;
+  MODIFY `id_repartition` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39886;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateurs`
 --
 ALTER TABLE `utilisateurs`
-  MODIFY `id_utilisateur` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id_utilisateur` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT pour la table `voeux`
 --
 ALTER TABLE `voeux`
-  MODIFY `id_voeu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
+  MODIFY `id_voeu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=103;
 
 --
 -- AUTO_INCREMENT pour la table `voeux_historisees`
 --
 ALTER TABLE `voeux_historisees`
-  MODIFY `id_voeu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
+  MODIFY `id_voeu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=147;
 
 --
 -- AUTO_INCREMENT pour la table `voeux_hors_iut`
 --
 ALTER TABLE `voeux_hors_iut`
-  MODIFY `id_voeu_hi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id_voeu_hi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT pour la table `voeux_hors_iut_historisees`
 --
 ALTER TABLE `voeux_hors_iut_historisees`
-  MODIFY `id_voeu_hi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_voeu_hi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- Contraintes pour les tables déchargées
@@ -1911,24 +1588,10 @@ ALTER TABLE `affectations`
   ADD CONSTRAINT `affectations_ibfk_3` FOREIGN KEY (`id_groupe`) REFERENCES `groupes` (`id_groupe`);
 
 --
--- Contraintes pour la table `affectations_historisees`
---
-ALTER TABLE `affectations_historisees`
-  ADD CONSTRAINT `affectations_historisees_ibfk_1` FOREIGN KEY (`id_enseignant`) REFERENCES `enseignants` (`id_enseignant`),
-  ADD CONSTRAINT `affectations_historisees_ibfk_2` FOREIGN KEY (`id_cours`) REFERENCES `cours` (`id_cours`),
-  ADD CONSTRAINT `affectations_historisees_ibfk_3` FOREIGN KEY (`id_groupe`) REFERENCES `groupes` (`id_groupe`);
-
---
 -- Contraintes pour la table `contraintes`
 --
 ALTER TABLE `contraintes`
   ADD CONSTRAINT `contraintes_ibfk_1` FOREIGN KEY (`id_utilisateur`) REFERENCES `utilisateurs` (`id_utilisateur`);
-
---
--- Contraintes pour la table `contraintes_historisees`
---
-ALTER TABLE `contraintes_historisees`
-  ADD CONSTRAINT `contraintes_historisees_ibfk_1` FOREIGN KEY (`id_utilisateur`) REFERENCES `utilisateurs` (`id_utilisateur`);
 
 --
 -- Contraintes pour la table `details_cours`
@@ -1936,13 +1599,6 @@ ALTER TABLE `contraintes_historisees`
 ALTER TABLE `details_cours`
   ADD CONSTRAINT `detailscours_ibfk_1` FOREIGN KEY (`id_cours`) REFERENCES `cours` (`id_cours`),
   ADD CONSTRAINT `detailscours_ibfk_2` FOREIGN KEY (`id_responsable_module`) REFERENCES `enseignants` (`id_enseignant`);
-
---
--- Contraintes pour la table `details_cours_historisees`
---
-ALTER TABLE `details_cours_historisees`
-  ADD CONSTRAINT `detailscours_historisees_ibfk_1` FOREIGN KEY (`id_cours`) REFERENCES `cours` (`id_cours`),
-  ADD CONSTRAINT `detailscours_historisees_ibfk_2` FOREIGN KEY (`id_responsable_module`) REFERENCES `enseignants` (`id_enseignant`);
 
 --
 -- Contraintes pour la table `enseignants`
@@ -1965,12 +1621,6 @@ ALTER TABLE `repartition_heures`
   ADD CONSTRAINT `repartition_heures_ibfk_1` FOREIGN KEY (`id_cours`) REFERENCES `cours` (`id_cours`);
 
 --
--- Contraintes pour la table `repartition_heures_historisees`
---
-ALTER TABLE `repartition_heures_historisees`
-  ADD CONSTRAINT `repartition_heures_historisees_ibfk_1` FOREIGN KEY (`id_cours`) REFERENCES `cours` (`id_cours`);
-
---
 -- Contraintes pour la table `voeux`
 --
 ALTER TABLE `voeux`
@@ -1978,23 +1628,10 @@ ALTER TABLE `voeux`
   ADD CONSTRAINT `voeux_ibfk_2` FOREIGN KEY (`id_cours`) REFERENCES `cours` (`id_cours`);
 
 --
--- Contraintes pour la table `voeux_historisees`
---
-ALTER TABLE `voeux_historisees`
-  ADD CONSTRAINT `voeux_historisees_ibfk_1` FOREIGN KEY (`id_enseignant`) REFERENCES `enseignants` (`id_enseignant`),
-  ADD CONSTRAINT `voeux_historisees_ibfk_2` FOREIGN KEY (`id_cours`) REFERENCES `cours` (`id_cours`);
-
---
 -- Contraintes pour la table `voeux_hors_iut`
 --
 ALTER TABLE `voeux_hors_iut`
   ADD CONSTRAINT `voeux_hors_iut_ibfk_1` FOREIGN KEY (`id_enseignant`) REFERENCES `enseignants` (`id_enseignant`);
-
---
--- Contraintes pour la table `voeux_hors_iut_historisees`
---
-ALTER TABLE `voeux_hors_iut_historisees`
-  ADD CONSTRAINT `voeux_hors_iut_historisees_ibfk_1` FOREIGN KEY (`id_enseignant`) REFERENCES `enseignants` (`id_enseignant`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : ven. 28 mars 2025 à 04:27
+-- Généré le : mar. 01 avr. 2025 à 16:49
 -- Version du serveur : 10.4.32-MariaDB
--- Version de PHP : 8.2.12
+-- Version de PHP : 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -150,26 +150,6 @@ CREATE TABLE `cours` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `cours_historisees`
---
-
-CREATE TABLE `cours_historisees` (
-  `id_cours` int(11) NOT NULL,
-  `formation` varchar(255) NOT NULL,
-  `semestre` varchar(255) NOT NULL,
-  `nom_cours` varchar(255) NOT NULL,
-  `code_cours` varchar(255) NOT NULL,
-  `nb_heures_total` double DEFAULT 0,
-  `nb_heures_cm` double DEFAULT 0,
-  `nb_heures_td` double DEFAULT 0,
-  `nb_heures_tp` double DEFAULT 0,
-  `nb_heures_ei` double DEFAULT 0,
-  `annee` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
--- --------------------------------------------------------
-
---
 -- Structure de la table `details_cours`
 --
 
@@ -225,19 +205,6 @@ CREATE TABLE `groupes` (
   `id_groupe` int(11) NOT NULL,
   `nom_groupe` varchar(255) NOT NULL,
   `niveau` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `groupes_historisees`
---
-
-CREATE TABLE `groupes_historisees` (
-  `id_groupe` int(11) NOT NULL,
-  `nom_groupe` varchar(255) NOT NULL,
-  `niveau` varchar(255) NOT NULL,
-  `annee` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
@@ -404,10 +371,7 @@ ALTER TABLE `affectations`
 -- Index pour la table `affectations_historisees`
 --
 ALTER TABLE `affectations_historisees`
-  ADD PRIMARY KEY (`id_affectation`),
-  ADD KEY `id_cours` (`id_cours`),
-  ADD KEY `id_enseignant` (`id_enseignant`),
-  ADD KEY `id_groupe` (`id_groupe`);
+  ADD PRIMARY KEY (`id_affectation`);
 
 --
 -- Index pour la table `configurationplanningdetaille`
@@ -432,19 +396,12 @@ ALTER TABLE `contraintes`
 -- Index pour la table `contraintes_historisees`
 --
 ALTER TABLE `contraintes_historisees`
-  ADD PRIMARY KEY (`id_contrainte`),
-  ADD KEY `id_enseignant` (`id_utilisateur`);
+  ADD PRIMARY KEY (`id_contrainte`);
 
 --
 -- Index pour la table `cours`
 --
 ALTER TABLE `cours`
-  ADD PRIMARY KEY (`id_cours`);
-
---
--- Index pour la table `cours_historisees`
---
-ALTER TABLE `cours_historisees`
   ADD PRIMARY KEY (`id_cours`);
 
 --
@@ -459,9 +416,7 @@ ALTER TABLE `details_cours`
 -- Index pour la table `details_cours_historisees`
 --
 ALTER TABLE `details_cours_historisees`
-  ADD PRIMARY KEY (`id_ressource`),
-  ADD KEY `id_cours` (`id_cours`),
-  ADD KEY `id_responsable_module` (`id_responsable_module`);
+  ADD PRIMARY KEY (`id_ressource`);
 
 --
 -- Index pour la table `enseignants`
@@ -474,12 +429,6 @@ ALTER TABLE `enseignants`
 -- Index pour la table `groupes`
 --
 ALTER TABLE `groupes`
-  ADD PRIMARY KEY (`id_groupe`);
-
---
--- Index pour la table `groupes_historisees`
---
-ALTER TABLE `groupes_historisees`
   ADD PRIMARY KEY (`id_groupe`);
 
 --
@@ -502,8 +451,7 @@ ALTER TABLE `repartition_heures`
 -- Index pour la table `repartition_heures_historisees`
 --
 ALTER TABLE `repartition_heures_historisees`
-  ADD PRIMARY KEY (`id_repartition`),
-  ADD KEY `id_cours` (`id_cours`);
+  ADD PRIMARY KEY (`id_repartition`);
 
 --
 -- Index pour la table `utilisateurs`
@@ -524,9 +472,7 @@ ALTER TABLE `voeux`
 -- Index pour la table `voeux_historisees`
 --
 ALTER TABLE `voeux_historisees`
-  ADD PRIMARY KEY (`id_voeu`),
-  ADD KEY `id_cours` (`id_cours`),
-  ADD KEY `id_enseignant` (`id_enseignant`);
+  ADD PRIMARY KEY (`id_voeu`);
 
 --
 -- Index pour la table `voeux_hors_iut`
@@ -539,8 +485,7 @@ ALTER TABLE `voeux_hors_iut`
 -- Index pour la table `voeux_hors_iut_historisees`
 --
 ALTER TABLE `voeux_hors_iut_historisees`
-  ADD PRIMARY KEY (`id_voeu_hi`),
-  ADD KEY `id_enseignant` (`id_enseignant`);
+  ADD PRIMARY KEY (`id_voeu_hi`);
 
 --
 -- AUTO_INCREMENT pour les tables déchargées
@@ -589,12 +534,6 @@ ALTER TABLE `cours`
   MODIFY `id_cours` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT pour la table `cours_historisees`
---
-ALTER TABLE `cours_historisees`
-  MODIFY `id_cours` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT pour la table `details_cours`
 --
 ALTER TABLE `details_cours`
@@ -616,12 +555,6 @@ ALTER TABLE `enseignants`
 -- AUTO_INCREMENT pour la table `groupes`
 --
 ALTER TABLE `groupes`
-  MODIFY `id_groupe` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT pour la table `groupes_historisees`
---
-ALTER TABLE `groupes_historisees`
   MODIFY `id_groupe` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -685,24 +618,10 @@ ALTER TABLE `affectations`
   ADD CONSTRAINT `affectations_ibfk_3` FOREIGN KEY (`id_groupe`) REFERENCES `groupes` (`id_groupe`);
 
 --
--- Contraintes pour la table `affectations_historisees`
---
-ALTER TABLE `affectations_historisees`
-  ADD CONSTRAINT `affectations_historisees_ibfk_1` FOREIGN KEY (`id_enseignant`) REFERENCES `enseignants` (`id_enseignant`),
-  ADD CONSTRAINT `affectations_historisees_ibfk_2` FOREIGN KEY (`id_cours`) REFERENCES `cours` (`id_cours`),
-  ADD CONSTRAINT `affectations_historisees_ibfk_3` FOREIGN KEY (`id_groupe`) REFERENCES `groupes` (`id_groupe`);
-
---
 -- Contraintes pour la table `contraintes`
 --
 ALTER TABLE `contraintes`
   ADD CONSTRAINT `contraintes_ibfk_1` FOREIGN KEY (`id_utilisateur`) REFERENCES `utilisateurs` (`id_utilisateur`);
-
---
--- Contraintes pour la table `contraintes_historisees`
---
-ALTER TABLE `contraintes_historisees`
-  ADD CONSTRAINT `contraintes_historisees_ibfk_1` FOREIGN KEY (`id_utilisateur`) REFERENCES `utilisateurs` (`id_utilisateur`);
 
 --
 -- Contraintes pour la table `details_cours`
@@ -710,13 +629,6 @@ ALTER TABLE `contraintes_historisees`
 ALTER TABLE `details_cours`
   ADD CONSTRAINT `detailscours_ibfk_1` FOREIGN KEY (`id_cours`) REFERENCES `cours` (`id_cours`),
   ADD CONSTRAINT `detailscours_ibfk_2` FOREIGN KEY (`id_responsable_module`) REFERENCES `enseignants` (`id_enseignant`);
-
---
--- Contraintes pour la table `details_cours_historisees`
---
-ALTER TABLE `details_cours_historisees`
-  ADD CONSTRAINT `detailscours_historisees_ibfk_1` FOREIGN KEY (`id_cours`) REFERENCES `cours` (`id_cours`),
-  ADD CONSTRAINT `detailscours_historisees_ibfk_2` FOREIGN KEY (`id_responsable_module`) REFERENCES `enseignants` (`id_enseignant`);
 
 --
 -- Contraintes pour la table `enseignants`
@@ -739,12 +651,6 @@ ALTER TABLE `repartition_heures`
   ADD CONSTRAINT `repartition_heures_ibfk_1` FOREIGN KEY (`id_cours`) REFERENCES `cours` (`id_cours`);
 
 --
--- Contraintes pour la table `repartition_heures_historisees`
---
-ALTER TABLE `repartition_heures_historisees`
-  ADD CONSTRAINT `repartition_heures_historisees_ibfk_1` FOREIGN KEY (`id_cours`) REFERENCES `cours` (`id_cours`);
-
---
 -- Contraintes pour la table `voeux`
 --
 ALTER TABLE `voeux`
@@ -752,23 +658,10 @@ ALTER TABLE `voeux`
   ADD CONSTRAINT `voeux_ibfk_2` FOREIGN KEY (`id_cours`) REFERENCES `cours` (`id_cours`);
 
 --
--- Contraintes pour la table `voeux_historisees`
---
-ALTER TABLE `voeux_historisees`
-  ADD CONSTRAINT `voeux_historisees_ibfk_1` FOREIGN KEY (`id_enseignant`) REFERENCES `enseignants` (`id_enseignant`),
-  ADD CONSTRAINT `voeux_historisees_ibfk_2` FOREIGN KEY (`id_cours`) REFERENCES `cours` (`id_cours`);
-
---
 -- Contraintes pour la table `voeux_hors_iut`
 --
 ALTER TABLE `voeux_hors_iut`
   ADD CONSTRAINT `voeux_hors_iut_ibfk_1` FOREIGN KEY (`id_enseignant`) REFERENCES `enseignants` (`id_enseignant`);
-
---
--- Contraintes pour la table `voeux_hors_iut_historisees`
---
-ALTER TABLE `voeux_hors_iut_historisees`
-  ADD CONSTRAINT `voeux_hors_iut_historisees_ibfk_1` FOREIGN KEY (`id_enseignant`) REFERENCES `enseignants` (`id_enseignant`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

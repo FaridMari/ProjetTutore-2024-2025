@@ -43,6 +43,15 @@ class EnseignantChangerPassAction extends Action
                     //echo script console.log($message);
                     echo "<script>console.log($message);</script>";
                     if (mail($email, $subject, $message, $headers)) {
+                        //Affucher toutes les données du mail
+                        echo "<script>console.log('Host : $host');</script>";
+                        echo "<script>console.log('Path : $path');</script>";
+                        echo "<script>console.log('Lien de réinitialisation : $passwordLink');</script>";
+                        echo "<script>console.log('Email envoyé à : $email');</script>";
+                        echo "<script>console.log('Sujet : $subject');</script>";
+                        echo "<script>console.log('Message : $message');</script>";
+                        echo "<script>console.log('En-têtes : $headers');</script>";
+
                         return "<script>alert('Email envoyé avec succès.'); window.location.href = 'index.php?action=profilEnseignant';</script>";
                     } else {
                         return "<script>alert('Erreur lors de l\'envoi de l\'email.');

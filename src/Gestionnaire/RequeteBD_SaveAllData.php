@@ -15,9 +15,7 @@ if (isset($data['year'])) {
         'affectations',
         'configurationplanningdetaille',
         'contraintes',
-        'cours',
         'details_cours',
-        'groupes',
         'repartition_heures',
         'voeux',
         'voeux_hors_iut'
@@ -61,6 +59,16 @@ if (isset($data['year'])) {
 
             if (!$stmt->execute()) {
                 throw new Exception("Échec de l'insertion dans la table $historizedTable");
+            }
+        }
+
+        // Mettre à jour les statuts à "en attente" pour les tables spécifiées
+        $updateTables = ['contraintes', 'voeux', 'details_cours'];
+        foreach ($updateTables as $table) {
+            $updateSql = "UPDATE `$table` SET `statut` = 'en attente'";
+            $updateStmt = $bdd->prepare($updateSql);
+            if (!$updateStmt->execute()) {
+                throw new Exception("Échec de la mise à jour du statut dans la table $table");
             }
         }
 

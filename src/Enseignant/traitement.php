@@ -101,10 +101,8 @@ try {
             ':statut' => "en attente",
 
         ]);
-
-        //Alert et redirection
-        echo "<script>alert('Les détails du cours ont été ajoutés avec succès.');</script>";
-        echo "<script>window.location = 'index.php?action=accueilEnseignant';</script>";
+        header('Location: ../../index.php?action=accueilEnseignant');
+        exit();
     }
 } catch (PDOException $e) {
     echo "Erreur PDO : " . $e->getMessage();

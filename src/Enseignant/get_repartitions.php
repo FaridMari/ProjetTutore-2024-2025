@@ -1,12 +1,12 @@
 <?php
-$host = 'localhost';
-$dbname = 'projettutore';
-$user = 'root';
-$password = '';
+
+require_once __DIR__ . '/../../vendor/autoload.php';
+use src\Db\connexionFactory;
+
+header('Content-Type: application/json');
 
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo = connexionFactory::makeConnection();
 
     if (isset($_GET['nom_cours'])) {
         $nom_cours = $_GET['nom_cours'];

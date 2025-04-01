@@ -9,15 +9,21 @@ class connexionFactory {
     }
 
     public static function makeConnection() {
-        $dsn = 'mysql:host=' . self::$config['host'] . ';dbname=' . self::$config['dbname'] . ';charset=' . self::$config['charset'];
+        if (!self::$config) {
+            die("Erreur : la configuration n'est pas chargée.");
+        }
+
+        $dsn = self::$config['db_driver'] . ':host=' . self::$config['host'] . ';dbname=' . self::$config['dbname'] . ';charset=' . self::$config['charset'];
         $username = self::$config['username'];
         $password = self::$config['password'];
 
         try {
-            $pdo = new \PDO($dsn, $username, $password);
-            // print("La base de données est connectée.<br>");
+            $pdo = new \PDO($dsn, $username, $password, [
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
+            ]);
             return $pdo;
         } catch (\PDOException $e) {
+            var_dump(self::$config);
             die('Erreur de connexion à la base de données : ' . $e->getMessage());
         }
     }

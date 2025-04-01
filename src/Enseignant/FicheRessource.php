@@ -353,7 +353,7 @@ $verrouille = ($fiche && $fiche['statut'] === 'valide');
                     } else {
 
                         updateRepartitionFields(data);
-                        console.log(data); // donnees dans la console
+                        console.log("oduzeov"); // donnees dans la console
                     }
                 })
                 .catch(error => console.error('Erreur lors de la récupération des répartitions :', error));
@@ -422,7 +422,6 @@ $verrouille = ($fiche && $fiche['statut'] === 'valide');
             if (matchedCourse) {
                 fetchAndDisplayRepartitions(matchedCourse.nom_cours);
             } else {
-                console.log("bonjour");
                 if (courseNameCode) {
                     courseNameCode.textContent = noDataMessage;
                 }

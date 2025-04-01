@@ -110,7 +110,7 @@ try {
             ]);
         }
 
-        header('Location: ../../index.php?action=accueilEnseignant');
+        header('Location: ' . ($_SERVER['HTTP_REFERER'] ?? 'index.php'));
         exit();
     }
 } catch (PDOException $e) {

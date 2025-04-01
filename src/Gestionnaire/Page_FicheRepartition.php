@@ -46,7 +46,6 @@ if (isset($_GET['semester']) && in_array($_GET['semester'], $formationsDisponibl
 // Récupération des cours pour la formation sélectionnée
 $listeCours = $coursDTO->findByFormation($formationCode);
 
-
 // Récupération de toutes les affectations puis filtrage pour ne conserver que celles dont le cours fait partie de la formation
 $listeAffectations = $affectationDTO->findAll();
 $courseIds = [];
@@ -88,13 +87,13 @@ $rowMapping = [
 ];
 
 // --- Construction du tableau prérempli pour Handsontable ---
-// Chaque ligne correspond à un groupe et commence par 2 colonnes fixes : [cellule vide, nom du groupe]
+// Chaque ligne correspond à un groupe et commence par une colonne fixe (nom du groupe)
 $tableData = [];
 foreach ($fixedGroups as $i => $groupeName) {
     $tableData[$i] = [$groupeName];
 }
 
-// Pour chaque cours, ajoute 4 colonnes (CM, TD, TP, EI) à chaque ligne
+// Pour chaque cours, on ajoute 4 colonnes (CM, TD, TP, EI) à chaque ligne
 $numCourses = count($listeCours);
 for ($i = 0; $i < $numCourses; $i++) {
     for ($r = 0; $r < count($tableData); $r++) {
@@ -267,7 +266,7 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
     }
 
     .export-btn {
-        padding: 10px 18px;
+        padding: 8px 16px;         
         background-color: #3a86ff;
         color: white;
         border: none;
@@ -278,23 +277,11 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 4em;
+        font-size: 1.2em;          
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        width: 10%;
+        width: auto;               
     }
 
-    .export-btn:hover {
-        background-color: #2563eb;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-    }
-
-    .export-btn:active {
-        transform: translateY(0);
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Style spécifique pour chaque bouton */
     #exportCSV {
         background-color: #4caf50;
     }
@@ -311,24 +298,7 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
         background-color: #1565c0;
     }
 
-    /* Ajouter des icônes avec pseudo-éléments */
-    .export-btn {
-        padding: 8px 16px;        /
-        background-color: #3a86ff;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.2em;          
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        width: auto;               
-    }
-
+    /* Ajout d'icônes via pseudo-éléments */
     #exportCSV::before {
         background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM9 17H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V7h2v2zm6 8h-4v-2h4v2zm0-4h-4v-2h4v2zm-1-5V4l5 5h-5z"/></svg>');
     }
@@ -336,10 +306,7 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
     #exportXLSX::before {
         background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM9 17H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V7h2v2zm6 8h-4v-2h4v2zm0-4h-4v-2h4v2zm-1-5V4l5 5h-5z"/></svg>');
     }
-
-  
-
-</style>
+  </style>
 
   <!-- Inclusion des fichiers CSS/JS de Handsontable -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css">
@@ -401,8 +368,10 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
     const totalCourses = listeCours.length;
     const numChunks = Math.ceil(totalCourses / coursesPerChunk);
 
-    // Tableau pour stocker manuellement les instances Handsontable
+    // Tableau pour stocker manuellement les instances Handsontable et les nested headers de chaque chunk
     const hotInstances = [];
+    // Ce tableau stockera les headers originaux (avec objet {label, colspan}) pour chaque chunk
+    const chunkHeadersArray = [];
     const mainContainer = document.getElementById('hot');
     mainContainer.innerHTML = '';
 
@@ -412,19 +381,20 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
       const chunkEnd = Math.min(chunkStart + coursesPerChunk, totalCourses);
       const coursesChunk = listeCours.slice(chunkStart, chunkEnd);
       const tableDataChunk = data.map(row => {
-        const startIndex = 2 + chunkStart * 4;
-        const endIndex = startIndex + (coursesChunk.length * 4);
-        return row.slice(0, 1).concat(row.slice(1 + chunkStart * 4, 1 + chunkStart * 4 + coursesChunk.length * 4));
-
+        // On prend la première colonne fixe puis les colonnes du chunk courant
+        return row.slice(0, 1).concat(
+          row.slice(1 + chunkStart * 4, 1 + chunkStart * 4 + coursesChunk.length * 4)
+        );
       });
 
-      const premLigne = ['Ressource + SAE' ];
+      // Construction des nested headers pour ce chunk
+      const premLigne = ['Ressource + SAE'];
       coursesChunk.forEach(cours => {
         premLigne.push({ label: cours.nomCours, colspan: 4 });
       });
       const responsable = [];
       coursesChunk.forEach(cours => {
-      responsable.push({ label: cours.responsable || '', colspan: 4 });
+        responsable.push({ label: cours.responsable || '', colspan: 4 });
       });
       const deuxLigne = ['Responsable', ...responsable];
       const deuxDemiLigne = ['Code Cours'];
@@ -446,12 +416,14 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
         const totalEns = cours.nbHeuresCM + cours.nbHeuresTD + (cours.nbHeuresTP * 2) + cours.nbHeuresEI;
         sixLigne.push({ label: totalEns, colspan: 4 });
       });
-      const nestedHeaders = [ premLigne, deuxLigne, deuxDemiLigne, cinqLigne, sixLigne, troisLigne ];
+      const nestedHeaders = [premLigne, deuxLigne, deuxDemiLigne, cinqLigne, sixLigne, troisLigne];
+
+      // Stocker les nested headers du chunk dans le tableau global
+      chunkHeadersArray.push(nestedHeaders);
 
       // Définition des colonnes pour ce chunk
       const columnsDefs = [
         { type: 'text', readOnly: true },
-
       ];
       coursesChunk.forEach(cours => {
         for (let i = 0; i < 4; i++) {
@@ -486,7 +458,7 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
           if (source === 'loadData') return;
           changes.forEach(([row, col, oldVal, newVal]) => {
             if (col < 2) return;
-            const courseChunkIndex = Math.floor((col - 2) / 4);
+            const courseChunkIndex = Math.floor((col - 1) / 4);
             const globalCourseIndex = chunkStart + courseChunkIndex;
             const course = listeCours[globalCourseIndex];
             if (!course) return;
@@ -497,7 +469,6 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
         },
         afterGetColHeader: function () {
             const headerRows = tableDiv.querySelectorAll('.ht_clone_top thead tr');
-
             headerRows.forEach((row, rowIndex) => {
                 if (rowIndex === 0) {
                     row.querySelectorAll('th').forEach((th) => {
@@ -521,7 +492,124 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
       hotInstances.push(hot);
     }
 
-    // Sauvegarde : fusionner les données de toutes les instances avant envoi
+    // --- Fonctions pour l'export avec fusion des headers et des données ---
+    // Cette fonction reconstruit les lignes d'en-tête finales et crée un tableau "aplati" en dupliquant la valeur
+    // dans la première cellule d'un merge et en remplissant les cellules suivantes par des chaînes vides.
+    function computeExportHeadersAndMerges() {
+      const numHeaderRows = chunkHeadersArray[0].length;
+      const finalHeaders = [];
+      let mergeRanges = [];
+      for (let i = 0; i < numHeaderRows; i++) {
+        let finalRow = [];
+        let colOffset = 0;
+        // Pour le chunk 0, on prend la ligne complète
+        let row0 = chunkHeadersArray[0][i];
+        for (let j = 0; j < row0.length; j++) {
+          let cell = row0[j];
+          let label, colspan;
+          if (typeof cell === 'object') {
+            label = cell.label;
+            colspan = cell.colspan || 1;
+          } else {
+            label = cell;
+            colspan = 1;
+          }
+          // Dupliquer la valeur dans la première cellule et laisser vides les suivantes
+          finalRow.push(label);
+          for (let k = 1; k < colspan; k++) {
+            finalRow.push("");
+          }
+          mergeRanges.push({
+            s: { r: i, c: colOffset },
+            e: { r: i, c: colOffset + colspan - 1 }
+          });
+          colOffset += colspan;
+        }
+        // Pour les chunks suivants, on prend la ligne en supprimant la première cellule (fixe) car déjà présente
+        for (let c = 1; c < chunkHeadersArray.length; c++) {
+          let row = chunkHeadersArray[c][i].slice(1);
+          for (let j = 0; j < row.length; j++) {
+            let cell = row[j];
+            let label, colspan;
+            if (typeof cell === 'object') {
+              label = cell.label;
+              colspan = cell.colspan || 1;
+            } else {
+              label = cell;
+              colspan = 1;
+            }
+            finalRow.push(label);
+            for (let k = 1; k < colspan; k++) {
+              finalRow.push("");
+            }
+            mergeRanges.push({
+              s: { r: i, c: colOffset },
+              e: { r: i, c: colOffset + colspan - 1 }
+            });
+            colOffset += colspan;
+          }
+        }
+        finalHeaders.push(finalRow);
+      }
+      // Tri des plages de fusion
+      mergeRanges.sort((a, b) => (a.s.r - b.s.r) || (a.s.c - b.s.c));
+      return { headers: finalHeaders, merges: mergeRanges };
+    }
+
+    // Fusionner les données des instances Handsontable (colonnes fixes incluses depuis la première instance)
+    function mergeHandsontableData() {
+      let fullData = [];
+      if (hotInstances.length > 0) {
+        fullData = hotInstances[0].getData();
+      }
+      for (let i = 1; i < hotInstances.length; i++) {
+        const instanceData = hotInstances[i].getData();
+        for (let r = 0; r < instanceData.length; r++) {
+          fullData[r] = fullData[r].concat(instanceData[r].slice(1));
+        }
+      }
+      return fullData;
+    }
+
+    // Pour l'export CSV : reconstruit les headers sans appliquer de merges (CSV est plat)
+    function buildExportArrayForCSV() {
+      const headerResult = computeExportHeadersAndMerges();
+      const mergedData = mergeHandsontableData();
+      return headerResult.headers.concat(mergedData);
+    }
+
+    // Pour l'export XLSX : reconstruit les headers et récupère également les plages de fusion
+    function buildExportArrayForXLSX() {
+      const headerResult = computeExportHeadersAndMerges();
+      const mergedData = mergeHandsontableData();
+      return { array: headerResult.headers.concat(mergedData), merges: headerResult.merges };
+    }
+
+    // --- Export en CSV avec SheetJS (sans merges) ---
+    document.getElementById('exportCSV').addEventListener('click', function(e) {
+      e.preventDefault();
+      const exportArray = buildExportArrayForCSV();
+      const ws = XLSX.utils.aoa_to_sheet(exportArray);
+      const csv = XLSX.utils.sheet_to_csv(ws);
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'export.csv';
+      link.click();
+    });
+
+    // --- Export en XLSX avec SheetJS (avec merges) ---
+    document.getElementById('exportXLSX').addEventListener('click', function(e) {
+      e.preventDefault();
+      const exportObj = buildExportArrayForXLSX();
+      const ws = XLSX.utils.aoa_to_sheet(exportObj.array);
+      ws['!merges'] = exportObj.merges;
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+      XLSX.writeFile(wb, 'export.xlsx');
+    });
+
+    // Sauvegarde via fetch (fusion des données des instances)
     document.getElementById('saveButton').addEventListener('click', function() {
       let fullData = [];
       if (hotInstances.length > 0) {
@@ -530,7 +618,7 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
       for (let i = 1; i < hotInstances.length; i++) {
         const instanceData = hotInstances[i].getData();
         for (let r = 0; r < instanceData.length; r++) {
-          fullData[r] = fullData[r].concat(instanceData[r].slice(2));
+          fullData[r] = fullData[r].concat(instanceData[r].slice(1));
         }
       }
       console.log(fullData);
@@ -565,11 +653,14 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
       });
     });
 
+    // Changement de semestre
     const select = document.querySelector('#semester');
     select.addEventListener('change', () => {
       const semester = select.value;
       window.location.href = `index.php?action=ficheRepartition&semester=${semester}`;
     });
 </script>
+<!-- Inclusion de SheetJS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </body>
 </html>

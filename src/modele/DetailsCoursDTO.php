@@ -14,7 +14,7 @@ class DetailsCoursDTO {
 
     public function findById($id) {
         try {
-            $stmt = $this->db->prepare("SELECT * FROM detailscours WHERE id_ressource = :id");
+            $stmt = $this->db->prepare("SELECT * FROM details_cours WHERE id_ressource = :id");
             $stmt->execute(['id' => $id]);
             $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -40,7 +40,7 @@ class DetailsCoursDTO {
 
     public function findByCours($idCours) {
         try {
-            $stmt = $this->db->prepare("SELECT * FROM detailscours WHERE id_cours = :idCours");
+            $stmt = $this->db->prepare("SELECT * FROM details_cours WHERE id_cours = :idCours");
             $stmt->execute(['idCours' => $idCours]);
             $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -68,7 +68,7 @@ class DetailsCoursDTO {
         try {
             if ($detailsCours->getIdRessource()) {
                 $stmt = $this->db->prepare("
-                    UPDATE detailscours SET
+                    UPDATE details_cours SET
                         id_cours = :idCours,
                         id_responsable_module = :idResponsableModule,
                         type_salle = :typeSalle,
@@ -87,7 +87,7 @@ class DetailsCoursDTO {
             } else {
             
                 $stmt = $this->db->prepare("
-                    INSERT INTO detailscours (id_cours, id_responsable_module, type_salle, equipements_specifiques, details)
+                    INSERT INTO details_cours (id_cours, id_responsable_module, type_salle, equipements_specifiques, details)
                     VALUES (:idCours, :idResponsableModule, :typeSalle, :equipementsSpecifiques, :details)
                 ");
                 $stmt->execute([
@@ -107,7 +107,7 @@ class DetailsCoursDTO {
 
     public function delete($id) {
         try {
-            $stmt = $this->db->prepare("DELETE FROM detailscours WHERE id_ressource = :id");
+            $stmt = $this->db->prepare("DELETE FROM details_cours WHERE id_ressource = :id");
             $stmt->execute(['id' => $id]);
         } catch (PDOException $e) {
             error_log($e->getMessage());
@@ -118,7 +118,7 @@ class DetailsCoursDTO {
         try {
             $stmt = $this->db->prepare("
                 SELECT id_responsable_module
-                FROM detailscours
+                FROM details_cours
                 WHERE id_cours = :idCours
                 LIMIT 1
             ");

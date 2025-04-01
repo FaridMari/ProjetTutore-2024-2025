@@ -97,9 +97,9 @@ if (!$user) {
             <p><span>Statut :</span> <?php echo htmlspecialchars($user['role']); ?></p>
         </div>
 
-        <div class="profile-button">
-            <button class="change-password-btn" onclick="location.href='change_password.php'">Changer le mot de passe</button>
-        </div>
+        <form class="profile-button" method="POST" action="index.php?action=modifierMdp">
+            <button class="change-password-btn" type="submit">Changer le mot de passe</button>
+        </form>
     </div>
 </div>
 </body>

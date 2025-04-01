@@ -23,6 +23,7 @@ use src\Action\EnseignantAccueilAction;
 use src\Action\GestionnaireCoursAction;
 use src\Action\GestionnaireValidationFicheAction;
 use src\Action\EnseignantProfilAction;
+use src\Action\EnseignantChangerPassAction;
 
 
 class Dispatcher {
@@ -140,6 +141,10 @@ class Dispatcher {
                 break;
             case 'historisation':
                 $action = new GestionnaireHistoriqueAction();
+                echo $action->execute();
+                break;
+            case 'modifierMdp':
+                $action = new EnseignantChangerPassAction();
                 echo $action->execute();
                 break;
             default:

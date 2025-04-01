@@ -7,12 +7,23 @@ header('Content-Type: application/json');
 try {
     $bdd = connexionFactory::makeConnection();
 
-    $stmt = $bdd->prepare("SELECT id_utilisateur, nom, prenom, telephone FROM utilisateurs WHERE responsable = 'oui' AND role = 'enseignant'");
+    // Suppression du filtre sur "responsable" pour inclure tous les enseignants
+    $stmt = $bdd->prepare("
+        SELECT 
+            u.id_utilisateur, 
+            e.id_enseignant AS id_enseignant, 
+            u.nom, 
+            u.prenom, 
+            u.telephone 
+        FROM utilisateurs u
+        INNER JOIN enseignants e ON u.id_utilisateur = e.id_utilisateur
+        WHERE u.role = 'enseignant'
+    ");
     $stmt->execute();
     $intervenants = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode($intervenants);
-
 } catch (PDOException $e) {
     echo json_encode(['error' => 'Erreur PDO : ' . $e->getMessage()]);
 }
+?>

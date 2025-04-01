@@ -7,7 +7,6 @@ header('Content-Type: application/json');
 try {
     $bdd = connexionFactory::makeConnection();
 
-    // Suppression du filtre sur "responsable" pour inclure tous les enseignants
     $stmt = $bdd->prepare("
         SELECT 
             u.id_utilisateur, 
@@ -17,7 +16,8 @@ try {
             u.telephone 
         FROM utilisateurs u
         INNER JOIN enseignants e ON u.id_utilisateur = e.id_utilisateur
-        WHERE u.role = 'enseignant'
+        WHERE u.responsable = 'oui' 
+          AND u.role = 'enseignant'
     ");
     $stmt->execute();
     $intervenants = $stmt->fetchAll(PDO::FETCH_ASSOC);

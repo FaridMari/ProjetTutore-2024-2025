@@ -22,24 +22,19 @@ try {
             throw new Exception("Aucun cours trouvé avec le code $code_cours.");
         }
 
-        // Récupération de l'enseignant responsable via l'id_utilisateur
-        $id_utilisateur_responsable = $_POST['responsibleName'];
-        $stmt = $bdd->prepare("SELECT id_enseignant FROM enseignants WHERE id_utilisateur = :id_utilisateur");
-        $stmt->execute([':id_utilisateur' => $id_utilisateur_responsable]);
-        $responsable = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($responsable) {
-            $id_responsable_module = $responsable['id_enseignant'];
-        } else {
-            throw new Exception("Aucun enseignant trouvé pour l'utilisateur sélectionné.");
-        }
+        // Récupération de l'id du responsable (ici, l'id_enseignant)
+        $id_responsable_module = $_POST['responsibleName'];
 
         // Récupération des autres champs du formulaire
-        $dsDetails      = 'DS : ' . ($_POST['dsDetails'] ?? '');
-        $salle016       = $_POST['salle016'] ?? '';
-        $scheduleDetails = $_POST['scheduleDetails'] ?? '';
+        // Pour le DS, on récupère directement le contenu saisi (sans préfixe "DS : ")
+        $ds = $_POST['dsDetails'] ?? '';
+        // Pour le commentaire libre
+        $commentaire = $_POST['scheduleDetails'] ?? '';
+        // Pour le système, on récupère la valeur du champ radio
+        $systeme = $_POST['system'] ?? '';
 
-        // Construction des équipements spécifiques
+        // Traitement de la préférence pour la salle 016
+        $salle016 = $_POST['salle016'] ?? '';
         $equipementsSpecifiques = '';
         if ($salle016 === 'Oui') {
             $equipementsSpecifiques .= "Intervention en salle 016 : Oui, de préférence\n";
@@ -48,11 +43,8 @@ try {
         } elseif ($salle016 === 'Non') {
             $equipementsSpecifiques .= "Intervention en salle 016 : Non, salle non adaptée\n";
         }
-        if (!empty($scheduleDetails)) {
-            $equipementsSpecifiques .= "Besoins en chariots ou salles : $scheduleDetails\n";
-        }
 
-        // Exemple : récupération du type de salle à partir d'un champ "hour_type"
+        // Exemple de récupération du type de salle depuis un champ "hour_type" (tableau)
         $type_salle = $_POST['hour_type'][0] ?? 'Inconnu';
 
         // Vérifier si une fiche existe déjà pour ce cours (unicité par cours)
@@ -67,17 +59,21 @@ try {
                     id_responsable_module = :id_responsable_module,
                     type_salle = :type_salle,
                     equipements_specifiques = :equipements_specifiques,
-                    details = :details,
+                    ds = :ds,
+                    commentaire = :commentaire,
+                    systeme = :systeme,
                     statut = :statut
-                WHERE id_ressource = :id_details
+                WHERE id_ressource = :id_ressource
             ");
             $stmtUpdate->execute([
                 ':id_responsable_module'    => $id_responsable_module,
                 ':type_salle'               => $type_salle,
                 ':equipements_specifiques'  => $equipementsSpecifiques,
-                ':details'                  => $dsDetails,
+                ':ds'                       => $ds,
+                ':commentaire'              => $commentaire,
+                ':systeme'                  => $systeme,
                 ':statut'                   => "en attente",
-                ':id_details'               => $existingRecord['id_details']
+                ':id_ressource'             => $existingRecord['id_ressource']
             ]);
         } else {
             // Insertion d'une nouvelle fiche ressource
@@ -87,14 +83,18 @@ try {
                     id_responsable_module,
                     type_salle,
                     equipements_specifiques,
-                    details,
+                    ds,
+                    commentaire,
+                    systeme,
                     statut
                 ) VALUES (
                     :id_cours,
                     :id_responsable_module,
                     :type_salle,
                     :equipements_specifiques,
-                    :details,
+                    :ds,
+                    :commentaire,
+                    :systeme,
                     :statut
                 )
             ");
@@ -103,12 +103,13 @@ try {
                 ':id_responsable_module'   => $id_responsable_module,
                 ':type_salle'              => $type_salle,
                 ':equipements_specifiques' => $equipementsSpecifiques,
-                ':details'                 => $dsDetails,
+                ':ds'                      => $ds,
+                ':commentaire'             => $commentaire,
+                ':systeme'                 => $systeme,
                 ':statut'                  => "en attente",
             ]);
         }
 
-        // Redirection vers la page d'accueil de l'enseignant après traitement
         header('Location: ../../index.php?action=accueilEnseignant');
         exit();
     }

@@ -240,8 +240,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         telephoneInput.value = '';
                         data.forEach(intervenant => {
                             const option = document.createElement('option');
-                            // On suppose ici que get_intervenants.php renvoie le champ id_enseignant (ou id_utilisateur en fallback)
-                            option.value = intervenant.id_enseignant || intervenant.id_utilisateur;
+                            // Utilisez directement id_enseignant comme valeur
+                            option.value = intervenant.id_enseignant;
                             option.textContent = intervenant.nom + ' ' + intervenant.prenom;
                             option.dataset.telephone = intervenant.telephone;
                             responsibleNameSelect.appendChild(option);
@@ -353,67 +353,81 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Fonction pour récupérer les détails du cours et préremplir le formulaire s'ils existent
     function fetchAndFillDetails(codeCours) {
-        fetch(`src/Enseignant/get_details_cours.php?code_cours=${encodeURIComponent(codeCours)}`)
-            .then(response => {
-                if (!response.ok) throw new Error(`Erreur HTTP ! statut : ${response.status}`);
-                return response.json();
-            })
-            .then(data => {
-                console.log("Détails reçus :", data);
-                if (data && !data.error) {
-                    // Préremplir dsDetails en retirant le préfixe "DS : " si présent
-                    const dsDetailsTextarea = document.getElementById('dsDetails');
-                    let detailsText = data.details || '';
-                    if (detailsText.startsWith("DS : ")) {
-                        detailsText = detailsText.substring(5);
-                    }
-                    dsDetailsTextarea.value = detailsText;
+    fetch(`src/Enseignant/get_details_cours.php?code_cours=${encodeURIComponent(codeCours)}`)
+        .then(response => {
+            if (!response.ok) throw new Error(`Erreur HTTP ! statut : ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            console.log("Détails reçus :", data);
+            if (data && !data.error) {
+                // Préremplir le champ DS avec la colonne "ds"
+                const dsDetailsTextarea = document.getElementById('dsDetails');
+                dsDetailsTextarea.value = data.ds || '';
 
-                    // Préremplir scheduleDetails et extraire la préférence pour salle 016
-                    const scheduleTextarea = document.getElementById('scheduleDetails');
-                    let equipements = data.equipements_specifiques || '';
-                    let scheduleText = '';
-                    let salle016Value = '';
+                // Préremplir le champ Commentaire libre avec la colonne "commentaire"
+                const scheduleTextarea = document.getElementById('scheduleDetails');
+                scheduleTextarea.value = data.commentaire || '';
 
-                    const salleRegex = /Intervention en salle 016\s*:\s*(Oui, de préférence|Indifférent|Non, salle non adaptée)/i;
-                    const salleMatch = equipements.match(salleRegex);
-                    if (salleMatch) {
-                        salle016Value = salleMatch[1];
-                    }
-                    const scheduleRegex = /Besoins en chariots ou salles\s*:\s*(.*)/i;
-                    const scheduleMatch = equipements.match(scheduleRegex);
-                    if (scheduleMatch) {
-                        scheduleText = scheduleMatch[1];
-                    }
-                    scheduleTextarea.value = scheduleText;
-
-                    // Coche la radio correspondante pour salle016
-                    if (salle016Value) {
-                        if (salle016Value.toLowerCase().includes('oui')) {
-                            document.getElementById('prefOui').checked = true;
-                        } else if (salle016Value.toLowerCase().includes('indifférent')) {
-                            document.getElementById('prefIndiff').checked = true;
-                        } else if (salle016Value.toLowerCase().includes('non')) {
-                            document.getElementById('prefNon').checked = true;
-                        }
-                    }
-
-                    // Préremplir le select de l'enseignant avec l'id_responsable_module
-                    if (data.id_responsable_module) {
-                        console.log("id_responsable_module reçu :", data.id_responsable_module);
-                        document.getElementById('responsibleName').value = data.id_responsable_module.toString();
+                // Préremplir le système à partir de la colonne "systeme"
+                if (data.systeme) {
+                    let systemeVal = data.systeme.toLowerCase();
+                    if (systemeVal === 'windows') {
+                        document.getElementById('windows').checked = true;
+                    } else if (systemeVal === 'linux') {
+                        document.getElementById('linux').checked = true;
+                    } else if (systemeVal === 'indifférent' || systemeVal === 'indifferent') {
+                        document.getElementById('indiff').checked = true;
                     }
                 } else {
-                    // Aucun détail trouvé : vider les champs concernés
-                    document.getElementById('dsDetails').value = '';
-                    document.getElementById('scheduleDetails').value = '';
+                    // Décocher toutes les options si aucune valeur
+                    document.getElementById('windows').checked = false;
+                    document.getElementById('linux').checked = false;
+                    document.getElementById('indiff').checked = false;
+                }
+
+                // Extraire la préférence pour la salle 016 depuis equipements_specifiques
+                const equipements = data.equipements_specifiques || '';
+                let salle016Value = '';
+                const salleRegex = /Intervention en salle 016\s*:\s*(Oui, de préférence|Indifférent|Non, salle non adaptée)/i;
+                const salleMatch = equipements.match(salleRegex);
+                if (salleMatch) {
+                    salle016Value = salleMatch[1];
+                }
+                if (salle016Value) {
+                    if (salle016Value.toLowerCase().includes('oui')) {
+                        document.getElementById('prefOui').checked = true;
+                    } else if (salle016Value.toLowerCase().includes('indifférent')) {
+                        document.getElementById('prefIndiff').checked = true;
+                    } else if (salle016Value.toLowerCase().includes('non')) {
+                        document.getElementById('prefNon').checked = true;
+                    }
+                } else {
+                    // Décocher si aucune préférence trouvée
                     document.getElementById('prefOui').checked = false;
                     document.getElementById('prefIndiff').checked = false;
                     document.getElementById('prefNon').checked = false;
                 }
-            })
-            .catch(error => console.error('Erreur lors de la récupération des détails du cours :', error));
-    }
+
+                // Préremplir le select de l'enseignant avec la valeur de id_responsable_module
+                if (data.id_responsable_module) {
+                    document.getElementById('responsibleName').value = data.id_responsable_module.toString();
+                }
+            } else {
+                // Aucun détail trouvé, vider les champs concernés
+                document.getElementById('dsDetails').value = '';
+                document.getElementById('scheduleDetails').value = '';
+                document.getElementById('windows').checked = false;
+                document.getElementById('linux').checked = false;
+                document.getElementById('indiff').checked = false;
+                document.getElementById('prefOui').checked = false;
+                document.getElementById('prefIndiff').checked = false;
+                document.getElementById('prefNon').checked = false;
+            }
+        })
+        .catch(error => console.error('Erreur lors de la récupération des détails du cours :', error));
+}
+
 
     // Lors de la sélection d'un cours
     resourceNameSelect.addEventListener('change', function () {

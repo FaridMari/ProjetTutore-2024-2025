@@ -71,6 +71,7 @@ $_SESSION['pdf_data'] = [
           'td'        => $v->getNbTD(),
           'tp'        => $v->getNbTP(),
           'ei'        => $v->getNbEI(),
+          'remarque'  => $v->getRemarque(),
           'total'     => $total,
       ];
   }, $voeuxSeptembre),
@@ -84,6 +85,7 @@ $_SESSION['pdf_data'] = [
           'td'        => $v->getNbTD(),
           'tp'        => $v->getNbTP(),
           'ei'        => $v->getNbEI(),
+          'remarque'  => $v->getRemarque(),
           'total'     => $total,
       ];
   }, $voeuxJanvier),

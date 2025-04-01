@@ -168,6 +168,11 @@
         </a>
       </li>
     </ul>
+    <div class="d-flex justify-content-end mb-4">
+    <button onclick="window.open('src/Enseignant/fiche_service_pdf.php', '_blank')" class="btn btn-primary">
+      Exporter en PDF
+    </button>
+  </div>
     <div class="tab-content" id="myTabContent">
       <!-- Onglet Fiche Prévisionnelle (votre contenu existant) -->
       <div class="tab-pane fade show active" id="fiche" role="tabpanel" aria-labelledby="fiche-tab">
@@ -849,21 +854,6 @@
       bodyObserver.observe(document.body, { childList: true, subtree: true });
   
     });
-  </script>
-  <!-- Code commenté pour redirection après téléchargement du PDF -->
-  <script>
-    // document.addEventListener("DOMContentLoaded", function () {
-    //     document.querySelector("button[name='envoyer']").addEventListener("click", function (event) {
-    //         event.preventDefault();
-    //         if (confirm("Les vœux ont été enregistrés avec succès.\nVoulez-vous télécharger le PDF ?")) {
-    //             const form = this.closest("form");
-    //             form.action = "src/User/ServicePdf.php";
-    //             form.submit();
-    //         } else {
-    //             window.location.href = "index.php?action=fichePrevisionnelle";
-    //         }
-    //     });
-    // });
   </script>
 </body>
 </html>

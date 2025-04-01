@@ -72,19 +72,23 @@ $offsetMapping = [
 
 // Parcourir le tableau
 foreach ($tableData as $rowIndex => $row) {
-    // La deuxième colonne contient le nom du groupe
-    $groupName = trim($row[1]);
+    // La première colonne contient le nom du groupe (mise à jour suite aux modifications côté Handsontable)
+    $groupName = trim($row[0]);
     if (!isset($groupMapping[$groupName])) {
         continue;
     }
     $groupId = $groupMapping[$groupName];
-    // Calculer le nombre de cours : (nombre de colonnes - 2) / 4
-    $numCourses = (count($row) - 2) / 4;
+    
+    // Calculer le nombre de cours : (nombre de colonnes - 1) / 4
+    $numCourses = (count($row) - 1) / 4;
+    
     for ($courseIdx = 0; $courseIdx < $numCourses; $courseIdx++) {
         for ($offset = 0; $offset < 4; $offset++) {
-            $colIndex = 2 + $courseIdx * 4 + $offset;
-            $teacherField = trim($row[$colIndex]);
+            // Utilisation de isset pour éviter les undefined array key et le passage de null à trim()
+            $colIndex = 1 + $courseIdx * 4 + $offset;
+            $teacherField = isset($row[$colIndex]) ? trim($row[$colIndex]) : '';
             $typeHour = $offsetMapping[$offset];
+            
             if (!isset($courseIndexMapping[$courseIdx])) {
                 continue;
             }

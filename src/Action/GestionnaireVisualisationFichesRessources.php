@@ -20,7 +20,7 @@ class GestionnaireVisualisationFichesRessources
         </head>
         <body>
         <?php
-        include 'src/Gestionnaire/Navbar_Generique.html';
+        include 'src/Gestionnaire/Navbar_Top.html';
 
         include 'src/Gestionnaire/Page_VisualisationRessources.php';
         ?>
@@ -53,5 +53,4 @@ class GestionnaireVisualisationFichesRessources
         <?php
         return ob_get_clean();
     }
-
 }

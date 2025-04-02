@@ -1,19 +1,26 @@
 <style>
-    /* Apparence de la nav bar (#menu) */
+    /* NAV BAR ENSEIGNANT STYLE LATERAL FIXE */
+
     #menu {
-        background-color: #222222; /* Fond noir */
-        color: #fff;              /* Texte blanc */
-        padding: 0;
+        background-color: #222222;
+        color: #fff;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 200px;
+        height: 100vh;
+        padding: 1em 0;
         box-shadow: 2px 0 6px rgba(0,0,0,0.2);
-        text-align: center;       /* Centre le texte par défaut */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        z-index: 999;
     }
 
-    /* Liste du menu */
     #menu ul {
-        list-style: none; /* Supprime les puces */
-        margin: 2em 0 0 0; /* Enlève la marge par défaut,
-                                  tu peux ajuster la marge en haut */
-        padding: 0;        /* Enlève le padding par défaut */
+        list-style: none;
+        padding: 0;
+        margin-top: 2em;
         width: 100%;
     }
 
@@ -21,92 +28,97 @@
         margin-bottom: 1em;
         transition: background-color 0.3s;
         width: 100%;
+        text-align: center;
     }
 
-    /* Liens du menu */
     .element_menu a {
+        display: inline-block;
+        width: 100%;
+        padding: 0.75em 1em;
         text-decoration: none;
         color: #fff;
         font-weight: 500;
-        font-size: 19px;
-        width: 100%;
-        /*
-         * Utiliser display: inline-block pour s'assurer que
-         * text-align: center agit bien sur le texte.
-         * (display: block fonctionne aussi, mais inline-block
-         * évite de forcer la largeur complète.)
-         */
-        display: inline-block;
-        padding: 0.5em 1em;  /* Un peu de marge autour du texte */
+        font-size: 16px;
     }
 
-    /* Au survol, fond légèrement plus foncé et texte identique ? */
-    .element_menu:hover {
-        background-color: black;
-    }
-    .element_menu:hover a {
-        color: white;
-        /*color: #FFD400; !* Jaune UL *!*/
+    .element_menu a:hover {
+        background-color: #000;
+        color: #fff;
+        border-radius: 4px;
     }
 
-    /* Bouton de déconnexion */
     #deconnexion {
         position: absolute;
         bottom: 20px;
-        width:  100%;
+        width: 100%;
         text-align: center;
-        padding: 0;
     }
 
-    li{
+    #deconnexion a {
+        display: inline-block;
+        padding: 0.75em 1em;
+        text-decoration: none;
+        color: #fff;
+        font-weight: 500;
+        font-size: 16px;
+        background-color: #444;
+        border-radius: 4px;
+    }
+
+    #deconnexion a:hover {
+        background-color: #000;
+    }
+
+    li {
         list-style: none;
     }
 
+    /* Responsive (si jamais tu veux une version mobile plus tard) */
+    @media screen and (max-width: 768px) {
+        #menu {
+            position: relative;
+            width: 100%;
+            height: auto;
+            flex-direction: row;
+            align-items: flex-start;
+            padding: 0.5em 1em;
+        }
+
+        #menu ul {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .element_menu {
+            margin: 0.5em;
+        }
+
+        .element_menu a {
+            font-size: 14px;
+            padding: 0.5em 0.75em;
+        }
+
+        #deconnexion {
+            position: static;
+            margin-left: auto;
+            margin-top: 0.5em;
+        }
+    }
 </style>
 
-<div class="row justify-content-center" id="menu">
+<!-- HTML NAV ENSEIGNANT -->
+<div id="menu">
     <ul>
-        <li class="element_menu">
-            <a href="index.php?action=profilEnseignant">Profil</a>
-        </li>
-        <li class="element_menu">
-            <a href="index.php?action=accueilEnseignant">Accueil</a>
-        </li>
-        <!--        <li class="element_menu">-->
-        <!--            <a href="index.php?action=enseignantPagePrincipal">Profil</a>-->
-        <!--        </li>-->
-<!--        <li class="element_menu">-->
-<!--            <a href="index.php?action=enseignantF">Visualisation fiches</a>-->
-<!--        </li>-->
-        <li class="element_menu">
-            <a href="index.php?action=enseignantFicheContrainte">Fiche contrainte</a>
-        </li>
-        <li class="element_menu">
-            <a href="index.php?action=fichePrevisionnelle">Fiche service</a>
-        </li>
-        <li class="element_menu">
-            <a href="index.php?action=enseignantFicheRessource">Fiche ressource</a>
-        </li>
+        <li class="element_menu"><a href="index.php?action=profilEnseignant">Profil</a></li>
+        <li class="element_menu"><a href="index.php?action=accueilEnseignant">Accueil</a></li>
+        <li class="element_menu"><a href="index.php?action=enseignantFicheContrainte">Fiche contrainte</a></li>
+        <li class="element_menu"><a href="index.php?action=fichePrevisionnelle">Fiche service</a></li>
+        <li class="element_menu"><a href="index.php?action=enseignantFicheRessource">Fiche ressource</a></li>
     </ul>
 
     <div id="deconnexion">
-        <li class="element_menu">
-            <a href="index.php?action=deconnexion">Deconnexion</a>
-        </li>
+        <a href="index.php?action=deconnexion">Déconnexion</a>
     </div>
 </div>
-
-<!--<div id="menu">-->
-<!--    <ul>-->
-<!--        <li class="element_menu"><a href="index.php?action=enseignantPagePrincipal">Accueil</a></li>-->
-<!--        <li class="element_menu"><a href="index.php?action=enseignantPagePrincipal">Profil</a></li>-->
-<!--        <li class="element_menu"><a href="index.php?action=enseignantFicheContrainte">Fiche contrainte</a></li>-->
-<!--        <li class="element_menu"><a href="index.php?action=fichePrevisionnelle">Fiche service</a></li>-->
-<!--        <li class="element_menu"><a href="index.php?action=enseignantFicheRessource">Fiche ressource</a></li>-->
-<!--        <li class="element_menu"><a href="index.php?action=enseignantPagePrincipal">Planning détaillé</a></li>-->
-<!--    </ul>-->
-<!--    <div id="deconnexion">-->
-<!--        <li class="element_menu"><i class="bi bi-box-arrow-in-left"></i> <a href="index.php?action=deconnexion"> Deconnexion</a> </li>-->
-<!--    </div>-->
-<!--</div>-->
-

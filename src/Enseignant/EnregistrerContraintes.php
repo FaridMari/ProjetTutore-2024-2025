@@ -8,7 +8,7 @@ try {
 
     $id_utilisateur = $_POST['id_utilisateur'] ?? ($_SESSION['id_utilisateur'] ?? null);
     $isFromGestionnaire = isset($_POST['modification_gestionnaire']);
-    $isRemplissage = isset($_POST['source']) && $_POST['source'] === 'remplir'; // 🆕
+    $isRemplissage = isset($_POST['source']) && $_POST['source'] === 'remplir';
 
     if (!$id_utilisateur) {
         throw new Exception("ID utilisateur manquant.");

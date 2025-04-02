@@ -37,17 +37,23 @@ class GestionnaireValidationFicheAction extends Action
                 'group_key' => fn($fiche) => $fiche['fiche_type'] . '|' . $fiche['nom'] . '|' . $fiche['prenom']
             ],
             'details_cours' => [
-                'sql' => "SELECT details_cours.*, cours.nom_cours, utilisateurs.nom, utilisateurs.prenom, 'Fiche Ressource' AS fiche_type 
-                          FROM details_cours
-                          JOIN cours ON details_cours.id_cours = cours.id_cours
-                          JOIN enseignants ON details_cours.id_responsable_module = enseignants.id_enseignant
-                          JOIN utilisateurs ON enseignants.id_utilisateur = utilisateurs.id_utilisateur
-                          ORDER BY details_cours.statut ASC",
+                'sql' => "SELECT details_cours.id_ressource, details_cours.id_cours, details_cours.id_responsable_module,
+                                details_cours.type_salle, details_cours.equipements_specifiques, details_cours.ds,
+                                details_cours.statut, details_cours.commentaire, details_cours.systeme,
+                                cours.nom_cours, cours.code_cours, cours.semestre,
+                                utilisateurs.nom, utilisateurs.prenom, utilisateurs.id_utilisateur,
+                                'Fiche Ressource' AS fiche_type 
+                         FROM details_cours
+                         JOIN cours ON details_cours.id_cours = cours.id_cours
+                         JOIN enseignants ON details_cours.id_responsable_module = enseignants.id_enseignant
+                         JOIN utilisateurs ON enseignants.id_utilisateur = utilisateurs.id_utilisateur
+                         ORDER BY details_cours.statut ASC",
                 'group_key' => fn($fiche) => $fiche['fiche_type'] . '|' . $fiche['nom'] . '|' . $fiche['prenom']
             ],
             'voeux' => [
                 'sql' => "SELECT voeux.*, cours.nom_cours, cours.formation, cours.semestre, cours.code_cours, cours.nb_heures_cm, cours.nb_heures_td, cours.nb_heures_tp, cours.nb_heures_ei,
-                          utilisateurs.nom, utilisateurs.prenom, 'Fiche Prévisionnelle' AS fiche_type 
+                          utilisateurs.nom, utilisateurs.prenom, utilisateurs.id_utilisateur,
+                          'Fiche Prévisionnelle' AS fiche_type 
                           FROM voeux
                           JOIN enseignants ON voeux.id_enseignant = enseignants.id_enseignant
                           JOIN utilisateurs ON enseignants.id_utilisateur = utilisateurs.id_utilisateur

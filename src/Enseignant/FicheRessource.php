@@ -10,7 +10,7 @@ $stmt = $conn->prepare("SELECT * FROM details_cours WHERE id_responsable_module 
 $stmt->execute([$id_utilisateur]);
 $fiche = $stmt->fetch(PDO::FETCH_ASSOC);
 
-$verrouille = ($fiche && $fiche['statut'] === 'valide');
+$verrouille = ($fiche && $fiche['statut'] === 'validée');
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -113,10 +113,9 @@ $verrouille = ($fiche && $fiche['statut'] === 'valide');
         <?php endif; ?>
         <!-- Début du formulaire global -->
         <form method="post" action="src/Enseignant/traitement.php">
-            <!-- Sélection du semestre -->
             <div class="mb-3">
                 <label for="semester" class="form-label">Semestre :</label>
-                <select class="form-select" id="semester" name="semester" required>
+                <select class="form-select" id="semester" name="semester" required <?= $verrouille ? 'disabled' : '' ?>>
                     <option value="S1">S1</option>
                     <option value="S2">S2</option>
                     <option value="S3">S3</option>
@@ -125,83 +124,83 @@ $verrouille = ($fiche && $fiche['statut'] === 'valide');
                     <option value="S4-DACS">S4-DACS</option>
                 </select>
             </div>
-            <!-- Sélection de la ressource (cours) -->
+
             <div class="mb-3">
                 <label for="resourceName" class="form-label">Choix de la ressource :</label>
-                <select class="form-select" id="resourceName" name="resourceName">
+                <select class="form-select" id="resourceName" name="resourceName" <?= $verrouille ? 'disabled' : '' ?>>
                     <option value="">-- Sélectionner un nom de ressource --</option>
                 </select>
             </div>
-            <!-- Sélection du responsable -->
+
             <div class="mb-3">
                 <label for="responsibleName" class="form-label">Nom du responsable :</label>
-                <select class="form-select" id="responsibleName" name="responsibleName" required>
+                <select class="form-select" id="responsibleName" name="responsibleName" required <?= $verrouille ? 'disabled' : '' ?>>
                     <option value="">-- Sélectionner un intervenant --</option>
                 </select>
             </div>
-            <!-- Téléphone (lecture seule) -->
+
             <div class="mb-3">
                 <label for="phone" class="form-label">Téléphone :</label>
-                <input type="tel" class="form-control" id="phone" name="phone" placeholder="Numéro de téléphone" readonly>
+                <input type="tel" class="form-control" id="phone" name="phone" readonly>
             </div>
-            <!-- Répartition des heures par semaines -->
+
             <h4 class="mt-4">1. Répartition des heures par semaines :</h4>
-            <div id="hours-distribution" class="repartition-container mb-3">
-                <!-- Insertion des répartitions -->
-            </div>
-            <!-- Réservations DS -->
+            <div id="hours-distribution" class="repartition-container mb-3"></div>
+
             <h4>2. Réservations DS :</h4>
             <div class="mb-3">
                 <label for="dsDetails" class="form-label">Détail des réservations :</label>
-                <textarea class="form-control" id="dsDetails" name="dsDetails" rows="3"
-                          placeholder="Indiquez les semaines et la durée pour chaque DS"></textarea>
+                <textarea class="form-control" id="dsDetails" name="dsDetails" rows="3" <?= $verrouille ? 'disabled' : '' ?>></textarea>
             </div>
-            <!-- Commentaire libre -->
+
             <div class="mb-3">
                 <label for="scheduleDetails" class="form-label">Commentaire libre :</label>
-                <textarea class="form-control" id="scheduleDetails" name="scheduleDetails" placeholder=""></textarea>
+                <textarea class="form-control" id="scheduleDetails" name="scheduleDetails" <?= $verrouille ? 'disabled' : '' ?>></textarea>
             </div>
-            <!-- Salles 016 -->
+
             <h4>3. Salles 016 :</h4>
             <div class="mb-3">
                 <label class="form-label">Souhaitez-vous intervenir dans la salle 016 ?</label>
                 <div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="salle016" id="prefOui" value="Oui">
+                        <input class="form-check-input" type="radio" name="salle016" id="prefOui" value="Oui" <?= $verrouille ? 'disabled' : '' ?>>
                         <label class="form-check-label" for="prefOui">Oui, de préférence</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="salle016" id="prefIndiff" value="Indifférent" required>
+                        <input class="form-check-input" type="radio" name="salle016" id="prefIndiff" value="Indifférent" required <?= $verrouille ? 'disabled' : '' ?>>
                         <label class="form-check-label" for="prefIndiff">Indifférent</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="salle016" id="prefNon" value="Non">
+                        <input class="form-check-input" type="radio" name="salle016" id="prefNon" value="Non" <?= $verrouille ? 'disabled' : '' ?>>
                         <label class="form-check-label" for="prefNon">Non, salle non adaptée</label>
                     </div>
                 </div>
             </div>
-            <!-- Besoins en chariots ou salles informatiques -->
+
             <h4>4. Besoins en chariots ou salles informatiques :</h4>
             <div class="mb-3">
                 <label class="form-label">Système souhaité :</label>
                 <div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="system" id="windows" value="Windows">
+                        <input class="form-check-input" type="radio" name="system" id="windows" value="Windows" <?= $verrouille ? 'disabled' : '' ?>>
                         <label class="form-check-label" for="windows">Windows</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="system" id="linux" value="Linux">
+                        <input class="form-check-input" type="radio" name="system" id="linux" value="Linux" <?= $verrouille ? 'disabled' : '' ?>>
                         <label class="form-check-label" for="linux">Linux</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="system" id="indiff" value="Indifférent">
+                        <input class="form-check-input" type="radio" name="system" id="indiff" value="Indifférent" <?= $verrouille ? 'disabled' : '' ?>>
                         <label class="form-check-label" for="indiff">Indifférent</label>
                     </div>
                 </div>
             </div>
-            <!-- Bouton d’envoi global -->
-            <button type="submit" class="btn btn-primary">Enregistrer et valider</button>
+
+            <?php if (!$verrouille): ?>
+                <button type="submit" class="btn btn-primary">Enregistrer et valider</button>
+            <?php endif; ?>
         </form>
+
         <!-- Fin du formulaire global -->
     </div>
 </div>

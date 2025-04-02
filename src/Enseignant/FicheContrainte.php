@@ -211,6 +211,21 @@ try {
         .fiche-container h1 {
             text-align: center;
         }
+        .btn-export-pdf {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #ffe066;
+            color: #000;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.3s ease;
+        }
+        .btn-export-pdf:hover {
+            background-color: #ffd43b;
+        }
+
 
 
     </style>
@@ -280,6 +295,10 @@ try {
             <button type="submit" class="btn-submit">Valider</button>
         <?php endif; ?>
     </form>
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="telecharger.pdf" class="btn-export-pdf" download>Télécharger la fiche en PDF</a>
+    </div>
+
 </div>
 </div>
 

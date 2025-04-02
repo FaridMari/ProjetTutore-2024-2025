@@ -79,6 +79,7 @@ $enseignantsSansFiche = $GLOBALS['enseignantsSansFiche'] ?? [];
                     </thead>
                     <tbody id="fichesTable">
                     <?php foreach ($fichesParEnseignant as $fiche): ?>
+
                         <tr data-type="<?= htmlspecialchars($fiche['fiche_type']) ?>">
                             <td style="padding: 10px; border: 1px solid #ddd;"><?= htmlspecialchars($fiche['nom']) ?></td>
                             <td style="padding: 10px; border: 1px solid #ddd;"><?= htmlspecialchars($fiche['prenom']) ?></td>
@@ -137,7 +138,6 @@ $enseignantsSansFiche = $GLOBALS['enseignantsSansFiche'] ?? [];
                     <select id="filtreVide" class="form-control custom-select" onchange="filtrerFichesVidesParType(this)">
                         <option value="all">Toutes</option>
                         <option value="Fiche Contrainte">Fiche Contrainte</option>
-                        <option value="Fiche Ressource">Fiche Ressource</option>
                         <option value="Fiche Prévisionnelle">Fiche Prévisionnelle</option>
                     </select>
                 </div>
@@ -162,6 +162,7 @@ $enseignantsSansFiche = $GLOBALS['enseignantsSansFiche'] ?? [];
                     </thead>
                     <tbody id="tableFichesVides">
                     <?php foreach ($enseignantsSansFiche as $enseignant): ?>
+                        <?php if (($enseignant['type_fiche'] ?? '') === 'Fiche Ressource') continue; ?>
                         <tr data-type="<?= htmlspecialchars($enseignant['type_fiche'] ?? '') ?>">
                             <td><?= htmlspecialchars($enseignant['nom'] ?? 'Inconnu') ?></td>
                             <td><?= htmlspecialchars($enseignant['prenom'] ?? 'Inconnu') ?></td>
@@ -236,9 +237,13 @@ $enseignantsSansFiche = $GLOBALS['enseignantsSansFiche'] ?? [];
             } else if (fiche.fiche_type === 'Fiche Ressource') {
                 grouped.forEach((r, i) => {
                     content += `<div class='detail-section'><h6>Ressource ${i + 1} - ${r.nom_cours || 'Non précisé'}</h6>`;
+                    content += `<div class='detail-item'><strong>Code du cours :</strong> ${r.code_cours || 'Non précisé'}</div>`;
+                    content += `<div class='detail-item'><strong>Semestre :</strong> ${r.semestre || 'Non précisé'}</div>`;
                     content += `<div class='detail-item'><strong>Type de salle :</strong> ${r.type_salle || 'Non précisé'}</div>`;
                     content += `<div class='detail-item'><strong>Équipements spécifiques :</strong> ${r.equipements_specifiques || 'Non précisé'}</div>`;
-                    content += `<div class='detail-item'><strong>Détails :</strong> ${r.details || 'Non précisé'}</div>`;
+                    content += `<div class='detail-item'><strong>Système souhaité :</strong> ${r.systeme || 'Non précisé'}</div>`;
+                    content += `<div class='detail-item'><strong>Réservations DS :</strong> ${r.ds || 'Non précisé'}</div>`;
+                    content += `<div class='detail-item'><strong>Commentaire :</strong> ${r.commentaire || 'Aucun'}</div>`;
                     content += `</div>`;
                     if (i < grouped.length - 1) content += "<hr class='detail-divider'>";
                 });
@@ -253,7 +258,6 @@ $enseignantsSansFiche = $GLOBALS['enseignantsSansFiche'] ?? [];
                 const pref = grouped[0]?.creneau_preference || 'Non précisé';
                 const samedi = grouped[0]?.cours_samedi === 'oui' ? 'L’enseignant accepte les cours le samedi.' : 'L’enseignant ne souhaite pas de cours le samedi.';
                 const commentaire = grouped[0]?.commentaire || 'Aucun commentaire';
-
                 content += `<div class='detail-item'><strong>Je préfère, si possible, éviter le créneau :</strong> ${pref}</div>`;
                 content += `<div class='detail-item'><strong>Cours le samedi :</strong> ${samedi}</div>`;
                 content += `<div class='detail-item'><strong>Commentaire :</strong> ${commentaire}</div>`;
@@ -268,8 +272,8 @@ $enseignantsSansFiche = $GLOBALS['enseignantsSansFiche'] ?? [];
                 let id_utilisateur = fiche.grouped_fiches[0]['id_utilisateur'];
                 window.location.href = `src/Gestionnaire/Page_ModifierFiche.php?table=${table}&id=${id_utilisateur}&type=${fiche.fiche_type}`;
             };
-
         }
+
         function filtrerFichesVidesParType(select) {
             const type = select.value.toLowerCase();
             const lignes = document.querySelectorAll('#tableFichesVides tr');

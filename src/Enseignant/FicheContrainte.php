@@ -14,6 +14,11 @@ try {
     if (!isset($_SESSION)) {
         session_start();
     }
+    $modifieParGestionnaire = false;
+    if (isset($_SESSION['toast_message'])) {
+        $modifieParGestionnaire = true;
+        unset($_SESSION['toast_message']);
+    }
 
 
 
@@ -26,13 +31,9 @@ try {
     }
 
     $id_utilisateur = $_SESSION['id_utilisateur'];
-
-    // PARTIE CRUCIALE : Vérifier le verrou
-    // D'abord, vérifions si la requête fonctionne
     $stmtTest = $conn->prepare("SELECT 1");
     $stmtTest->execute();
 
-    // Ensuite, vérifier le verrou spécifique
     $stmtVerrouTemp = $conn->prepare("SELECT modification_en_cours FROM contraintes WHERE id_utilisateur = ?");
     $stmtVerrouTemp->execute([$id_utilisateur]);
     $verrouTemp = $stmtVerrouTemp->fetch(PDO::FETCH_ASSOC);
@@ -122,6 +123,10 @@ try {
     if ($contrainte && isset($contrainte['statut']) && $contrainte['statut'] === 'validée') {
         $verrouille = true;
     }
+    if ($modifieParGestionnaire) {
+        $verrouille = true;
+    }
+
 
     $stmt2 = $conn->prepare("SELECT nb_contrainte FROM enseignants WHERE id_utilisateur = ?");
     $stmt2->execute([$id_utilisateur]);
@@ -220,6 +225,29 @@ try {
     </style>
 </head>
 <body>
+<?php if (isset($_SESSION['success_message'])): ?>
+    <div id="toast-success" style="
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #d4edda;
+        color: #155724;
+        padding: 15px 25px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        z-index: 9999;
+        font-weight: bold;
+    ">
+        <?= $_SESSION['success_message']; ?>
+    </div>
+    <script>
+        setTimeout(() => {
+            const toast = document.getElementById("toast-success");
+            if (toast) toast.remove();
+        }, 3000);
+    </script>
+    <?php unset($_SESSION['success_message']); ?>
+<?php endif; ?>
 
 <h1>Fiche de Vœux</h1>
 
@@ -308,4 +336,27 @@ try {
 </script>
 
 </body>
+<?php if ($modifieParGestionnaire): ?>
+    <div id="toast-modif" style="
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #fff3cd;
+    color: #856404;
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    z-index: 9999;
+    font-weight: bold;
+">
+        Votre fiche a été modifiée par le gestionnaire. Elle est maintenant verrouillée.
+    </div>
+    <script>
+        setTimeout(() => {
+            const toast = document.getElementById("toast-modif");
+            if (toast) toast.remove();
+        }, 3000);
+    </script>
+<?php endif; ?>
+
 </html>

@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Cours</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
         .btn-group .btn {
             width: 50%;
@@ -13,9 +7,12 @@
             margin-bottom: 1.5rem;
         }
     </style>
-</head>
-<body>
-<div id="tableauCours" class="container mt-5">
+
+
+
+    <div id="main-content">
+
+    <div id="tableauCours" class="container mt-5">
     <h1 class="mb-4">Gestion des Cours</h1>
     <div class="input-group mb-3">
         <input type="text" id="searchInput" class="form-control" placeholder="Rechercher par nom ou code du cours">
@@ -110,6 +107,7 @@
         </tbody>
     </table>
 </div>
+    </div>
 
 <script>
     class Toast {
@@ -367,5 +365,3 @@
         loadCours();
     });
 </script>
-</body>
-</html>

@@ -180,8 +180,7 @@ $enseignantsSansFiche = $GLOBALS['enseignantsSansFiche'] ?? [];
             <?php endif; ?>
         </div>
     </div>
-
-
+</div>
 
 
     <script>

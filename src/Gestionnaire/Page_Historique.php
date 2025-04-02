@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Gestion des Données</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-</head>
-<body>
-<div class="container" id="main-content">
+
+
+<div id="main-content">
+
+<div class="container">
     <div class="card mt-4">
         <div class="card-header">
             <h5 class="card-title">Recommencer une nouvelle année</h5>
@@ -42,6 +38,7 @@
             </form>
         </div>
     </div>
+</div>
 </div>
 
 <script>

@@ -8,8 +8,20 @@ $conn = connexionFactory::makeConnection();
 $id_utilisateur = $_GET['id'] ?? null;
 $type = $_GET['type'] ?? '';
 
-if (!$id_utilisateur || $type !== 'Fiche Contrainte') {
-    echo "<div class='alert alert-danger'>Paramètres manquants ou type invalide.</div>";
+if (!$id_utilisateur) {
+    echo "<div class='alert alert-danger'>ID utilisateur manquant.</div>";
+    exit;
+}
+
+// Si le type est "Fiche Prévisionnelle", rediriger vers fichePrevisionnelle.php
+if ($type === 'Fiche Prévisionnelle') {
+    header("Location: Page_RemplirService.php?id=" . $id_utilisateur . "&type=Fiche+Prévisionnelle");
+    exit;
+}
+
+// Vérifier que le type est bien "Fiche Contrainte"
+if ($type !== 'Fiche Contrainte') {
+    echo "<div class='alert alert-danger'>Type invalide.</div>";
     exit;
 }
 
@@ -89,7 +101,7 @@ $nb_contrainte = $stmt2->fetch(PDO::FETCH_ASSOC)['nb_contrainte'] ?? 5;
 
 <script>
     const nbContraintes = <?= $nb_contrainte ?>;
-    function limiterContraintes() {
+    function limiterContraintes(event) {
         const checkboxes = document.querySelectorAll('input[type="checkbox"]');
         let checkedCount = 0;
 

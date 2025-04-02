@@ -1,106 +1,262 @@
 <?php
-require_once __DIR__ . '/../Db/connexionFactory.php';
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Inclusion des fichiers de classes
+require_once __DIR__ . '/../modele/CoursDTO.php';
+require_once __DIR__ . '/../modele/EnseignantDTO.php';
+require_once __DIR__ . '/../modele/VoeuDTO.php';
+require_once __DIR__ . '/../modele/VoeuHorsIUTDTO.php';
+require_once __DIR__ . '/../modele/UtilisateurDTO.php';
 use src\Db\connexionFactory;
-try {
-  if (!isset($_SESSION)) {
-      session_start();
-  }
 
-  $conn = connexionFactory::makeConnection();
+$id_utilisateur = $_GET['id'] ?? null;
+$type = $_GET['type'] ?? '';
 
-  // Vérifier l'authentification
-  if (!isset($_SESSION['id_utilisateur'])) {
-      echo "<div style='color:red; padding:20px; font-family:Arial;'>Utilisateur non connecté.</div>";
-      exit;
-  }
-
-  $id_utilisateur = $_SESSION['id_utilisateur'];
-
-  $enseignantDTO    = new EnseignantDTO();
-  $enseignant = $enseignantDTO->findByUtilisateurId($userId);
-  $idEnseignant = $enseignant ? $enseignant->getIdEnseignant() : null;
-
-  // PARTIE CRUCIALE : Vérifier le verrou
-  // D'abord, vérifions si la requête fonctionne
-  $stmtTest = $conn->prepare("SELECT 1");
-  $stmtTest->execute();
-
-  $stmtVerrouTemp = $conn->prepare("SELECT modification_en_cours FROM voeux WHERE id_enseignant = ?");
-  $stmtVerrouTemp->execute([$idEnseignant]);
-  $verrouTemp = $stmtVerrouTemp->fetch(PDO::FETCH_ASSOC);
-
-  // Afficher la valeur pour débogage (sera visible dans le code source HTML)
-  echo "<!-- Valeur de modification_en_cours : " .
-      (($verrouTemp && isset($verrouTemp['modification_en_cours']))
-          ? $verrouTemp['modification_en_cours'] : "non trouvée") . " -->";
-
-  // Vérifier si le blocage doit être activé
-  $doitBloquer = false;
-  if ($verrouTemp && isset($verrouTemp['modification_en_cours']) && intval($verrouTemp['modification_en_cours']) === 1) {
-      $doitBloquer = true;
-  }
-
-  // IMPORTANT: Afficher la page de blocage si nécessaire
-  if ($doitBloquer) {
-      // Ici, on affiche une version très simple d'abord pour s'assurer que ça fonctionne
-      ?>
-      <!DOCTYPE html>
-      <html lang="fr">
-      <head>
-          <meta charset="UTF-8">
-          <title>Fiche en cours de modification</title>
-          <style>
-              body {
-                  font-family: Arial, sans-serif;
-                  text-align: center;
-                  padding: 50px;
-              }
-              .message {
-                  background-color: #fff3cd;
-                  color: #856404;
-                  padding: 20px;
-                  border-radius: 5px;
-                  display: inline-block;
-              }
-              .btn {
-                  margin-top: 20px;
-                  padding: 10px 20px;
-                  background-color: #FFEF65;
-                  color: #000;
-                  text-decoration: none;
-                  border-radius: 5px;
-              }
-          </style>
-      </head>
-      <body>
-      <div class="message">
-          Votre fiche est en train d'être modifiée par le gestionnaire.
-          <br><br>
-          <a href="index.php?action=accueilEnseignant" class="btn">Retour à l'accueil</a>
-      </div>
-      </body>
-      </html>
-      <?php
-      // IMPORTANT - Terminer l'exécution du script ici
-      exit();
-  }
-
-  $verrouille = false;
-  $stmtVerif = $conn->prepare("SELECT statut, date_validation FROM  voeux WHERE id_enseignant = ? LIMIT 1");
-  $stmtVerif->execute([$idEnseignant]);
-  $voeux = $stmtVerif->fetch(PDO::FETCH_ASSOC);
-  if ($voeux && isset($voeux['statut']) && $voeux['statut'] === 'validée') {
-      $verrouille = true;
-  }
-
-} catch (Exception $e) {
-  // Afficher les erreurs
-  echo "<div style='color:red; padding:20px; font-family:Arial;'>";
-  echo "Erreur: " . $e->getMessage();
-  echo "</div>";
-  exit;
+if (!$id_utilisateur) {
+    echo "<div class='alert alert-danger'>ID utilisateur manquant.</div>";
+    exit;
 }
 
+$coursDTO         = new CoursDTO();
+$enseignantDTO    = new EnseignantDTO();
+$voeuDTO         = new VoeuDTO();
+$voeuHorsIUTDTO   = new VoeuHorsIUTDTO();
+$utilisateurDTO = new UtilisateurDTO();
+
+$errors = [];
+$successMessage = '';
+
+$utilisateur = $utilisateurDTO->findById($id_utilisateur);
+$coursList = $coursDTO->findAll();
+$enseignant = $enseignantDTO->findByUtilisateurId($id_utilisateur);
+$idEnseignant = $enseignant ? $enseignant->getIdEnseignant() : null;
+
+$voeuxSeptembre = [];
+$voeuxJanvier   = [];
+$semestresSeptembre = ['1', '3', '5'];
+$semestresJanvier   = ['2', '4', '6'];
+
+$septembreCount = 1;
+$janvierCount   = 1;
+$horsIUTCount   = 1;
+$postData = [];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['envoyer'])) {
+        $voeuHorsIUTDTO->deleteByEnseignant($idEnseignant);
+        if (isset($_POST['hors_iut'])) {
+            $hors_iut = $_POST['hors_iut'];
+            foreach ($hors_iut['composant'] as $i => $composant) {
+                $composant = trim($composant);
+                $formation = trim($hors_iut['formation'][$i] ?? '');
+                $module = trim($hors_iut['module'][$i] ?? '');
+                $cm = $hors_iut['cm'][$i] ?? '';
+                $td = $hors_iut['td'][$i] ?? '';
+                $tp = $hors_iut['tp'][$i] ?? '';
+                $ei = $hors_iut['ei'][$i] ?? '';
+                
+                if ($composant === '' || $formation === '' || $module === '') {
+                    $errors[] = "La ligne " . ($i + 1) . " de 'hors_iut' doit avoir les champs Composant, Formation et Module remplis.";
+                }
+                if (!is_numeric($cm) || !is_numeric($td) || !is_numeric($tp) || !is_numeric($ei)) {
+                    $errors[] = "La ligne " . ($i + 1) . " de 'hors_iut' doit avoir les champs CM, TD, TP et EI numériques.";
+                }
+            }
+        }
+        
+        if (empty($errors)) {
+            // Gestion des voeux de SEPTEMBRE et JANVIER en mode CRUD
+            $existing = [];
+            foreach ($voeuDTO->findByEnseignant($idEnseignant) as $v) {
+                $existing[$v->getIdVoeu()] = $v;
+            }
+            
+            foreach (['septembre', 'janvier'] as $period) {
+                // Récupération sécurisée des données pour cette période
+                $data = $_POST[$period] ?? [];
+                $ids  = isset($data['id']) && is_array($data['id']) ? $data['id'] : [];
+                $ressources = $data['ressource'] ?? [];
+            
+                if (!empty($ressources)) {
+                    foreach ($ressources as $i => $nomCours) {
+                        // Utilisation sécurisée de l'ID
+                        $idVoeu = $ids[$i] ?? '';
+                        
+                        // Traitement de la ligne
+                        // Exemple : récupération du cours et autres champs
+                        $nomCours = trim($nomCours);
+                        if ($nomCours === '') continue;
+                        
+                        // Récupération du champ caché course_id (si présent)
+                        $courseId = $data['course_id'][$i] ?? '';
+                        if ($courseId) {
+                            $cours = $coursDTO->findById($courseId);
+                        } else {
+                            $coursFound = $coursDTO->findByName($nomCours);
+                            if (empty($coursFound)) continue;
+                            $cours = $coursFound[0];
+                        }
+                        
+                        $remarque = trim($data['remarques'][$i] ?? '');
+                        $semestre = $data['semestre'][$i] ?? '';
+                        $nbCM = (isset($data['cm'][$i]) && $data['cm'][$i] !== '') ? floatval($data['cm'][$i]) : $cours->getNbHeuresCM();
+                        $nbTD = (isset($data['td'][$i]) && $data['td'][$i] !== '') ? floatval($data['td'][$i]) : $cours->getNbHeuresTD();
+                        $nbTP = (isset($data['tp'][$i]) && $data['tp'][$i] !== '') ? floatval($data['tp'][$i]) : $cours->getNbHeuresTP();
+                        $nbEI = (isset($data['ei'][$i]) && $data['ei'][$i] !== '') ? floatval($data['ei'][$i]) : $cours->getNbHeuresEI();
+                        
+                        // Création et sauvegarde du voeu
+                        $voeu = new Voeu(
+                            $idVoeu ?: null,
+                            $idEnseignant,
+                            $cours->getIdCours(),
+                            $remarque,
+                            $semestre,
+                            $nbCM,
+                            $nbTD,
+                            $nbTP,
+                            $nbEI
+                        );
+                        $voeuDTO->save($voeu);
+                        
+                        // Pour la mise à jour, on supprime l'entrée existante
+                        if ($idVoeu) {
+                            unset($existing[$idVoeu]);
+                        }
+                    }
+                }
+            }
+            
+
+            
+            
+            // Supprimer les voeux non soumis
+            foreach (array_keys($existing) as $toDelete) {
+                $voeuDTO->delete($toDelete);
+            }
+            
+            // Enregistrement des voeux hors IUT
+            if (isset($_POST['hors_iut'])) {
+                $hors_iut = $_POST['hors_iut'];
+                foreach ($hors_iut['composant'] as $i => $composant) {
+                    $composant = trim($composant);
+                    $formation = trim($hors_iut['formation'][$i] ?? '');
+                    $module = trim($hors_iut['module'][$i] ?? '');
+                    $cm = isset($hors_iut['cm'][$i]) ? floatval($hors_iut['cm'][$i]) : 0;
+                    $td = isset($hors_iut['td'][$i]) ? floatval($hors_iut['td'][$i]) : 0;
+                    $tp = isset($hors_iut['tp'][$i]) ? floatval($hors_iut['tp'][$i]) : 0;
+                    $ei = isset($hors_iut['ei'][$i]) ? floatval($hors_iut['ei'][$i]) : 0;
+                    $total = isset($hors_iut['total'][$i]) ? floatval($hors_iut['total'][$i]) : 0;
+                    
+                    if ($composant !== '' && $formation !== '' && $module !== '') {
+                        $voeuHI = new VoeuHorsIUT(null, $idEnseignant, $composant, $formation, $module, $cm, $td, $tp, $ei, $total);
+                        $voeuHorsIUTDTO->save($voeuHI);
+                    }
+                }
+            }
+            
+            $successMessage = "Les voeux ont été enregistrés avec succès.";
+        }
+    }
+    header("Location: ../../index.php?action=ficheEnseignant");
+}
+
+
+
+
+
+function generateTableRows(string $type, array $coursList, int $count, array $postData): void {
+    $allowedSemesters = $type === 'septembre' ? ['1', '3', '5'] : ['2', '4', '6'];
+    $data       = $postData[$type] ?? [];
+    $ressources = $data['ressource'] ?? [];
+    $remarques  = $data['remarques'] ?? [];
+    $formations = $data['formation'] ?? [];
+    $semestres  = $data['semestre'] ?? [];
+    $cms        = $data['cm'] ?? [];
+    $tds        = $data['td'] ?? [];
+    $tps        = $data['tp'] ?? [];
+    $eis        = $data['ei'] ?? [];
+    $ids        = $data['id'] ?? [];
+    
+    for ($i = 0; $i < $count; $i++) {
+        $selectedCours = $ressources[$i] ?? '';
+        $remarque = htmlspecialchars($remarques[$i] ?? '');
+        $defaultCM = $defaultTD = $defaultTP = $defaultEI = '';
+        if (!empty($selectedCours)) {
+            foreach ($coursList as $cours) {
+                if ($cours->getNomCours() === $selectedCours) {
+                    $defaultCM = $cours->getNbHeuresCM();
+                    $defaultTD = $cours->getNbHeuresTD();
+                    $defaultTP = $cours->getNbHeuresTP();
+                    $defaultEI = $cours->getNbHeuresEI();
+                    break;
+                }
+            }
+        }
+        $valCM = (isset($cms[$i]) && $cms[$i] !== '') ? $cms[$i] : $defaultCM;
+        $valTD = (isset($tds[$i]) && $tds[$i] !== '') ? $tds[$i] : $defaultTD;
+        $valTP = (isset($tps[$i]) && $tps[$i] !== '') ? $tps[$i] : $defaultTP;
+        $valEI = (isset($eis[$i]) && $eis[$i] !== '') ? $eis[$i] : $defaultEI;
+        
+        echo '<tr>';
+            echo '<input type="hidden" name="' . $type . '[id][]" value="' . htmlspecialchars($ids[$i] ?? '') . '">';
+            echo '<input type="hidden" name="' . $type . '[course_id][]" value="">';
+            echo '<td><input type="text" name="' . $type . '[formation][]" value="' . htmlspecialchars($formations[$i] ?? '') . '" readonly></td>';
+            echo '<td><select name="' . $type . '[ressource][]">';
+                echo '<option value="">-- Sélectionner un cours --</option>';
+                foreach ($coursList as $cours) {
+                    if (in_array($cours->getSemestre(), $allowedSemesters)) {
+                        $selected = ($cours->getNomCours() === $selectedCours) ? 'selected' : '';
+                        $optionDisplay = $cours->getCodeCours() . ' - ' . $cours->getNomCours();
+                        // Ajout de l'attribut data-id avec l'identifiant du cours
+                        echo '<option value="' . htmlspecialchars($cours->getNomCours()) . '" data-id="' . htmlspecialchars($cours->getIdCours()) . '" ' . $selected . '>' . htmlspecialchars($optionDisplay) . '</option>';
+                    }
+                }
+            echo '</select></td>';
+            echo '<td><input type="text" name="' . $type . '[semestre][]" value="' . htmlspecialchars($semestres[$i] ?? '') . '" readonly></td>';
+            echo '<td><input type="number" name="' . $type . '[cm][]" value="' . htmlspecialchars($valCM) . '"></td>';
+            echo '<td><input type="number" name="' . $type . '[td][]" value="' . htmlspecialchars($valTD) . '"></td>';
+            echo '<td><input type="number" name="' . $type . '[tp][]" value="' . htmlspecialchars($valTP) . '"></td>';
+            echo '<td><input type="number" name="' . $type . '[ei][]" value="' . htmlspecialchars($valEI) . '"></td>';
+            echo '<td><input type="text" name="' . $type . '[remarques][]" value="' . $remarque . '"></td>';
+            echo '<td><button type="button" class="btn btn-danger btn-sm remove-line">&times;</button></td>';
+        echo '</tr>';
+    }
+}
+
+
+/**
+ * Fonction pour générer les lignes du tableau "hors IUT"
+ */
+function generateHorsIUTRows(array $horsIUTData): void {
+    $composants = $horsIUTData['composant'] ?? [];
+    $formations = $horsIUTData['formation'] ?? [];
+    $modules    = $horsIUTData['module'] ?? [];
+    $cms        = $horsIUTData['cm'] ?? [];
+    $tds        = $horsIUTData['td'] ?? [];
+    $tps        = $horsIUTData['tp'] ?? [];
+    $eis        = $horsIUTData['ei'] ?? [];
+    $totals     = $horsIUTData['total'] ?? [];
+    
+    for ($i = 0; $i < count($composants); $i++) {
+        echo '<tr>';
+        echo '<td><input type="text" name="hors_iut[composant][]" value="' . htmlspecialchars($composants[$i] ?? '') . '"></td>';
+        echo '<td><input type="text" name="hors_iut[formation][]" value="' . htmlspecialchars($formations[$i] ?? '') . '"></td>';
+        echo '<td><input type="text" name="hors_iut[module][]" value="' . htmlspecialchars($modules[$i] ?? '') . '"></td>';
+        echo '<td><input type="number" name="hors_iut[cm][]" value="' . htmlspecialchars($cms[$i] ?? '') . '"></td>';
+        echo '<td><input type="number" name="hors_iut[td][]" value="' . htmlspecialchars($tds[$i] ?? '') . '"></td>';
+        echo '<td><input type="number" name="hors_iut[tp][]" value="' . htmlspecialchars($tps[$i] ?? '') . '"></td>';
+        echo '<td><input type="number" name="hors_iut[ei][]" value="' . htmlspecialchars($eis[$i] ?? '') . '"></td>';
+        echo '<td><input type="number" name="hors_iut[total][]" value="' . htmlspecialchars($totals[$i] ?? '') . '" readonly></td>';
+        $hetd = '';
+        if(isset($totals[$i]) && is_numeric($totals[$i])){
+            $hetd = number_format($totals[$i] * 1.5, 1);
+        }
+        echo '<td><input type="number" name="hors_iut[hetd][]" value="' . htmlspecialchars($hetd) . '" readonly></td>';
+        echo '<td><button type="button" class="btn btn-danger btn-sm remove-line">&times;</button></td>';
+        echo '</tr>';
+    }
+}
 ?>
 <style>
     /* ================== STYLE DU DOCUMENT ================== */
@@ -249,19 +405,47 @@ try {
       margin-left: 20px;
     }
 
+    .btn-submit, .btn-download {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        margin-top: 1em;
+        font-weight: bold;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-submit {
+        background-color: #fff495;
+        color: #000;
+    }
+
+    .btn-submit:hover {
+        background-color: #FFEF65;
+    }
+
 
 
   </style>
+<!DOCTYPE html>
+        <html lang="fr">
+        <head>
+            <meta charset="UTF-8">
+            <title>Remplir fiche de <?= $utilisateur->getPrenom() . ' ' . $utilisateur->getNom(); ?> </title>
+            <!-- 1) Feuille de style globale qui place #menu à gauche et #main-content à droite -->
+            <link rel="stylesheet" href="src/Action/layout.css">
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/css/bootstrap.min.css">
 
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        </head>
+        <body>
 <div id="main-content">
   <div class="container mt-5" style="
     padding-left: 4em;">
     <!-- Structure des onglets -->
-    <?php if ($verrouille): ?>
-        <div class="alert alert-warning">
-            Cette fiche a été validée et ne peut plus être modifiée.
-        </div>
-        <?php endif; ?>
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item" role="presentation">
         <a class="nav-link active" id="fiche-tab" data-bs-toggle="tab" href="#fiche" role="tab" aria-controls="fiche" aria-selected="true">
@@ -284,7 +468,7 @@ try {
       <div class="tab-pane fade show active" id="fiche" role="tabpanel" aria-labelledby="fiche-tab">
         <div id="main-content">
           <div class="container mt-5">
-            <h2 class="text-center mb-4">Fiche Prévisionnelle de Service</h2>
+            <h2 class="text-center mb-4">Remplir fiche de <?= $utilisateur->getPrenom() . ' ' . $utilisateur->getNom(); ?></h2>
             <p><strong>IUT Nancy-Charlemagne - Département Informatique</strong></p>
         
             <?php if (!empty($successMessage)): ?>
@@ -302,134 +486,132 @@ try {
             <?php endif; ?>
         
             <form action="" method="post">
-  <!-- Utilisation de fieldset pour désactiver l'ensemble des contrôles si $verrouille est vrai -->
-  <fieldset <?= $verrouille ? 'disabled' : '' ?>>
-    <input type="hidden" name="septembre_count" value="<?= $septembreCount ?>">
-    <input type="hidden" name="janvier_count" value="<?= $janvierCount ?>">
-
-    <div class="alert alert-warning font-weight-bold">Enseignements sur la période SEPTEMBRE-JANVIER</div>
-    <div class="table-responsive">
-      <table class="table table-bordered text-center w-100" id="table-septembre">
-        <thead class="thead-light">
-          <tr>
-            <th>Formation BUT</th>
-            <th>Ressource / SAE</th>
-            <th>Semestre</th>
-            <th>CM</th>
-            <th>TD</th>
-            <th>TP</th>
-            <th>EI</th>
-            <th>Remarques</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php generateTableRows('septembre', $coursList, $septembreCount, $postData); ?>
-          <tr class="total-row">
-            <td colspan="3" class="font-weight-bold">Total :</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td colspan="2"></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="text-center mb-4">
-      <button type="button" id="add_line_septembre" class="btn btn-success">Ajouter une ligne (Septembre)</button>
-    </div>
-
-    <div class="alert alert-warning font-weight-bold">Enseignements sur la période JANVIER-JUIN</div>
-    <div class="table-responsive">
-      <table class="table table-bordered text-center w-100" id="table-janvier">
-        <thead class="thead-light">
-          <tr>
-            <th>Formation BUT</th>
-            <th>Ressource / SAE</th>
-            <th>Semestre</th>
-            <th>CM</th>
-            <th>TD</th>
-            <th>TP</th>
-            <th>EI</th>
-            <th>Remarques</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php generateTableRows('janvier', $coursList, $janvierCount, $postData); ?>
-          <tr class="total-row">
-            <td colspan="3" class="font-weight-bold">Total :</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td colspan="2"></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="text-center mb-4">
-      <button type="button" id="add_line_janvier" class="btn btn-success">Ajouter une ligne (Janvier)</button>
-    </div>
-
-    <div class="alert alert-warning font-weight-bold">TOTAL :</div>
-    <div class="table-responsive">
-      <table class="table table-bordered text-center w-100" id="table-dept-info">
-        <thead>
-          <tr>
-            <th>CM</th>
-            <th>TD</th>
-            <th>TP</th>
-            <th>EI</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="alert alert-warning font-weight-bold">Enseignements hors Dept Info (pour information)</div>
-    <div class="table-responsive">
-      <table class="table table-bordered text-center w-100" id="table_hors_iut">
-        <thead class="thead-light">
-          <tr>
-            <th>Composants</th>
-            <th>Formation</th>
-            <th>Module</th>
-            <th>CM</th>
-            <th>TD</th>
-            <th>TP</th>
-            <th>EI</th>
-            <th>Total</th>
-            <th>HETD</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php 
-            if (isset($postData['hors_iut'])) {
-                generateHorsIUTRows($postData['hors_iut']);
-            }
-          ?>
-        </tbody>
-      </table>
-    </div>
-    <div class="text-center mb-4">
-      <button type="button" id="add_line_hors_info" class="btn btn-success">Ajouter une ligne hors IUT</button>
-    </div>
-
-    <div class="text-center mt-4">
-      <button type="submit" name="envoyer" class="btn btn-primary">Envoyer</button>
-    </div>
-  </fieldset>
-</form>
+              <input type="hidden" name="septembre_count" value="<?= $septembreCount ?>">
+              <input type="hidden" name="janvier_count" value="<?= $janvierCount ?>">
+        
+              <div class="alert alert-warning font-weight-bold">Enseignements sur la période SEPTEMBRE-JANVIER</div>
+              <div class="table-responsive">
+                <table class="table table-bordered text-center w-100" id="table-septembre">
+                  <thead class="thead-light">
+                    <tr>
+                      <th>Formation BUT</th>
+                      <th>Ressource / SAE</th>
+                      <th>Semestre</th>
+                      <th>CM</th>
+                      <th>TD</th>
+                      <th>TP</th>
+                      <th>EI</th>
+                      <th>Remarques</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php generateTableRows('septembre', $coursList, $septembreCount, $postData); ?>
+                    <tr class="total-row">
+                      <td colspan="3" class="font-weight-bold">Total :</td>
+                      <td>0</td>
+                      <td>0</td>
+                      <td>0</td>
+                      <td>0</td>
+                      <td colspan="2"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="text-center mb-4">
+                <button type="button" id="add_line_septembre" class="btn btn-success">Ajouter une ligne (Septembre)</button>
+              </div>
+        
+              <div class="alert alert-warning font-weight-bold">Enseignements sur la période JANVIER-JUIN</div>
+              <div class="table-responsive">
+                <table class="table table-bordered text-center w-100" id="table-janvier">
+                  <thead class="thead-light">
+                    <tr>
+                      <th>Formation BUT</th>
+                      <th>Ressource / SAE</th>
+                      <th>Semestre</th>
+                      <th>CM</th>
+                      <th>TD</th>
+                      <th>TP</th>
+                      <th>EI</th>
+                      <th>Remarques</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php generateTableRows('janvier', $coursList, $janvierCount, $postData); ?>
+                    <tr class="total-row">
+                      <td colspan="3" class="font-weight-bold">Total :</td>
+                      <td>0</td>
+                      <td>0</td>
+                      <td>0</td>
+                      <td>0</td>
+                      <td colspan="2"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="text-center mb-4">
+                <button type="button" id="add_line_janvier" class="btn btn-success">Ajouter une ligne (Janvier)</button>
+              </div>
+        
+              <div class="alert alert-warning font-weight-bold">TOTAL :</div>
+              <div class="table-responsive">
+                <table class="table table-bordered text-center w-100" id="table-dept-info">
+                  <thead>
+                    <tr>
+                      <th>CM</th>
+                      <th>TD</th>
+                      <th>TP</th>
+                      <th>EI</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>0</td>
+                      <td>0</td>
+                      <td>0</td>
+                      <td>0</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+        
+              <div class="alert alert-warning font-weight-bold">Enseignements hors Dept Info (pour information)</div>
+              <div class="table-responsive">
+                <table class="table table-bordered text-center w-100" id="table_hors_iut">
+                  <thead class="thead-light">
+                    <tr>
+                      <th>Composants</th>
+                      <th>Formation</th>
+                      <th>Module</th>
+                      <th>CM</th>
+                      <th>TD</th>
+                      <th>TP</th>
+                      <th>EI</th>
+                      <th>Total</th>
+                      <th>HETD</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php 
+                      if (isset($postData['hors_iut'])) {
+                          generateHorsIUTRows($postData['hors_iut']);
+                      }
+                    ?>
+                  </tbody>
+                </table>
+              </div>
+              <div class="text-center mb-4">
+                <button type="button" id="add_line_hors_info" class="btn btn-success">Ajouter une ligne hors IUT</button>
+              </div>
+        
+              <div style="display: flex; gap: 10px; justify-content: center; margin-top: 1em;">
+                <a href="../../index.php?action=ficheEnseignant" class="btn-submit" style="text-align:center; text-decoration: none;">Retour</a>
+                <button type="submit" name="envoyer" class="btn-submit">Envoyer</button>
+              </div>
+            </form>
           </div>
         
           <!-- Templates pour l'ajout dynamique de lignes -->
@@ -440,7 +622,7 @@ try {
               <td><input type="text" name="septembre[formation][]" readonly></td>
               <td>
                 <select name="septembre[ressource][]">
-                  <option value="" <?= $verrouille ? 'disabled' : '' ?>>-- Sélectionner un cours --</option>
+                  <option value="">-- Sélectionner un cours --</option>
                 </select>
               </td>
               <td><input type="text" name="septembre[semestre][]" readonly></td>
@@ -449,8 +631,7 @@ try {
               <td><input type="number" name="septembre[tp][]"></td>
               <td><input type="number" name="septembre[ei][]"></td>
               <td><input type="text" name="septembre[remarques][]"></td>
-              <td><button type="button" class="btn btn-danger btn-sm remove-line" 
-              <?= $verrouille ? 'disabled' : '' ?>>&times;</button></td>
+              <td><button type="button" class="btn btn-danger btn-sm remove-line">&times;</button></td>
             </tr>
           </template>
         
@@ -470,8 +651,7 @@ try {
               <td><input type="number" name="janvier[tp][]"></td>
               <td><input type="number" name="janvier[ei][]"></td>
               <td><input type="text" name="janvier[remarques][]"></td>
-              <td><button type="button" class="btn btn-danger btn-sm remove-line"
-              <?= $verrouille ? 'disabled' : '' ?>>&times;</button></td>
+              <td><button type="button" class="btn btn-danger btn-sm remove-line">&times;</button></td>
             </tr>
           </template>
         </div>
@@ -485,6 +665,8 @@ try {
     </div>
   </div>
 </div>
+</body>
+</html>
   
   <!-- Inclusion du bundle Bootstrap avec Popper -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -755,11 +937,10 @@ try {
         });
         
         if(selectedCourseIds.length === 0) {
-            document.getElementById('repartition-content').innerHTML = "<p>Aucun cours sélectionné.</p>";
             return;
         }
         
-        fetch('src/Enseignant/get_repartitions_service.php', {
+        fetch('../../src/Enseignant/get_repartitions_service.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ course_ids: selectedCourseIds })
@@ -983,3 +1164,4 @@ try {
   </script>
 </body>
 </html>
+

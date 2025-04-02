@@ -8,64 +8,114 @@ try {
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-        $estGestionnaire = isset($_SESSION['type']) && $_SESSION['type'] === 'gestionnaire';
+        // Récupération du code du cours depuis le formulaire
+        $code_cours = $_POST['resourceName'];
 
-        $id_utilisateur = $_POST['id_utilisateur'] ?? null;
-        $id_responsable_module = $_POST['responsibleName'] ?? null;
+        // Récupération de l'id_cours correspondant au code_cours
+        $stmt = $bdd->prepare("SELECT id_cours FROM cours WHERE code_cours = :code_cours");
+        $stmt->execute([':code_cours' => $code_cours]);
+        $cours = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($cours) {
+            $id_cours = $cours['id_cours'];
+        } else {
+            throw new Exception("Aucun cours trouvé avec le code $code_cours.");
+        }
+
+        // Récupération de l'id du responsable (ici, l'id_enseignant)
+        $id_responsable_module = $_POST['responsibleName'];
+
+        // Récupération des autres champs du formulaire
+        // Pour le DS, on récupère directement le contenu saisi (sans préfixe "DS : ")
         $ds = $_POST['dsDetails'] ?? '';
+        // Pour le commentaire libre
         $commentaire = $_POST['scheduleDetails'] ?? '';
-        $systeme = $_POST['systeme'] ?? '';
+        // Pour le système, on récupère la valeur du champ radio
+        $systeme = $_POST['system'] ?? '';
 
+        // Traitement de la préférence pour la salle 016
         $salle016 = $_POST['salle016'] ?? '';
-        $equipementsSpecifiques = match($salle016) {
-            'Oui' => "salle 016 : oui",
-            'Indifférent' => "salle 016 : indifférent",
-            'Non' => "salle 016 : non",
-            default => '',
-        };
-
-        if (!$id_utilisateur) {
-            throw new Exception("ID utilisateur manquant.");
+        $equipementsSpecifiques = '';
+        if ($salle016 === 'Oui') {
+            $equipementsSpecifiques .= "Intervention en salle 016 : Oui, de préférence\n";
+        } elseif ($salle016 === 'Indifférent') {
+            $equipementsSpecifiques .= "Intervention en salle 016 : Indifférent\n";
+        } elseif ($salle016 === 'Non') {
+            $equipementsSpecifiques .= "Intervention en salle 016 : Non, salle non adaptée\n";
         }
 
-        $stmtCours = $bdd->prepare("SELECT id_ressource FROM details_cours d
-            INNER JOIN enseignants e ON e.id_enseignant = d.id_responsable_module
-            WHERE e.id_utilisateur = ?");
-        $stmtCours->execute([$id_utilisateur]);
-        $fiche = $stmtCours->fetch(PDO::FETCH_ASSOC);
+        // Exemple de récupération du type de salle depuis un champ "hour_type" (tableau)
+        $type_salle = $_POST['hour_type'][0] ?? 'Inconnu';
 
-        if (!$fiche) {
-            throw new Exception("Aucune fiche trouvée pour cet utilisateur.");
+        // Vérifier si une fiche existe déjà pour ce cours (unicité par cours)
+        $stmtExist = $bdd->prepare("SELECT id_ressource FROM details_cours WHERE id_cours = :id_cours");
+        $stmtExist->execute([':id_cours' => $id_cours]);
+        $existingRecord = $stmtExist->fetch(PDO::FETCH_ASSOC);
+
+        if ($existingRecord) {
+            // Mise à jour de la fiche existante
+            $stmtUpdate = $bdd->prepare("UPDATE details_cours 
+                SET 
+                    id_responsable_module = :id_responsable_module,
+                    type_salle = :type_salle,
+                    equipements_specifiques = :equipements_specifiques,
+                    ds = :ds,
+                    commentaire = :commentaire,
+                    systeme = :systeme,
+                    statut = :statut
+                WHERE id_ressource = :id_ressource
+            ");
+            $stmtUpdate->execute([
+                ':id_responsable_module'    => $id_responsable_module,
+                ':type_salle'               => $type_salle,
+                ':equipements_specifiques'  => $equipementsSpecifiques,
+                ':ds'                       => $ds,
+                ':commentaire'              => $commentaire,
+                ':systeme'                  => $systeme,
+                ':statut'                   => "en attente",
+                ':id_ressource'             => $existingRecord['id_ressource']
+            ]);
+        } else {
+            // Insertion d'une nouvelle fiche ressource
+            $stmtInsert = $bdd->prepare("
+                INSERT INTO details_cours (
+                    id_cours,
+                    id_responsable_module,
+                    type_salle,
+                    equipements_specifiques,
+                    ds,
+                    commentaire,
+                    systeme,
+                    statut
+                ) VALUES (
+                    :id_cours,
+                    :id_responsable_module,
+                    :type_salle,
+                    :equipements_specifiques,
+                    :ds,
+                    :commentaire,
+                    :systeme,
+                    :statut
+                )
+            ");
+            $stmtInsert->execute([
+                ':id_cours'                => $id_cours,
+                ':id_responsable_module'   => $id_responsable_module,
+                ':type_salle'              => $type_salle,
+                ':equipements_specifiques' => $equipementsSpecifiques,
+                ':ds'                      => $ds,
+                ':commentaire'             => $commentaire,
+                ':systeme'                 => $systeme,
+                ':statut'                  => "en attente",
+            ]);
         }
 
-        $stmtUpdate = $bdd->prepare("UPDATE details_cours SET
-            id_responsable_module = :id_responsable_module,
-            equipements_specifiques = :equipements_specifiques,
-            ds = :ds,
-            commentaire = :commentaire,
-            systeme = :systeme,
-            statut = :statut
-            WHERE id_ressource = :id_ressource");
-
-        $stmtUpdate->execute([
-            ':id_responsable_module'    => $id_responsable_module,
-            ':equipements_specifiques'  => $equipementsSpecifiques,
-            ':ds'                       => $ds,
-            ':commentaire'              => $commentaire,
-            ':systeme'                  => $systeme,
-            ':statut'                   => 'en attente',
-            ':id_ressource'             => $fiche['id_ressource']
-        ]);
-
-        $_SESSION['toast_message'] = "Votre fiche ressource a été modifiée.";
-        $_SESSION['toast_type'] = "info";
-
-        header('Location: ../../index.php?action=ficheEnseignant');
+        header('Location: ' . ($_SERVER['HTTP_REFERER'] ?? 'index.php'));
         exit();
     }
-
 } catch (PDOException $e) {
     echo "Erreur PDO : " . $e->getMessage();
 } catch (Exception $e) {
     echo "Erreur : " . $e->getMessage();
 }
+?>

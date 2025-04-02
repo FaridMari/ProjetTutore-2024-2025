@@ -110,8 +110,40 @@ try {
             ]);
         }
 
+        // --- ajout pour PDF ---
+
+        // Récupérer les répartitions depuis la table repartition_heures pour l'id_cours courant
+        $stmtRep = $bdd->prepare("SELECT semaine_debut, semaine_fin, type_heure, nb_heures_par_semaine FROM repartition_heures WHERE id_cours = :id_cours");
+        $stmtRep->execute([':id_cours' => $id_cours]);
+        $repartitions = $stmtRep->fetchAll(PDO::FETCH_ASSOC);
+        echo $repartitions;
+
+// récupération du nom, prénom, téléphone
+        $stmtUser = $bdd->prepare("
+    SELECT utilisateurs.nom, utilisateurs.prenom, utilisateurs.telephone 
+    FROM enseignants 
+    INNER JOIN utilisateurs ON enseignants.id_utilisateur = utilisateurs.id_utilisateur 
+    WHERE enseignants.id_enseignant = :id
+");
+        $stmtUser->execute([':id' => $id_responsable_module]);
+        $responsable = $stmtUser->fetch(PDO::FETCH_ASSOC);
+
+        $_SESSION['fiche_ressource_data'] = [
+            'semestre'      => $_POST['semester'] ?? '',
+            'ressource'     => $code_cours,
+            'responsable'   => $responsable ? $responsable['nom'] . ' ' . $responsable['prenom'] : '',
+            'telephone'     => $responsable['telephone'] ?? '',
+            'ds'            => $ds,
+            'commentaire'   => $commentaire,
+            'salle016'      => $salle016,
+            'systeme'       => $systeme,
+            'repartitions'  => $repartitions
+        ];
+// --- Fin ajout pour PDF ---
+
         header('Location: ' . ($_SERVER['HTTP_REFERER'] ?? 'index.php'));
         exit();
+
     }
 } catch (PDOException $e) {
     echo "Erreur PDO : " . $e->getMessage();

@@ -12,11 +12,7 @@ $fiche = $stmt->fetch(PDO::FETCH_ASSOC);
 
 $verrouille = ($fiche && $fiche['statut'] === 'valide');
 ?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Fiche Ressource : Emploi du Temps 2024-2025</title>
+
     <style>
         /* ===================== Conteneur principal ===================== */
         .fiche-ressource-container {
@@ -100,8 +96,7 @@ $verrouille = ($fiche && $fiche['statut'] === 'valide');
             font-weight: bold;
         }
     </style>
-</head>
-<body>
+
 <div id="main-content">
     <div class="fiche-ressource-container mt-4">
         <h1 class="text-center">Fiche Ressource : Emploi du Temps 2024-2025</h1>
@@ -201,6 +196,10 @@ $verrouille = ($fiche && $fiche['statut'] === 'valide');
             </div>
             <!-- Bouton d’envoi global -->
             <button type="submit" class="btn btn-primary">Enregistrer et valider</button>
+            <button onclick="window.open('src/Enseignant/fiche_ressource_pdf.php', '_blank')" class="btn btn-secondary">
+                Exporter en PDF
+            </button>
+
         </form>
         <!-- Fin du formulaire global -->
     </div>
@@ -456,5 +455,3 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 </script>
-</body>
-</html>

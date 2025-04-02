@@ -7,6 +7,7 @@ require_once __DIR__ . '/../modele/CoursDTO.php';
 require_once __DIR__ . '/../modele/EnseignantDTO.php';
 require_once __DIR__ . '/../modele/VoeuDTO.php';
 require_once __DIR__ . '/../modele/VoeuHorsIUTDTO.php';
+require_once __DIR__ . '/../modele/UtilisateurDTO.php';
 use src\Db\connexionFactory;
 
 $id_utilisateur = $_GET['id'] ?? null;
@@ -21,10 +22,12 @@ $coursDTO         = new CoursDTO();
 $enseignantDTO    = new EnseignantDTO();
 $voeuDTO         = new VoeuDTO();
 $voeuHorsIUTDTO   = new VoeuHorsIUTDTO();
+$utilisateurDTO = new UtilisateurDTO();
 
 $errors = [];
 $successMessage = '';
 
+$utilisateur = $utilisateurDTO->findById($id_utilisateur);
 $coursList = $coursDTO->findAll();
 $enseignant = $enseignantDTO->findByUtilisateurId($id_utilisateur);
 $idEnseignant = $enseignant ? $enseignant->getIdEnseignant() : null;
@@ -429,7 +432,7 @@ function generateHorsIUTRows(array $horsIUTData): void {
         <html lang="fr">
         <head>
             <meta charset="UTF-8">
-            <title>Fiche Prévisionnelle de Service</title>
+            <title>Remplir fiche de <?= $utilisateur->getPrenom() . ' ' . $utilisateur->getNom(); ?> </title>
             <!-- 1) Feuille de style globale qui place #menu à gauche et #main-content à droite -->
             <link rel="stylesheet" href="src/Action/layout.css">
             <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/css/bootstrap.min.css">
@@ -465,7 +468,7 @@ function generateHorsIUTRows(array $horsIUTData): void {
       <div class="tab-pane fade show active" id="fiche" role="tabpanel" aria-labelledby="fiche-tab">
         <div id="main-content">
           <div class="container mt-5">
-            <h2 class="text-center mb-4">Fiche Prévisionnelle de Service</h2>
+            <h2 class="text-center mb-4">Remplir fiche de <?= $utilisateur->getPrenom() . ' ' . $utilisateur->getNom(); ?></h2>
             <p><strong>IUT Nancy-Charlemagne - Département Informatique</strong></p>
         
             <?php if (!empty($successMessage)): ?>

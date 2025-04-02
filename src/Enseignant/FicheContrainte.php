@@ -36,16 +36,9 @@ $verrouille = false;
 $stmtVerif = $conn->prepare("SELECT statut, date_validation FROM contraintes WHERE id_utilisateur = ? LIMIT 1");
 $stmtVerif->execute([$id_utilisateur]);
 $contrainte = $stmtVerif->fetch(PDO::FETCH_ASSOC);
-if ($contrainte && $contrainte['statut'] === 'valide') {
+if ($contrainte && $contrainte['statut'] === 'validée') {
     $verrouille = true;
 }
-
-// Toast personnalisé
-$toastMessage = $_SESSION['toast_message'] ?? null;
-unset($_SESSION['toast_message']);
-
-// Mode Puppeteer
-$isPuppeteer = isset($_GET['pdf']) && $_GET['pdf'] === '1';
 
 // Nombre de contraintes autorisé
 $stmt2 = $conn->prepare("SELECT nb_contrainte FROM enseignants WHERE id_utilisateur = ?");
@@ -57,133 +50,174 @@ $nb_contrainte = $stmt2->fetch(PDO::FETCH_ASSOC);
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fiche de Vœux</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <style>
-        <?php if ($isPuppeteer): ?>
-        body { background: #fff; }
-        <?php endif; ?>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 2em;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #000;
+            margin-bottom: 1em;
+        }
+
+        .fiche-container {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            padding: 2em;
+            max-width: 1000px;
+            width: 100%;
+            color: #000;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1em;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        textarea {
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px;
+        }
+
+        .btn-submit, .btn-download {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 1em;
+            font-weight: bold;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-submit {
+            background-color: #fff495;
+            color: #000;
+        }
+
+        .btn-submit:hover {
+            background-color: #FFEF65;
+        }
+
+        .btn-download {
+            background-color: #FFEF65;
+            color: #000;
+            width: 25%;
+            margin: 0 auto;
+        }
+
+        .alert {
+            padding: 10px;
+            margin-bottom: 1em;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
     </style>
 </head>
-<body class="<?php echo $isPuppeteer ? '' : 'bg-light'; ?>">
+<body>
 
-<?php if (!$isPuppeteer && $toastMessage): ?>
-    <div class="toast-container position-fixed bottom-0 end-0 p-3">
-        <div class="toast align-items-center text-bg-success border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body">
-                    <?php echo htmlspecialchars($toastMessage); ?>
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-        </div>
-    </div>
-<?php endif; ?>
+<h1>Fiche de Vœux</h1>
 
-<div class="container my-5">
-    <h1 class="text-center mb-4">Fiche de Vœux</h1>
-
+<div class="fiche-container">
     <?php if ($verrouille): ?>
-        <div class="alert alert-warning text-center">
+        <div class="alert alert-warning">
             Cette fiche a été validée et ne peut plus être modifiée.
         </div>
         <?php if (!empty($contrainte['date_validation'])): ?>
-            <div class="alert alert-info text-center">
-                Cette fiche a été remplie le <?php echo date('d/m/Y à H:i', strtotime($contrainte['date_validation'])); ?>.
+            <div class="alert alert-info">
+                Fiche remplie le <?php echo date('d/m/Y à H:i', strtotime($contrainte['date_validation'])); ?>.
             </div>
         <?php endif; ?>
-        <div class="text-center mt-3">
-            <form method="post" action="src/Enseignant/telechargerPdf.php" target="_blank">
-                <input type="hidden" name="fiche" value="fiche_voeux">
-                <button type="submit" class="btn btn-success">Télécharger la fiche en PDF</button>
-            </form>
-        </div>
+        <form method="post" action="src/Enseignant/telechargerPdf.php" target="_blank">
+            <input type="hidden" name="fiche" value="fiche_voeux">
+            <button type="submit" class="btn-download">Télécharger la fiche en PDF</button>
+        </form>
     <?php endif; ?>
 
-    <form id="ficheForm" action="src/Enseignant/EnregistrerContraintes.php" method="post" class="bg-white p-4 shadow-sm rounded">
-        <p class="mb-4">Indiquez les plages horaires durant lesquelles vous ne pouvez pas enseigner :</p>
+    <form method="post" action="src/Enseignant/EnregistrerContraintes.php">
+        <p>Indiquez les plages horaires durant lesquelles vous ne pouvez pas enseigner :</p>
+        <table>
+            <thead>
+            <tr>
+                <th></th>
+                <th>Lundi</th>
+                <th>Mardi</th>
+                <th>Mercredi</th>
+                <th>Jeudi</th>
+                <th>Vendredi</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            $horaires = ["8_10" => "8h-10h", "10_12" => "10h-12h", "14_16" => "14h-16h", "16_18" => "16h-18h"];
+            $jours = ["lundi", "mardi", "mercredi", "jeudi", "vendredi"];
 
-        <div class="table-responsive">
-            <table class="table table-bordered text-center">
-                <thead>
-                <tr>
-                    <th></th>
-                    <th>Lundi</th>
-                    <th>Mardi</th>
-                    <th>Mercredi</th>
-                    <th>Jeudi</th>
-                    <th>Vendredi</th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php
-                $horaires = [
-                    "8_10" => "8h-10h",
-                    "10_12" => "10h-12h",
-                    "14_16" => "14h-16h",
-                    "16_18" => "16h-18h"
-                ];
-                $jours = ["lundi", "mardi", "mercredi", "jeudi", "vendredi"];
-
-                foreach ($horaires as $heure_key => $heure_label) {
-                    echo "<tr><td>$heure_label</td>";
-                    foreach ($jours as $jour) {
-                        $name = "{$jour}_{$heure_key}";
-                        $checked = in_array($name, $contraintesChecked) ? 'checked' : '';
-                        $disabled = $verrouille ? 'disabled' : '';
-                        echo "<td><input type='checkbox' name='contraintes[]' value='$name' onchange='limiterContraintes()' $checked $disabled></td>";
-                    }
-                    echo "</tr>";
+            foreach ($horaires as $heure_key => $heure_label) {
+                echo "<tr><td>$heure_label</td>";
+                foreach ($jours as $jour) {
+                    $name = "{$jour}_{$heure_key}";
+                    $checked = in_array($name, $contraintesChecked) ? 'checked' : '';
+                    $disabled = $verrouille ? 'disabled' : '';
+                    echo "<td><input type='checkbox' name='contraintes[]' value='$name' $checked $disabled></td>";
                 }
-                ?>
-                </tbody>
-            </table>
+                echo "</tr>";
+            }
+            ?>
+            </tbody>
+        </table>
+
+        <p> Je préfère, si possible, éviter le créneau : </p>
+        <label><input type="radio" name="creneau_prefere" value="8h-10h" <?php echo ($creneauPrefere === "8h-10h") ? 'checked' : ''; echo $verrouille ? ' disabled' : ''; ?>> 8h-10h</label><br>
+        <label><input type="radio" name="creneau_prefere" value="16h-18h" <?php echo ($creneauPrefere === "16h-18h") ? 'checked' : ''; echo $verrouille ? ' disabled' : ''; ?>> 16h-18h</label><br>
+
+        <br><p> J’accepte d’avoir cours le samedi matin :</p>
+        <label><input type="radio" name="cours_samedi" value="oui" <?php echo ($coursSamedi === "oui") ? 'checked' : ''; echo $verrouille ? ' disabled' : ''; ?>> Oui</label><br>
+        <label><input type="radio" name="cours_samedi" value="non" <?php echo ($coursSamedi === "non") ? 'checked' : ''; echo $verrouille ? ' disabled' : ''; ?>> Non</label>
+
+        <div style="margin-top: 1em">
+            <label for="commentaire">Commentaire :</label><br>
+            <textarea name="commentaire" id="commentaire" rows="4" <?php echo $verrouille ? 'disabled' : ''; ?>><?php echo htmlspecialchars($commentaire ?? ''); ?></textarea>
         </div>
 
-        <div class="mb-3">
-            <p>Je préfère, si possible, éviter le créneau :</p>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="creneau_prefere" value="8h-10h" id="pref_8_10"
-                    <?php echo ($creneauPrefere === "8h-10h") ? 'checked' : ''; echo $verrouille ? ' disabled' : ''; ?>>
-                <label class="form-check-label" for="pref_8_10">de 8h à 10h</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="creneau_prefere" value="16h-18h" id="pref_16_18"
-                    <?php echo ($creneauPrefere === "16h-18h") ? 'checked' : ''; echo $verrouille ? ' disabled' : ''; ?>>
-                <label class="form-check-label" for="pref_16_18">de 16h à 18h</label>
-            </div>
-        </div>
-
-        <div class="mb-3">
-            <p>J'accepte d'avoir cours le samedi :</p>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="cours_samedi" value="oui" id="samedi_oui"
-                    <?php echo ($coursSamedi === "oui") ? 'checked' : ''; echo $verrouille ? ' disabled' : ''; ?>>
-                <label class="form-check-label" for="samedi_oui">Oui</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="cours_samedi" value="non" id="samedi_non"
-                    <?php echo ($coursSamedi === "non") ? 'checked' : ''; echo $verrouille ? ' disabled' : ''; ?>>
-                <label class="form-check-label" for="samedi_non">Non</label>
-            </div>
-        </div>
-
-        <div class="mb-3">
-            <label for="commentaire" class="form-label">Commentaires ou précisions :</label>
-            <textarea class="form-control" id="commentaire" name="commentaire" rows="4" placeholder="Ajoutez ici vos éventuelles remarques ou précisions..." <?php echo $verrouille ? 'disabled' : ''; ?>><?php echo htmlspecialchars($commentaire ?? ''); ?></textarea>
-        </div>
-
-        <?php if (!$isPuppeteer): ?>
-            <div class="text-center mt-4">
-                <button type="submit" class="btn btn-primary" id="validerBtn" <?php echo $verrouille ? 'disabled' : ''; ?>>Valider</button>
-            </div>
+        <?php if (!$verrouille): ?>
+            <button type="submit" class="btn-submit">Valider</button>
         <?php endif; ?>
     </form>
 </div>
 
-<?php if (!$isPuppeteer): ?>
+</body>
+</html>
     <script>
         const nbContraintes = <?php echo $nb_contrainte['nb_contrainte']; ?>;
         function limiterContraintes() {
@@ -204,7 +238,6 @@ $nb_contrainte = $stmt2->fetch(PDO::FETCH_ASSOC);
             });
         });
     </script>
-<?php endif; ?>
 
-</body>
-</html>
+
+

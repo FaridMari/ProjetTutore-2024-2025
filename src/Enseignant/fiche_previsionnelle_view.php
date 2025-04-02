@@ -1,3 +1,108 @@
+<?php
+require_once __DIR__ . '/../Db/connexionFactory.php';
+use src\Db\connexionFactory;
+try {
+  // Démarrer la session
+  if (!isset($_SESSION)) {
+      session_start();
+  }
+
+  $conn = connexionFactory::makeConnection();
+
+  // Vérifier l'authentification
+  if (!isset($_SESSION['id_utilisateur'])) {
+      echo "<div style='color:red; padding:20px; font-family:Arial;'>Utilisateur non connecté.</div>";
+      exit;
+  }
+
+  $id_utilisateur = $_SESSION['id_utilisateur'];
+
+  $enseignantDTO    = new EnseignantDTO();
+  $enseignant = $enseignantDTO->findByUtilisateurId($userId);
+  $idEnseignant = $enseignant ? $enseignant->getIdEnseignant() : null;
+
+  // PARTIE CRUCIALE : Vérifier le verrou
+  // D'abord, vérifions si la requête fonctionne
+  $stmtTest = $conn->prepare("SELECT 1");
+  $stmtTest->execute();
+
+  $stmtVerrouTemp = $conn->prepare("SELECT modification_en_cours FROM voeux WHERE id_enseignant = ?");
+  $stmtVerrouTemp->execute([$idEnseignant]);
+  $verrouTemp = $stmtVerrouTemp->fetch(PDO::FETCH_ASSOC);
+
+  // Afficher la valeur pour débogage (sera visible dans le code source HTML)
+  echo "<!-- Valeur de modification_en_cours : " .
+      (($verrouTemp && isset($verrouTemp['modification_en_cours']))
+          ? $verrouTemp['modification_en_cours'] : "non trouvée") . " -->";
+
+  // Vérifier si le blocage doit être activé
+  $doitBloquer = false;
+  if ($verrouTemp && isset($verrouTemp['modification_en_cours']) && intval($verrouTemp['modification_en_cours']) === 1) {
+      $doitBloquer = true;
+  }
+
+  // IMPORTANT: Afficher la page de blocage si nécessaire
+  if ($doitBloquer) {
+      // Ici, on affiche une version très simple d'abord pour s'assurer que ça fonctionne
+      ?>
+      <!DOCTYPE html>
+      <html lang="fr">
+      <head>
+          <meta charset="UTF-8">
+          <title>Fiche en cours de modification</title>
+          <style>
+              body {
+                  font-family: Arial, sans-serif;
+                  text-align: center;
+                  padding: 50px;
+              }
+              .message {
+                  background-color: #fff3cd;
+                  color: #856404;
+                  padding: 20px;
+                  border-radius: 5px;
+                  display: inline-block;
+              }
+              .btn {
+                  margin-top: 20px;
+                  padding: 10px 20px;
+                  background-color: #FFEF65;
+                  color: #000;
+                  text-decoration: none;
+                  border-radius: 5px;
+              }
+          </style>
+      </head>
+      <body>
+      <div class="message">
+          Votre fiche est en train d'être modifiée par le gestionnaire.
+          <br><br>
+          <a href="index.php?action=accueilEnseignant" class="btn">Retour à l'accueil</a>
+      </div>
+      </body>
+      </html>
+      <?php
+      // IMPORTANT - Terminer l'exécution du script ici
+      exit();
+  }
+
+  $verrouille = false;
+  $stmtVerif = $conn->prepare("SELECT statut, date_validation FROM  voeux WHERE id_enseignant = ? LIMIT 1");
+  $stmtVerif->execute([$idEnseignant]);
+  $voeux = $stmtVerif->fetch(PDO::FETCH_ASSOC);
+  if ($voeux && isset($voeux['statut']) && $voeux['statut'] === 'validée') {
+      $verrouille = true;
+  }
+
+} catch (Exception $e) {
+  // Afficher les erreurs
+  echo "<div style='color:red; padding:20px; font-family:Arial;'>";
+  echo "Erreur: " . $e->getMessage();
+  echo "</div>";
+  exit;
+}
+
+?>
 <style>
     /* ================== STYLE DU DOCUMENT ================== */
     .container {
@@ -153,6 +258,11 @@
   <div class="container mt-5" style="
     padding-left: 4em;">
     <!-- Structure des onglets -->
+    <?php if ($verrouille): ?>
+        <div class="alert alert-warning">
+            Cette fiche a été validée et ne peut plus être modifiée.
+        </div>
+        <?php endif; ?>
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item" role="presentation">
         <a class="nav-link active" id="fiche-tab" data-bs-toggle="tab" href="#fiche" role="tab" aria-controls="fiche" aria-selected="true">
@@ -193,131 +303,134 @@
             <?php endif; ?>
         
             <form action="" method="post">
-              <input type="hidden" name="septembre_count" value="<?= $septembreCount ?>">
-              <input type="hidden" name="janvier_count" value="<?= $janvierCount ?>">
-        
-              <div class="alert alert-warning font-weight-bold">Enseignements sur la période SEPTEMBRE-JANVIER</div>
-              <div class="table-responsive">
-                <table class="table table-bordered text-center w-100" id="table-septembre">
-                  <thead class="thead-light">
-                    <tr>
-                      <th>Formation BUT</th>
-                      <th>Ressource / SAE</th>
-                      <th>Semestre</th>
-                      <th>CM</th>
-                      <th>TD</th>
-                      <th>TP</th>
-                      <th>EI</th>
-                      <th>Remarques</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php generateTableRows('septembre', $coursList, $septembreCount, $postData); ?>
-                    <tr class="total-row">
-                      <td colspan="3" class="font-weight-bold">Total :</td>
-                      <td>0</td>
-                      <td>0</td>
-                      <td>0</td>
-                      <td>0</td>
-                      <td colspan="2"></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="text-center mb-4">
-                <button type="button" id="add_line_septembre" class="btn btn-success">Ajouter une ligne (Septembre)</button>
-              </div>
-        
-              <div class="alert alert-warning font-weight-bold">Enseignements sur la période JANVIER-JUIN</div>
-              <div class="table-responsive">
-                <table class="table table-bordered text-center w-100" id="table-janvier">
-                  <thead class="thead-light">
-                    <tr>
-                      <th>Formation BUT</th>
-                      <th>Ressource / SAE</th>
-                      <th>Semestre</th>
-                      <th>CM</th>
-                      <th>TD</th>
-                      <th>TP</th>
-                      <th>EI</th>
-                      <th>Remarques</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php generateTableRows('janvier', $coursList, $janvierCount, $postData); ?>
-                    <tr class="total-row">
-                      <td colspan="3" class="font-weight-bold">Total :</td>
-                      <td>0</td>
-                      <td>0</td>
-                      <td>0</td>
-                      <td>0</td>
-                      <td colspan="2"></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="text-center mb-4">
-                <button type="button" id="add_line_janvier" class="btn btn-success">Ajouter une ligne (Janvier)</button>
-              </div>
-        
-              <div class="alert alert-warning font-weight-bold">TOTAL :</div>
-              <div class="table-responsive">
-                <table class="table table-bordered text-center w-100" id="table-dept-info">
-                  <thead>
-                    <tr>
-                      <th>CM</th>
-                      <th>TD</th>
-                      <th>TP</th>
-                      <th>EI</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>0</td>
-                      <td>0</td>
-                      <td>0</td>
-                      <td>0</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-        
-              <div class="alert alert-warning font-weight-bold">Enseignements hors Dept Info (pour information)</div>
-              <div class="table-responsive">
-                <table class="table table-bordered text-center w-100" id="table_hors_iut">
-                  <thead class="thead-light">
-                    <tr>
-                      <th>Composants</th>
-                      <th>Formation</th>
-                      <th>Module</th>
-                      <th>CM</th>
-                      <th>TD</th>
-                      <th>TP</th>
-                      <th>EI</th>
-                      <th>Total</th>
-                      <th>HETD</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php 
-                      if (isset($postData['hors_iut'])) {
-                          generateHorsIUTRows($postData['hors_iut']);
-                      }
-                    ?>
-                  </tbody>
-                </table>
-              </div>
-              <div class="text-center mb-4">
-                <button type="button" id="add_line_hors_info" class="btn btn-success">Ajouter une ligne hors IUT</button>
-              </div>
-        
-              <div class="text-center mt-4">
-                <button type="submit" name="envoyer" class="btn btn-primary">Envoyer</button>
-              </div>
-            </form>
+  <!-- Utilisation de fieldset pour désactiver l'ensemble des contrôles si $verrouille est vrai -->
+  <fieldset <?= $verrouille ? 'disabled' : '' ?>>
+    <input type="hidden" name="septembre_count" value="<?= $septembreCount ?>">
+    <input type="hidden" name="janvier_count" value="<?= $janvierCount ?>">
+
+    <div class="alert alert-warning font-weight-bold">Enseignements sur la période SEPTEMBRE-JANVIER</div>
+    <div class="table-responsive">
+      <table class="table table-bordered text-center w-100" id="table-septembre">
+        <thead class="thead-light">
+          <tr>
+            <th>Formation BUT</th>
+            <th>Ressource / SAE</th>
+            <th>Semestre</th>
+            <th>CM</th>
+            <th>TD</th>
+            <th>TP</th>
+            <th>EI</th>
+            <th>Remarques</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php generateTableRows('septembre', $coursList, $septembreCount, $postData); ?>
+          <tr class="total-row">
+            <td colspan="3" class="font-weight-bold">Total :</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td colspan="2"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="text-center mb-4">
+      <button type="button" id="add_line_septembre" class="btn btn-success">Ajouter une ligne (Septembre)</button>
+    </div>
+
+    <div class="alert alert-warning font-weight-bold">Enseignements sur la période JANVIER-JUIN</div>
+    <div class="table-responsive">
+      <table class="table table-bordered text-center w-100" id="table-janvier">
+        <thead class="thead-light">
+          <tr>
+            <th>Formation BUT</th>
+            <th>Ressource / SAE</th>
+            <th>Semestre</th>
+            <th>CM</th>
+            <th>TD</th>
+            <th>TP</th>
+            <th>EI</th>
+            <th>Remarques</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php generateTableRows('janvier', $coursList, $janvierCount, $postData); ?>
+          <tr class="total-row">
+            <td colspan="3" class="font-weight-bold">Total :</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td colspan="2"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="text-center mb-4">
+      <button type="button" id="add_line_janvier" class="btn btn-success">Ajouter une ligne (Janvier)</button>
+    </div>
+
+    <div class="alert alert-warning font-weight-bold">TOTAL :</div>
+    <div class="table-responsive">
+      <table class="table table-bordered text-center w-100" id="table-dept-info">
+        <thead>
+          <tr>
+            <th>CM</th>
+            <th>TD</th>
+            <th>TP</th>
+            <th>EI</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert alert-warning font-weight-bold">Enseignements hors Dept Info (pour information)</div>
+    <div class="table-responsive">
+      <table class="table table-bordered text-center w-100" id="table_hors_iut">
+        <thead class="thead-light">
+          <tr>
+            <th>Composants</th>
+            <th>Formation</th>
+            <th>Module</th>
+            <th>CM</th>
+            <th>TD</th>
+            <th>TP</th>
+            <th>EI</th>
+            <th>Total</th>
+            <th>HETD</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php 
+            if (isset($postData['hors_iut'])) {
+                generateHorsIUTRows($postData['hors_iut']);
+            }
+          ?>
+        </tbody>
+      </table>
+    </div>
+    <div class="text-center mb-4">
+      <button type="button" id="add_line_hors_info" class="btn btn-success">Ajouter une ligne hors IUT</button>
+    </div>
+
+    <div class="text-center mt-4">
+      <button type="submit" name="envoyer" class="btn btn-primary">Envoyer</button>
+    </div>
+  </fieldset>
+</form>
           </div>
         
           <!-- Templates pour l'ajout dynamique de lignes -->
@@ -328,7 +441,7 @@
               <td><input type="text" name="septembre[formation][]" readonly></td>
               <td>
                 <select name="septembre[ressource][]">
-                  <option value="">-- Sélectionner un cours --</option>
+                  <option value="" <?= $verrouille ? 'disabled' : '' ?>>-- Sélectionner un cours --</option>
                 </select>
               </td>
               <td><input type="text" name="septembre[semestre][]" readonly></td>
@@ -337,7 +450,8 @@
               <td><input type="number" name="septembre[tp][]"></td>
               <td><input type="number" name="septembre[ei][]"></td>
               <td><input type="text" name="septembre[remarques][]"></td>
-              <td><button type="button" class="btn btn-danger btn-sm remove-line">&times;</button></td>
+              <td><button type="button" class="btn btn-danger btn-sm remove-line" 
+              <?= $verrouille ? 'disabled' : '' ?>>&times;</button></td>
             </tr>
           </template>
         
@@ -357,7 +471,8 @@
               <td><input type="number" name="janvier[tp][]"></td>
               <td><input type="number" name="janvier[ei][]"></td>
               <td><input type="text" name="janvier[remarques][]"></td>
-              <td><button type="button" class="btn btn-danger btn-sm remove-line">&times;</button></td>
+              <td><button type="button" class="btn btn-danger btn-sm remove-line"
+              <?= $verrouille ? 'disabled' : '' ?>>&times;</button></td>
             </tr>
           </template>
         </div>

@@ -212,23 +212,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $existing[$v->getIdVoeu()] = $v;
             }
             
-            foreach (['septembre','janvier'] as $period) {
-                if (!empty($_POST[$period]['ressource'])) {
-                    foreach ($_POST[$period]['id'] as $i => $idVoeu) {
-                        $nomCours = trim($_POST[$period]['ressource'][$i]);
+            foreach (['septembre', 'janvier'] as $period) {
+                // Récupération sécurisée des données pour cette période
+                $data = $_POST[$period] ?? [];
+                $ids  = isset($data['id']) && is_array($data['id']) ? $data['id'] : [];
+                $ressources = $data['ressource'] ?? [];
+            
+                if (!empty($ressources)) {
+                    foreach ($ressources as $i => $nomCours) {
+                        // Utilisation sécurisée de l'ID
+                        $idVoeu = $ids[$i] ?? '';
+                        
+                        // Traitement de la ligne
+                        // Exemple : récupération du cours et autres champs
+                        $nomCours = trim($nomCours);
                         if ($nomCours === '') continue;
                         
-                        $coursFound = $coursDTO->findByName($nomCours);
-                        if (empty($coursFound)) continue;
-                        $cours = $coursFound[0];
+                        // Récupération du champ caché course_id (si présent)
+                        $courseId = $data['course_id'][$i] ?? '';
+                        if ($courseId) {
+                            $cours = $coursDTO->findById($courseId);
+                        } else {
+                            $coursFound = $coursDTO->findByName($nomCours);
+                            if (empty($coursFound)) continue;
+                            $cours = $coursFound[0];
+                        }
                         
-                        $remarque = trim($_POST[$period]['remarques'][$i] ?? '');
-                        $semestre = $_POST[$period]['semestre'][$i] ?? '';
-                        $nbCM = isset($_POST[$period]['cm'][$i]) && $_POST[$period]['cm'][$i] !== '' ? floatval($_POST[$period]['cm'][$i]) : $cours->getNbHeuresCM();
-                        $nbTD = isset($_POST[$period]['td'][$i]) && $_POST[$period]['td'][$i] !== '' ? floatval($_POST[$period]['td'][$i]) : $cours->getNbHeuresTD();
-                        $nbTP = isset($_POST[$period]['tp'][$i]) && $_POST[$period]['tp'][$i] !== '' ? floatval($_POST[$period]['tp'][$i]) : $cours->getNbHeuresTP();
-                        $nbEI = isset($_POST[$period]['ei'][$i]) && $_POST[$period]['ei'][$i] !== '' ? floatval($_POST[$period]['ei'][$i]) : $cours->getNbHeuresEI();
+                        $remarque = trim($data['remarques'][$i] ?? '');
+                        $semestre = $data['semestre'][$i] ?? '';
+                        $nbCM = (isset($data['cm'][$i]) && $data['cm'][$i] !== '') ? floatval($data['cm'][$i]) : $cours->getNbHeuresCM();
+                        $nbTD = (isset($data['td'][$i]) && $data['td'][$i] !== '') ? floatval($data['td'][$i]) : $cours->getNbHeuresTD();
+                        $nbTP = (isset($data['tp'][$i]) && $data['tp'][$i] !== '') ? floatval($data['tp'][$i]) : $cours->getNbHeuresTP();
+                        $nbEI = (isset($data['ei'][$i]) && $data['ei'][$i] !== '') ? floatval($data['ei'][$i]) : $cours->getNbHeuresEI();
                         
+                        // Création et sauvegarde du voeu
                         $voeu = new Voeu(
                             $idVoeu ?: null,
                             $idEnseignant,
@@ -241,12 +258,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $nbEI
                         );
                         $voeuDTO->save($voeu);
+                        
+                        // Pour la mise à jour, on supprime l'entrée existante
                         if ($idVoeu) {
                             unset($existing[$idVoeu]);
                         }
                     }
                 }
             }
+            
+
+            
             
             // Supprimer les voeux non soumis
             foreach (array_keys($existing) as $toDelete) {
@@ -316,6 +338,7 @@ function generateTableRows(string $type, array $coursList, int $count, array $po
         
         echo '<tr>';
             echo '<input type="hidden" name="' . $type . '[id][]" value="' . htmlspecialchars($ids[$i] ?? '') . '">';
+            echo '<input type="hidden" name="' . $type . '[course_id][]" value="">';
             echo '<td><input type="text" name="' . $type . '[formation][]" value="' . htmlspecialchars($formations[$i] ?? '') . '" readonly></td>';
             echo '<td><select name="' . $type . '[ressource][]">';
                 echo '<option value="">-- Sélectionner un cours --</option>';

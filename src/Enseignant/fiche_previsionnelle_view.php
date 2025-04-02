@@ -326,6 +326,8 @@
           <!-- Templates pour l'ajout dynamique de lignes -->
           <template id="template-septembre">
             <tr>
+              <input type="hidden" name="septembre[id][]" value="">
+              <input type="hidden" name="septembre[course_id][]" value="">
               <td><input type="text" name="septembre[formation][]" readonly></td>
               <td>
                 <select name="septembre[ressource][]">
@@ -344,6 +346,8 @@
         
           <template id="template-janvier">
             <tr>
+              <input type="hidden" name="janvier[id][]" value="">
+              <input type="hidden" name="janvier[course_id][]" value="">
               <td><input type="text" name="janvier[formation][]" readonly></td>
               <td>
                 <select name="janvier[ressource][]">
@@ -397,34 +401,44 @@
   
       // Mise à jour d'une ligne lors du changement du select
       function updateLine(selectElem) {
-        var tr = selectElem.closest('tr');
-        var nomCours = selectElem.value;
-        var coursInfo = window.coursData.find(function(c) {
-            return c.nomCours === nomCours;
-        });
-        var formationInput = tr.querySelector('td:nth-of-type(1) input');
-        var semestreInput  = tr.querySelector('td:nth-of-type(3) input');
-        var numberInputs   = tr.querySelectorAll('input[type="number"]');
-        
-        if (coursInfo) {
-            formationInput.value = coursInfo.formation;
-            semestreInput.value  = coursInfo.semestre;
-            if (!numberInputs[0].value) numberInputs[0].value = coursInfo.cm;
-            if (!numberInputs[1].value) numberInputs[1].value = coursInfo.td;
-            if (!numberInputs[2].value) numberInputs[2].value = coursInfo.tp;
-            if (!numberInputs[3].value) numberInputs[3].value = coursInfo.ei;
-        } else {
-            formationInput.value = '';
-            semestreInput.value  = '';
-            numberInputs.forEach(function(input) { input.value = ''; });
-        }
-        
-        var table = selectElem.closest('table');
-        if (table && table.id) {
-          updateTotals(table.id);
-        }
-        updateDeptInfoTotals();
+  var tr = selectElem.closest('tr');
+  var nomCours = selectElem.value;
+  var coursInfo = window.coursData.find(function(c) {
+      return c.nomCours === nomCours;
+  });
+  var formationInput = tr.querySelector('td:nth-of-type(1) input');
+  var semestreInput  = tr.querySelector('td:nth-of-type(3) input');
+  var numberInputs   = tr.querySelectorAll('input[type="number"]');
+  // Récupération du champ caché course_id
+  var courseIdInput = tr.querySelector('input[name$="[course_id][]"]');
+  
+  if (coursInfo) {
+      formationInput.value = coursInfo.formation;
+      semestreInput.value  = coursInfo.semestre;
+      if (!numberInputs[0].value) numberInputs[0].value = coursInfo.cm;
+      if (!numberInputs[1].value) numberInputs[1].value = coursInfo.td;
+      if (!numberInputs[2].value) numberInputs[2].value = coursInfo.tp;
+      if (!numberInputs[3].value) numberInputs[3].value = coursInfo.ei;
+      if (courseIdInput) {
+          courseIdInput.value = coursInfo.idCours;
       }
+  } else {
+      formationInput.value = '';
+      semestreInput.value  = '';
+      numberInputs.forEach(function(input) { input.value = ''; });
+      if (courseIdInput) {
+          courseIdInput.value = '';
+      }
+  }
+  
+  var table = selectElem.closest('table');
+  if (table && table.id) {
+    updateTotals(table.id);
+  }
+  updateDeptInfoTotals();
+}
+
+
       
       // Peupler les options du select en fonction du type
       function populateCoursOptions(selectElem, type) {

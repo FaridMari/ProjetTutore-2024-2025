@@ -20,6 +20,7 @@ class EnseignantFicheContrainteAction extends Action
             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
         </head>
+
         <body>
         <?php
         // 3) Inclure la nav bar (qui contient son propre <style> pour l’esthétique)
@@ -27,6 +28,7 @@ class EnseignantFicheContrainteAction extends Action
 
         // 4) Inclure le contenu principal (déposé dans #main-content par layout.css)
         include 'src/Enseignant/FicheContrainte.php';
+
         ?>
         </body>
         </html>

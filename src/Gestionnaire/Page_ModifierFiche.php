@@ -22,6 +22,16 @@ if ($type === 'Fiche Prévisionnelle') {
         echo "<div class='alert alert-danger'>ID utilisateur manquant.</div>";
         return;
     }
+    $check = $conn->prepare("SELECT COUNT(*) as nb FROM contraintes WHERE id_utilisateur = ?");
+    $check->execute([$id_utilisateur]);
+    $count = $check->fetch(PDO::FETCH_ASSOC)['nb'] ?? 0;
+
+    if ($count > 0) {
+        $conn->prepare("UPDATE contraintes SET modification_en_cours = 1 WHERE id_utilisateur = ?")->execute([$id_utilisateur]);
+    } else {
+        $conn->prepare("INSERT INTO contraintes (id_utilisateur, modification_en_cours, statut) VALUES (?, 1, 'en attente')")->execute([$id_utilisateur]);
+    }
+
 
     // Récupérer les infos de l'enseignant
     $stmtEnseignant = $conn->prepare("SELECT nom, prenom FROM utilisateurs WHERE id_utilisateur = ?");
@@ -250,9 +260,16 @@ if ($type === 'Fiche Prévisionnelle') {
             color: #0c5460;
         }
     </style>
-
+    <script>
+        window.addEventListener("beforeunload", function () {
+            navigator.sendBeacon("../../src/Enseignant/libererFiche.php", new URLSearchParams({
+                id_utilisateur: "<?= $id_utilisateur ?>"
+            }));
+        });
+    </script>
     <?php
 } else {
     echo "<p>Type de fiche inconnu.</p>";
 }
+
 ?>

@@ -42,11 +42,15 @@ try {
         $_SESSION['success_message'] = "Fiche enregistrée.";
         header("Location: ../../index.php?action=enseignantFicheContrainte");
     }
+    // Lever le verrou après modification
+    $conn->prepare("UPDATE contraintes SET modification_en_cours = 0 WHERE id_utilisateur = ?")->execute([$id_utilisateur]);
+
     exit();
 
 } catch (Exception $e) {
     if ($conn->inTransaction()) $conn->rollBack();
     $_SESSION['error_message'] = "Erreur : " . $e->getMessage();
     header("Location: ../../index.php?action=enseignantFicheContrainte");
+
     exit();
 }

@@ -144,10 +144,14 @@
     #repartition-content {
       margin-left: 20px;
     }
+
+
+
   </style>
 
 <div id="main-content">
-  <div class="container mt-5">
+  <div class="container mt-5" style="
+    padding-left: 4em;">
     <!-- Structure des onglets -->
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item" role="presentation">

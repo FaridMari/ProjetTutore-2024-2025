@@ -142,7 +142,7 @@ try {
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             padding: 2em;
             max-width: 1000px;
-            width: 100%;
+            width: 85%;
             color: #000;
             margin: 0 auto; /* Centrage horizontal */
         }

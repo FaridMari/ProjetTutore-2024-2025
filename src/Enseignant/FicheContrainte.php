@@ -15,8 +15,6 @@ try {
         session_start();
     }
 
-
-
     $conn = connexionFactory::makeConnection();
 
     // Vérifier l'authentification
@@ -135,56 +133,48 @@ try {
     exit;
 }
 ?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Fiche de Vœux</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            margin: 2em;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
 
+    <style>
+        /* Conteneur principal de la fiche */
         .fiche-container {
             background: #fff;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             padding: 2em;
             max-width: 1000px;
-            width: 100%;
+            width: 85%;
             color: #000;
+            margin: 0 auto; /* Centrage horizontal */
         }
 
-        table {
+        /* Tableau de la fiche */
+        .fiche-container table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 1em;
         }
 
-        th, td {
+        .fiche-container th,
+        .fiche-container td {
             border: 1px solid #ddd;
             padding: 10px;
             text-align: center;
         }
 
-        th {
+        .fiche-container th {
             background-color: #f2f2f2;
         }
 
-        textarea {
+        /* Zones de texte */
+        .fiche-container textarea {
             width: 100%;
             border: 1px solid #ccc;
             border-radius: 4px;
             padding: 10px;
         }
 
-        .btn-submit {
+        /* Bouton de soumission */
+        .fiche-container .btn-submit {
             display: block;
             width: 100%;
             padding: 10px;
@@ -197,33 +187,39 @@ try {
             color: #000;
         }
 
-        .btn-submit:hover {
+        .fiche-container .btn-submit:hover {
             background-color: #FFEF65;
         }
 
-        .alert {
+        /* Alertes */
+        .fiche-container .alert {
             padding: 10px;
             margin-bottom: 1em;
             border-radius: 4px;
             text-align: center;
         }
 
-        .alert-warning {
+        .fiche-container .alert-warning {
             background-color: #fff3cd;
             color: #856404;
         }
 
-        .alert-info {
+        .fiche-container .alert-info {
             background-color: #d1ecf1;
             color: #0c5460;
         }
-    </style>
-</head>
-<body>
+        .fiche-container h1 {
+            text-align: center;
+        }
 
-<h1>Fiche de Vœux</h1>
+
+    </style>
+
+<div id="main-content">
+
 
 <div class="fiche-container">
+    <h1>Fiche de Vœux</h1>
     <?php if ($verrouille): ?>
         <div class="alert alert-warning">
             Cette fiche a été validée et ne peut plus être modifiée.
@@ -285,6 +281,7 @@ try {
         <?php endif; ?>
     </form>
 </div>
+</div>
 
 <script>
     const nbContraintes = <?= isset($nb_contrainte['nb_contrainte']) ? $nb_contrainte['nb_contrainte'] : 5 ?>;
@@ -306,6 +303,3 @@ try {
         });
     });
 </script>
-
-</body>
-</html>

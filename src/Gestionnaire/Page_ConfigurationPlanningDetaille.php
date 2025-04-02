@@ -1,5 +1,12 @@
+<style>
+    #infoContainer .col-md-3,
+    #infoContainer input,
+    #infoContainer label,
+    #infoContainer strong {
+        font-size: 1rem;
+    }
 
-<div id="main-content">
+</style>
 <div class="container" id="container">
     <div id="infoContainer" class="mt-4">
         <!-- Informations générales -->
@@ -64,7 +71,6 @@
 
         <button type="button" class="btn btn-success" id="enregistrer">Enregistrer</button>
     </div>
-</div>
 </div>
 
 <script>

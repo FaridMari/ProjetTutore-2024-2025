@@ -167,9 +167,9 @@ $enseignantsSansFiche = $GLOBALS['enseignantsSansFiche'] ?? [];
                             <td><?= htmlspecialchars($enseignant['prenom'] ?? 'Inconnu') ?></td>
                             <td><?= htmlspecialchars($enseignant['type_fiche'] ?? 'Non précisé') ?></td>
                             <td>
-                                <form method="post" action="index.php?action=ficheEnseignant">
-                                    <input type="hidden" name="id_utilisateur" value="<?= htmlspecialchars($enseignant['id_utilisateur'] ?? '') ?>">
-                                    <input type="hidden" name="type_fiche" value="<?= htmlspecialchars($enseignant['type_fiche'] ?? '') ?>">
+                                <form method="get" action="src/Gestionnaire/Page_RemplirFiche.php">
+                                    <input type="hidden" name="id" value="<?= htmlspecialchars($enseignant['id_utilisateur'] ?? '') ?>">
+                                    <input type="hidden" name="type" value="<?= htmlspecialchars($enseignant['type_fiche'] ?? '') ?>">
                                     <button type="submit" class="btn btn-primary">Remplir</button>
                                 </form>
                             </td>

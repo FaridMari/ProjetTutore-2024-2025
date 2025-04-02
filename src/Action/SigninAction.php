@@ -34,7 +34,7 @@ class SigninAction extends Action {
 
                     // Redirection en fonction du rôle de l'utilisateur
                     if ($user['role'] === 'gestionnaire') {
-                        echo json_encode(['success' => true, 'redirect' => 'index.php?action=gestionnairePagePrincipal']);
+                        echo json_encode(['success' => true, 'redirect' => 'index.php?action=ficheEnseignant']);
                     } else {
                         echo json_encode(['success' => true, 'redirect' => 'index.php?action=accueilEnseignant']);
                     }

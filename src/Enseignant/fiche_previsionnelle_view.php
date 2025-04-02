@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <title>Fiche Prévisionnelle de Service</title>
-  <!-- Inclusion de Bootstrap pour les onglets -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/css/bootstrap.min.css">
-  <style>
+<style>
     /* ================== STYLE DU DOCUMENT ================== */
     .container {
       /* Par exemple, ici on peut ajouter des marges ou un background */
@@ -132,7 +125,7 @@
     height: 80px;
     border-radius: 6px;
     padding: 10px;
-    background-color: #007bff;
+    background-color: #e8d46f;
     color: #fff;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     text-align: center;
@@ -151,10 +144,14 @@
     #repartition-content {
       margin-left: 20px;
     }
+
+
+
   </style>
-</head>
-<body>
-  <div class="container mt-5">
+
+<div id="main-content">
+  <div class="container mt-5" style="
+    padding-left: 4em;">
     <!-- Structure des onglets -->
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item" role="presentation">
@@ -373,6 +370,7 @@
       </div>
     </div>
   </div>
+</div>
   
   <!-- Inclusion du bundle Bootstrap avec Popper -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>

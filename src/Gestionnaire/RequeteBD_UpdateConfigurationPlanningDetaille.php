@@ -6,13 +6,13 @@ $bdd = connexionFactory::makeConnection();
 $data = json_decode(file_get_contents('php://input'), true);
 
 try {
-    $sql = "DELETE FROM configurationPlanningDetaille";
+    $sql = "DELETE FROM configurationplanningdetaille";
     $stmt = $bdd->prepare($sql);
     $stmt->execute();
 
     foreach ($data as $row) {
         $nbSemaine = getWeeks($row['dateDebut'], $row['dateFin'], $row['type']);
-        $sql = "INSERT INTO configurationPlanningDetaille (semestre, type, dateDebut, dateFin, description, nbSemaines, couleur, modifiable)
+        $sql = "INSERT INTO configurationplanningdetaille (semestre, type, dateDebut, dateFin, description, nbSemaines, couleur, modifiable)
                 VALUES (:semestre, :type, :dateDebut, :dateFin, :description, :nbSemaine, :couleur, :modifiable)";
         $stmt = $bdd->prepare($sql);
         $stmt->bindParam(':semestre', $row['semestre']);

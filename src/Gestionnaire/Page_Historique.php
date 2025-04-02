@@ -16,7 +16,7 @@
                         <input type="number" class="form-control" id="currentYear" placeholder="Entrez l'année actuelle">
                     </div>
                 </div>
-                <button type="button" class="btn btn-primary" id="saveCurrentData">Recommencer l'année</button>
+                <button type="button" class="btn btn-primary" id="saveCurrentData">Nouvelle année</button>
             </form>
         </div>
     </div>
@@ -34,7 +34,7 @@
                         <input type="number" class="form-control" id="oldYear" placeholder="Entrez l'année ancienne à importer">
                     </div>
                 </div>
-                <button type="button" class="btn btn-danger" id="clearAndImportData">Vider et Importer</button>
+                <button type="button" class="btn btn-danger" id="clearAndImportData">Nouvelle année depuis l'année antérieur</button>
             </form>
         </div>
     </div>
@@ -69,7 +69,7 @@
             }
 
             if (confirm('Êtes-vous sûr de vouloir continuer cette action ? Cette action est irréversible.')) {
-                fetch('src/gestionnaire/RequeteBD_SaveAllData.php', {
+                fetch('src/Gestionnaire/RequeteBD_SaveAllData.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -100,7 +100,7 @@
             }
 
             if (confirm('Êtes-vous sûr de vouloir continuer cette action ? Cette action est irréversible.')) {
-                fetch('src/gestionnaire/RequeteBD_ReprendreHistorique.php', {
+                fetch('src/Gestionnaire/RequeteBD_ReprendreHistorique.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

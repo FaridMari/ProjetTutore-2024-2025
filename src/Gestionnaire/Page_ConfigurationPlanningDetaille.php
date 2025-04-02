@@ -162,7 +162,7 @@
         collectDynamicData("eventContainer");
 
         console.log(data);
-        fetch("src/gestionnaire/RequeteBD_UpdateConfigurationPlanningDetaille.php", {
+        fetch("src/Gestionnaire/RequeteBD_UpdateConfigurationPlanningDetaille.php", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -191,7 +191,7 @@
             const description = row.querySelector("input[type='text']").value;
             const type = row.querySelector("input[type='text'].titre").value;
             const couleur = row.querySelector("input[type='color']").value;
-            const modifiable = row.querySelector("input[type='checkbox']").checked;
+            const modifiable = row.querySelector("input[type='checkbox']").checked ? 1 : 0;
 
             addEntry(semestre, type, dateDebut, dateFin, description, "", couleur,modifiable );
         });
@@ -213,10 +213,12 @@
         if (!item.couleur) {
             item.couleur = "#ffffff";
         }
-        if (!item.checkbox || item.checkbox === "0") {
-            item.checkbox = false;
-        }else{
-            item.checkbox = true;
+        console.log(item);
+        if (item.modifiable && item.modifiable === "1") {
+            item.modifiable = true;
+        }
+        else {
+            item.modifiable = false;
         }
 
         // Créer une nouvelle ligne
@@ -264,7 +266,7 @@
             </div>
             <div class="col-md-1">
                 <label>Modifiable</label>
-                <input type="checkbox" class="form-control" ${item.modifiable === 1 ? "checked" : ""} style="padding: 1em !important; height: 30% !important;">
+                <input type="checkbox" class="form-control" ${item.modifiable ? "checked" : ""} style="padding: 1em !important; height: 30% !important;">
             </div>
         `;
         // Ajouter la ligne au conteneur

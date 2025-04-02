@@ -1,5 +1,4 @@
 <?php
-session_start();
 require_once __DIR__ . '/../Db/connexionFactory.php';
 use src\Db\connexionFactory;
 

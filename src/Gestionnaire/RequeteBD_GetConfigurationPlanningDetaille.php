@@ -5,7 +5,7 @@ use src\Db\connexionFactory;
 $bdd = connexionFactory::makeConnection();
 
 try {
-    $sql = "SELECT * FROM configurationPlanningDetaille";
+    $sql = "SELECT * FROM configurationplanningdetaille";
     $stmt = $bdd->prepare($sql);
     $stmt->execute();
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);

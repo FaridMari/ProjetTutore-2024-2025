@@ -411,9 +411,9 @@ $enseignantsParCoursJson = json_encode($enseignantsParCours);
       const cinqLigne = ['Heures totales Etudiants'];
       const sixLigne = ['Heures totales Enseignants'];
       coursesChunk.forEach(cours => {
-        const totalEtud = cours.nbHeuresCM + cours.nbHeuresTD + cours.nbHeuresTP + cours.nbHeuresEI;
+        const totalEtud = +cours.nbHeuresCM + +cours.nbHeuresTD + +cours.nbHeuresTP + +cours.nbHeuresEI;
         cinqLigne.push({ label: totalEtud, colspan: 4 });
-        const totalEns = cours.nbHeuresCM + cours.nbHeuresTD + (cours.nbHeuresTP * 2) + cours.nbHeuresEI;
+        const totalEns = +cours.nbHeuresCM + +cours.nbHeuresTD + +(+cours.nbHeuresTP * 2) + +cours.nbHeuresEI;
         sixLigne.push({ label: totalEns, colspan: 4 });
       });
       const nestedHeaders = [premLigne, deuxLigne, deuxDemiLigne, cinqLigne, sixLigne, troisLigne];

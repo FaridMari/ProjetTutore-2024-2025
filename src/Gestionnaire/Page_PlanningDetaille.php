@@ -276,10 +276,9 @@
                 const vacancesToussaint = item;
                 vacToussaintDebut = new Date(vacancesToussaint.dateDebut);
                 vacToussaintFin = new Date(vacancesToussaint.dateFin);
-                vacToussaint = getWeek(vacToussaintDebut);
-                vacToussaintFinS = getWeek(vacToussaintFin);
-                allVacances.push(vacToussaint);
-                allVacances.push(vacToussaintFinS);
+                for (let d = vacToussaintDebut; d <= vacToussaintFin; d.setDate(d.getDate() + 7)) {
+                    allVacances.push(getWeek(new Date(d)));
+                }
                 break;
 
             case 'VacancesNoel':
@@ -287,10 +286,9 @@
                 const vacancesNoel = item;
                 vacNoelDebut = new Date(vacancesNoel.dateDebut);
                 vacNoelFin = new Date(vacancesNoel.dateFin);
-                vacNoel = getWeek(vacNoelDebut);
-                vacNoelFinS = getWeek(vacNoelFin);
-                allVacances.push(vacNoel);
-                allVacances.push(vacNoelFinS);
+                for (let d = vacNoelDebut; d <= vacNoelFin; d.setDate(d.getDate() + 7)) {
+                    allVacances.push(getWeek(new Date(d)));
+                }
                 break;
 
             case 'VacancesHiver':
@@ -298,10 +296,9 @@
                 const vacancesHiver = item;
                 vacHiverDebut = new Date(vacancesHiver.dateDebut);
                 vacHiverFin = new Date(vacancesHiver.dateFin);
-                vacHiver = getWeek(vacHiverDebut);
-                vacHiverFinS = getWeek(vacHiverFin);
-                allVacances.push(vacHiver);
-                allVacances.push(vacHiverFinS);
+                for (let d = vacHiverDebut; d <= vacHiverFin; d.setDate(d.getDate() + 7)) {
+                    allVacances.push(getWeek(new Date(d)));
+                }
                 break;
 
             case 'VacancesPrintemps':
@@ -309,24 +306,26 @@
                 const vacancesPrintemps = item;
                 vacPrintempsDebut = new Date(vacancesPrintemps.dateDebut);
                 vacPrintempsFin = new Date(vacancesPrintemps.dateFin);
-                vacPrintemps = getWeek(vacPrintempsDebut);
-                vacPrintempsFinS = getWeek(vacPrintempsFin);
-                allVacances.push(vacPrintemps);
-                allVacances.push(vacPrintempsFinS);
+                for (let d = vacPrintempsDebut; d <= vacPrintempsFin; d.setDate(d.getDate() + 7)) {
+                    allVacances.push(getWeek(new Date(d)));
+                }
                 break;
+
             default:
                 // Ajouter l'événement à la liste des événements et calculer les semaines
                 const eventType = item.type;
                 const eventDebut = new Date(item.dateDebut);
                 const eventFin = new Date(item.dateFin);
-                const eventWeekStart = getWeek(eventDebut);
-                const eventWeekEnd = getWeek(eventFin);
+                const eventWeeks = [];
+                for (let d = eventDebut; d <= eventFin; d.setDate(d.getDate() + 7)) {
+                    eventWeeks.push(getWeek(new Date(d)));
+                }
                 evenements.push({
                     eventType: eventType,
                     dateDebut: eventDebut,
                     dateFin: eventFin,
                     description: item.description,
-                    weeks: [eventWeekStart, eventWeekEnd],
+                    weeks: eventWeeks,
                     couleur: item.couleur,
                     checkbox: item.modifiable,
                 });
@@ -951,9 +950,15 @@
             });
     }
 
-    let eventTexts = evenements.map(event => event.checkbox === 0 ? event.eventType : "");
-    //Enlever les valeurs vides
-    eventTexts = eventTexts.filter(eventText => eventText !== "");
+    console.log(evenements);
+    //recuperer les evenements qui ne sont pas des descriptions et qui on checkbox = 0
+    let eventTexts = [];
+    for (let i = 0; i < evenements.length; i++) {
+        if (evenements[i].checkbox == 0 && evenements[i].eventType !== "Description") {
+            eventTexts.push(evenements[i].eventType);
+        }
+    }
+    console.log(eventTexts);
     container.addEventListener('wheel', (event) => {
 
         event.preventDefault(); // Empêche le défilement de la page

@@ -6,7 +6,10 @@ class DetailsCours {
     private $idResponsableModule;
     private $typeSalle;
     private $equipementsSpecifiques;
-    private $details;
+    private $ds;
+    private $statut;
+    private $commentaire;
+    private $systeme;
 
     public function __construct(
         $idRessource = null,
@@ -14,16 +17,21 @@ class DetailsCours {
         $idResponsableModule = null,
         $typeSalle = null,
         $equipementsSpecifiques = null,
-        $details = null
+        $ds = null,
+        $statut = 'en attente',
+        $commentaire = null,
+        $systeme = null
     ) {
         $this->idRessource = $idRessource;
         $this->idCours = $idCours;
         $this->idResponsableModule = $idResponsableModule;
         $this->typeSalle = $typeSalle;
         $this->equipementsSpecifiques = $equipementsSpecifiques;
-        $this->details = $details;
+        $this->ds = $ds;
+        $this->statut = $statut;
+        $this->commentaire = $commentaire;
+        $this->systeme = $systeme;
     }
-
 
     public function getIdRessource() {
         return $this->idRessource;
@@ -65,13 +73,36 @@ class DetailsCours {
         $this->equipementsSpecifiques = $equipementsSpecifiques;
     }
 
-    public function getDetails() {
-        return $this->details;
+    public function getDs() {
+        return $this->ds;
     }
 
-    public function setRepartitionHeures($details) {
-        $this->details = $details;
+    public function setDs($ds) {
+        $this->ds = $ds;
+    }
+
+    public function getStatut() {
+        return $this->statut;
+    }
+
+    public function setStatut($statut) {
+        $this->statut = $statut;
+    }
+
+    public function getCommentaire() {
+        return $this->commentaire;
+    }
+
+    public function setCommentaire($commentaire) {
+        $this->commentaire = $commentaire;
+    }
+
+    public function getSysteme() {
+        return $this->systeme;
+    }
+
+    public function setSysteme($systeme) {
+        $this->systeme = $systeme;
     }
 }
-
 ?>

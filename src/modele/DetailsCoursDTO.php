@@ -1,6 +1,5 @@
 <?php
 
-
 use src\Db\connexionFactory;
 require_once 'DetailsCours.php';
 
@@ -10,7 +9,6 @@ class DetailsCoursDTO {
     public function __construct() {
         $this->db = connexionFactory::makeConnection();
     }
-
 
     public function findById($id) {
         try {
@@ -25,12 +23,13 @@ class DetailsCoursDTO {
                     $data['id_responsable_module'],
                     $data['type_salle'],
                     $data['equipements_specifiques'],
-                    $data['details']
+                    $data['ds'],
+                    $data['statut'],
+                    $data['commentaire'],
+                    $data['systeme']
                 );
-
                 return $detailsCours;
             }
-
             return null;
         } catch (PDOException $e) {
             error_log($e->getMessage());
@@ -51,12 +50,13 @@ class DetailsCoursDTO {
                     $data['id_responsable_module'],
                     $data['type_salle'],
                     $data['equipements_specifiques'],
-                    $data['details']
+                    $data['ds'],
+                    $data['statut'],
+                    $data['commentaire'],
+                    $data['systeme']
                 );
-
                 return $detailsCours;
             }
-
             return null;
         } catch (PDOException $e) {
             error_log($e->getMessage());
@@ -73,7 +73,10 @@ class DetailsCoursDTO {
                         id_responsable_module = :idResponsableModule,
                         type_salle = :typeSalle,
                         equipements_specifiques = :equipementsSpecifiques,
-                        details = :details
+                        ds = :ds,
+                        statut = :statut,
+                        commentaire = :commentaire,
+                        systeme = :systeme
                     WHERE id_ressource = :id
                 ");
                 $stmt->execute([
@@ -82,20 +85,27 @@ class DetailsCoursDTO {
                     'idResponsableModule' => $detailsCours->getIdResponsableModule(),
                     'typeSalle' => $detailsCours->getTypeSalle(),
                     'equipementsSpecifiques' => $detailsCours->getEquipementsSpecifiques(),
-                    'details' => $detailsCours->getDetails(),
+                    'ds' => $detailsCours->getDs(),
+                    'statut' => $detailsCours->getStatut(),
+                    'commentaire' => $detailsCours->getCommentaire(),
+                    'systeme' => $detailsCours->getSysteme()
                 ]);
             } else {
-            
                 $stmt = $this->db->prepare("
-                    INSERT INTO details_cours (id_cours, id_responsable_module, type_salle, equipements_specifiques, details)
-                    VALUES (:idCours, :idResponsableModule, :typeSalle, :equipementsSpecifiques, :details)
+                    INSERT INTO details_cours 
+                        (id_cours, id_responsable_module, type_salle, equipements_specifiques, ds, statut, commentaire, systeme)
+                    VALUES 
+                        (:idCours, :idResponsableModule, :typeSalle, :equipementsSpecifiques, :ds, :statut, :commentaire, :systeme)
                 ");
                 $stmt->execute([
                     'idCours' => $detailsCours->getIdCours(),
                     'idResponsableModule' => $detailsCours->getIdResponsableModule(),
                     'typeSalle' => $detailsCours->getTypeSalle(),
                     'equipementsSpecifiques' => $detailsCours->getEquipementsSpecifiques(),
-                    'details' => $detailsCours->getDetails(),
+                    'ds' => $detailsCours->getDs(),
+                    'statut' => $detailsCours->getStatut(),
+                    'commentaire' => $detailsCours->getCommentaire(),
+                    'systeme' => $detailsCours->getSysteme()
                 ]);
 
                 $detailsCours->setIdRessource($this->db->lastInsertId());
@@ -128,15 +138,11 @@ class DetailsCoursDTO {
             if ($data) {
                 return $data['id_responsable_module'];
             }
-            
             return null;
         } catch (PDOException $e) {
             error_log($e->getMessage());
             return null;
         }
     }
-    
-
 }
-
 ?>

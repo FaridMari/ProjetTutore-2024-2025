@@ -6,6 +6,17 @@
         font-size: 1rem;
     }
 
+    .custom-checkbox {
+        margin: 0;
+        padding: 0;
+        height: 2em;
+        width: 2em;
+        cursor: pointer;
+        box-sizing: border-box;
+        border-radius: 1em !important;
+    }
+
+
 </style>
 <div class="container" id="container">
     <div id="infoContainer" class="mt-4">
@@ -272,10 +283,19 @@
             </div>
             <div class="col-md-1">
                 <label>Modifiable</label>
-                <input type="checkbox" class="form-control" ${item.modifiable ? "checked" : ""} style="padding: 1em !important; height: 30% !important;">
+                <input type="checkbox" class="custom-checkbox" ${item.modifiable ? "checked" : ""} style=" height: 2.1em;">
+            </div>
+            <div class="col-md-1">
+                <label></label>
+                <button type="button" class="btn btn-danger btn-sm mt-4" onclick="deleteRow(this)"  >supprimer</button>
             </div>
         `;
         // Ajouter la ligne au conteneur
         container.appendChild(row);
+    }
+
+    function deleteRow(button) {
+        const row = button.closest('.row');
+        row.remove();
     }
 </script>

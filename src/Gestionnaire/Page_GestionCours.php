@@ -1,113 +1,149 @@
-
-    <style>
-        .btn-group .btn {
-            width: 50%;
-        }
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-    </style>
-
-
-
-    <div id="main-content">
-
+<style>
+    .btn-group .btn {
+        width: 50%;
+    }
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0,0,0);
+        background-color: rgba(0,0,0,0.4);
+    }
+    .modal-content {
+        background-color: #fefefe;
+        margin: 1em auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 50%;
+        max-width: 500px;
+        box-sizing: border-box;
+    }
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+</style>
+<div id="main-content">
     <div id="tableauCours" class="container mt-5">
-    <h1 class="mb-4">Gestion des Cours</h1>
-    <div class="input-group mb-3">
-        <input type="text" id="searchInput" class="form-control" placeholder="Rechercher par nom ou code du cours">
+        <h1 class="mb-4">Gestion des Cours</h1>
+        <div class="input-group mb-3">
+            <input type="text" id="searchInput" class="form-control" placeholder="Rechercher par nom ou code du cours">
+        </div>
+        <div class="btn-group mb-3" role="group">
+            <button class="btn btn-success" id="addCoursButton">Ajouter un cours</button>
+        </div>
+
+        <!-- Modal for adding a course -->
+        <div id="addCoursModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <form id="addCoursForm">
+                    <div class="form-group">
+                        <label for="formation" class="form-label">Formation</label>
+                        <select class="form-control" id="formation" required>
+                            <option value="" disabled selected>Sélectionnez une formation</option>
+                            <option value="Autre">Autre</option>
+                            <option value="BUT S1">BUT S1</option>
+                            <option value="BUT S3">BUT S3</option>
+                            <option value="BUT S5 DACS">BUT S5 DACS</option>
+                            <option value="BUT S5 RA-DWM">BUT S5 RA-DWM</option>
+                            <option value="BUT S5 RA-IL">BUT S5 RA-IL</option>
+                            <option value="BUT S2">BUT S2</option>
+                            <option value="BUT S6 DACS">BUT S6 DACS</option>
+                            <option value="BUT S6 RA-IL">BUT S6 RA-IL</option>
+                            <option value="BUT S4 DACS">BUT S4 DACS</option>
+                            <option value="BUT S4 RA-DWM">BUT S4 RA-DWM</option>
+                            <option value="BUT S4 RA-IL">BUT S4 RA-IL</option>
+                            <option value="BUT S6 RA">BUT S6 RA</option>
+                            <option value="BUT S6 RA-DWM">BUT S6 RA-DWM</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="semestre" class="form-label">Semestre</label>
+                        <select class="form-control" id="semestre" required disabled>
+                            <option value="" disabled selected>Sélectionnez une formation</option>
+                            <option value="1">Semestre 1</option>
+                            <option value="2">Semestre 2</option>
+                            <option value="3">Semestre 3</option>
+                            <option value="4">Semestre 4</option>
+                            <option value="5">Semestre 5</option>
+                            <option value="6">Semestre 6</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="nom_cours" class="form-label">Nom du Cours</label>
+                        <input type="text" class="form-control" id="nom_cours" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="code_cours" class="form-label">Code du Cours</label>
+                        <input type="text" class="form-control" id="code_cours" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nb_heures_total" class="form-label">Heures Totales</label>
+                        <input type="number" class="form-control" id="nb_heures_total" value="0" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="nb_heures_cm" class="form-label">Heures CM</label>
+                        <input type="number" class="form-control" id="nb_heures_cm" value="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nb_heures_td" class="form-label">Heures TD</label>
+                        <input type="number" class="form-control" id="nb_heures_td" value="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nb_heures_tp" class="form-label">Heures TP</label>
+                        <input type="number" class="form-control" id="nb_heures_tp" value="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nb_heures_ei" class="form-label">Heures EI</label>
+                        <input type="number" class="form-control" id="nb_heures_ei" value="0" required>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <button type="submit" class="btn btn-primary">Ajouter</button>
+                        <button type="button" class="btn btn-secondary" id="cancelAddCoursButton">Annuler</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Formation</th>
+                <th>Semestre</th>
+                <th>Nom du Cours</th>
+                <th>Code du Cours</th>
+                <th>Heures Totales</th>
+                <th>Heures CM</th>
+                <th>Heures TD</th>
+                <th>Heures TP</th>
+                <th>Heures EI</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody id="coursTableBody">
+            <!-- Les données des cours seront affichées ici -->
+            </tbody>
+        </table>
     </div>
-    <div class="btn-group mb-3" role="group">
-        <button class="btn btn-success" id="addCoursButton">Ajouter un cours</button>
-    </div>
-    <form id="addCoursForm" style="display: none;">
-        <div class="form-group">
-            <label for="formation" class="form-label">Formation</label>
-            <select class="form-control" id="formation" required>
-                <option value="" disabled selected>Sélectionnez une formation</option>
-                <option value="Autre">Autre</option>
-                <option value="BUT S1">BUT S1</option>
-                <option value="BUT S3">BUT S3</option>
-                <option value="BUT S5 DACS">BUT S5 DACS</option>
-                <option value="BUT S5 RA-DWM">BUT S5 RA-DWM</option>
-                <option value="BUT S5 RA-IL">BUT S5 RA-IL</option>
-                <option value="BUT S2">BUT S2</option>
-                <option value="BUT S6 DACS">BUT S6 DACS</option>
-                <option value="BUT S6 RA-IL">BUT S6 RA-IL</option>
-                <option value="BUT S4 DACS">BUT S4 DACS</option>
-                <option value="BUT S4 RA-DWM">BUT S4 RA-DWM</option>
-                <option value="BUT S4 RA-IL">BUT S4 RA-IL</option>
-                <option value="BUT S6 RA">BUT S6 RA</option>
-                <option value="BUT S6 RA-DWM">BUT S6 RA-DWM</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="semestre" class="form-label">Semestre</label>
-            <select class="form-control" id="semestre" required disabled>
-                <option value="" disabled selected>Sélectionnez une formation</option>
-                <option value="1">Semestre 1</option>
-                <option value="2">Semestre 2</option>
-                <option value="3">Semestre 3</option>
-                <option value="4">Semestre 4</option>
-                <option value="5">Semestre 5</option>
-                <option value="6">Semestre 6</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="nom_cours" class="form-label">Nom du Cours</label>
-            <input type="text" class="form-control" id="nom_cours" required>
-        </div>
-        <div class="form-group">
-            <label for="code_cours" class="form-label">Code du Cours</label>
-            <input type="text" class="form-control" id="code_cours" required>
-        </div>
-        <div class="form-group">
-            <label for="nb_heures_total" class="form-label">Heures Totales</label>
-            <input type="number" class="form-control" id="nb_heures_total" required>
-        </div>
-        <div class="form-group">
-            <label for="nb_heures_cm" class="form-label">Heures CM</label>
-            <input type="number" class="form-control" id="nb_heures_cm" required>
-        </div>
-        <div class="form-group">
-            <label for="nb_heures_td" class="form-label">Heures TD</label>
-            <input type="number" class="form-control" id="nb_heures_td" required>
-        </div>
-        <div class="form-group">
-            <label for="nb_heures_tp" class="form-label">Heures TP</label>
-            <input type="number" class="form-control" id="nb_heures_tp" required>
-        </div>
-        <div class="form-group">
-            <label for="nb_heures_ei" class="form-label">Heures EI</label>
-            <input type="number" class="form-control" id="nb_heures_ei" required>
-        </div>
-        <div class="btn-group" role="group">
-            <button type="submit" class="btn btn-primary">Ajouter</button>
-            <button type="button" class="btn btn-secondary" id="cancelAddCoursButton">Annuler</button>
-        </div>
-    </form>
-    <table class="table table-bordered table-hover">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Formation</th>
-            <th>Semestre</th>
-            <th>Nom du Cours</th>
-            <th>Code du Cours</th>
-            <th>Heures Totales</th>
-            <th>Heures CM</th>
-            <th>Heures TD</th>
-            <th>Heures TP</th>
-            <th>Heures EI</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody id="coursTableBody">
-        <!-- Les données des cours seront affichées ici -->
-        </tbody>
-    </table>
 </div>
-    </div>
 
 <script>
     class Toast {
@@ -127,7 +163,6 @@
     }
 
     const toast = new Toast();
-
 
     document.addEventListener('DOMContentLoaded', function() {
         let allCours = [];
@@ -201,14 +236,18 @@
             });
         }
 
-        function updateTotalHeures(event) {
-            const row = event.target.closest('tr');
-            const heuresCM = parseFloat(row.children[6].textContent) || 0;
-            const heuresTD = parseFloat(row.children[7].textContent) || 0;
-            const heuresTP = parseFloat(row.children[8].textContent) || 0;
-            const heuresEI = parseFloat(row.children[9].textContent) || 0;
+        const heuresInputs = ['nb_heures_cm', 'nb_heures_td', 'nb_heures_tp', 'nb_heures_ei'];
+        heuresInputs.forEach(id => {
+            document.getElementById(id).addEventListener('input', updateTotalHeuresModal);
+        });
+
+        function updateTotalHeuresModal() {
+            const heuresCM = parseFloat(document.getElementById('nb_heures_cm').value) || 0;
+            const heuresTD = parseFloat(document.getElementById('nb_heures_td').value) || 0;
+            const heuresTP = parseFloat(document.getElementById('nb_heures_tp').value) || 0;
+            const heuresEI = parseFloat(document.getElementById('nb_heures_ei').value) || 0;
             const totalHeures = heuresCM + heuresTD + heuresTP + heuresEI;
-            row.children[5].textContent = totalHeures;
+            document.getElementById('nb_heures_total').value = totalHeures;
         }
 
         document.getElementById('searchInput').addEventListener('input', function() {
@@ -305,15 +344,25 @@
         const addCoursButton = document.getElementById('addCoursButton');
         const addCoursForm = document.getElementById('addCoursForm');
         const cancelAddCoursButton = document.getElementById('cancelAddCoursButton');
+        const modal = document.getElementById('addCoursModal');
+        const closeModalButton = document.getElementsByClassName('close')[0];
 
         addCoursButton.addEventListener('click', function() {
-            addCoursForm.style.display = 'block';
-            addCoursButton.style.display = 'none';
+            modal.style.display = 'block';
+        });
+
+        closeModalButton.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+
+        window.addEventListener('click', function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
         });
 
         cancelAddCoursButton.addEventListener('click', function() {
-            addCoursForm.style.display = 'none';
-            addCoursButton.style.display = 'block';
+            modal.style.display = 'none';
         });
 
         addCoursForm.addEventListener('submit', async function(event) {
@@ -331,10 +380,7 @@
             };
 
             const totalHeures = parseFloat(coursData.nb_heures_cm) + parseFloat(coursData.nb_heures_td) + parseFloat(coursData.nb_heures_tp) + parseFloat(coursData.nb_heures_ei);
-            if (totalHeures > parseFloat(coursData.nb_heures_total)) {
-                toast.show('Le cumul des heures est supérieur au total', 'error');
-                return;
-            }
+            coursData.nb_heures_total = totalHeures;
 
             try {
                 const response = await fetch('src/Gestionnaire/RequeteBD_AddCours.php', {
@@ -349,8 +395,7 @@
                 if (result.success) {
                     toast.show('Cours ajouté avec succès', 'success');
                     loadCours();
-                    addCoursForm.style.display = 'none';
-                    addCoursButton.style.display = 'block';
+                    modal.style.display = 'none';
                 } else {
                     console.error('Erreur lors de l\'ajout du cours:', result.error);
                     toast.show('Erreur lors de l\'ajout du cours', 'error');

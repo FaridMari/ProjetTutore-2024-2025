@@ -22,4 +22,4 @@ L’objectif est de simplifier la gestion des préférences et contraintes des e
 - Fournir une interface intuitive pour tous les utilisateurs.
 
 ## Déploiement
-- à définir.
+- Webetu : https://webetu.iutnc.univ-lorraine.fr/www/ragot31u/ProjetTutore/
